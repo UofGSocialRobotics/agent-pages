@@ -1,5 +1,5 @@
 // SETTINGS
-var BROKER = "ws://iot.eclipse.org/ws";
+var BROKER = "wss://iot.eclipse.org/ws";
 var TOPIC = "UoGSocialRobotics/ConversationalAgent/m_ASR";
 
 var mqtt;
