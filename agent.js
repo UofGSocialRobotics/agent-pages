@@ -2,7 +2,8 @@
 var BROKER = "wss://iot.eclipse.org/ws";
 var MAIN_TOPIC = "UoGSocialRobotics/ConversationalAgent/"
 var TOPIC_PUBLISH = MAIN_TOPIC+"Client/";
-var TOPIC_SUBSCRIBE = MAIN_TOPIC + "Server_out/"
+var TOPIC_SUBSCRIBE = MAIN_TOPIC + "Server_out/";
+var resp_div = document.getElementById("response");
 
 var mqtt;
 var clientID;
@@ -12,7 +13,7 @@ var reconnectTimeout = 2000;
 // var port = 1883;
 
 function updateTopicSubscribe(client_id){
-	TOPIC_SUBSCRIBE += client_id
+	TOPIC_SUBSCRIBE += client_id;
 }
 
 function onConnect(){
@@ -40,7 +41,6 @@ function MQTTSendMessage(){
 	var msg = document.getElementById("textfield").value;
 
 	// Thank user for message
-	var resp_div = document.getElementById("response");
 	var txt = "<p>Thanks for your message to the world.</p>";
 	resp_div.innerHTML = txt;
 
@@ -53,4 +53,5 @@ function MQTTSendMessage(){
 // called when a message arrives
 function onMessageArrived(message) {
   console.log("onMessageArrived:"+message.payloadString);
+  resp_div.innerHTML += "<br><p>"+message.payloadString+"</p>"
 }
