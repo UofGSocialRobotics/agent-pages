@@ -1,13 +1,12 @@
-<title>Hello world!</title>
+<title>Are you sick?</title>
 <body>
-	Hello world!
 	<br>
-	What do you want to say to the world?
+	Ask our agent if you have fever.
 	<br>
 	<input type="text" id="textfield"/>
 	<br>
-	<button type="submit" onclick="MQTTSendMessage()" id="submit">Tell the world!</button>
-	<div id="response">Msg here</div>
+	<button type="submit" onclick="MQTTSendMessage()" id="submit">Ask</button>
+	<div id="response"></div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
 	<script src="agent.js"></script>
 	<script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=MQTTConnect"></script>

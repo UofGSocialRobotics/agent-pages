@@ -16,7 +16,6 @@ var reconnectTimeout = 2000;
 
 function deleteAll(string,to_delete){
 	while(string.includes(to_delete)){
-		console.log("wejfeiwj");
 		string = string.replace(to_delete,"");
 	}
 	return string;
@@ -53,7 +52,7 @@ function MQTTSendMessage(){
 	var msg = document.getElementById("textfield").value;
 
 	// Thank user for message
-	var txt = "<p>Thanks for your message to the world.</p>";
+	var txt = "<p>Thank you for your question, we will answer shortly.</p>";
 	resp_div.innerHTML = txt;
 
 	// Send message to broker
