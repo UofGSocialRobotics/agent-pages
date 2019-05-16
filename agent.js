@@ -1,6 +1,6 @@
 // SETTINGS
 var BROKER = "wss://iot.eclipse.org/ws";
-var MAIN_TOPIC = "UoGSocialRobotics/ConversationalAgent/"
+var MAIN_TOPIC = "UoGSR/ca/"
 var TOPIC_PUBLISH = MAIN_TOPIC+"Client/";
 var TOPIC_SUBSCRIBE = MAIN_TOPIC + "Server_out/";
 var resp_div = document.getElementById("response");
@@ -39,7 +39,7 @@ function MQTTConnect(jsonip){
     clientIP = jsonip.ip;
 	console.log("Connecting to "+BROKER);
 	var tmp = deleteAll(clientIP,".");
-	clientID = "WebClient" + tmp; //+ new Date().getTime();
+	clientID = "c" + tmp; //+ new Date().getTime();
 	updateTopicSubscribe(clientID)
 	mqtt = new Paho.MQTT.Client(BROKER, clientID);
 	mqtt.onMessageArrived = onMessageArrived;
