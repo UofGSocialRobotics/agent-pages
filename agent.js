@@ -6,6 +6,7 @@ var TOPIC_SUBSCRIBE = MAIN_TOPIC + "Server_out/";
 var resp_div = document.getElementById("response");
 var clientIP ;
 var msg_connection = "new client connected";
+var server_disconnected = true;
 
 var mqtt;
 var clientID;
@@ -59,6 +60,7 @@ function MQTTSendMessage(){
 		// Thank user for message
 		var txt = "<p>Thank you for your question, we will answer shortly.</p>";
 		// start timer
+		server_disconnected = true;
 		setTimeout(server_not_connected_message, 5000);
 
 		// Send message to broker
@@ -74,9 +76,12 @@ function MQTTSendMessage(){
 // called when a message arrives
 function onMessageArrived(message) {
   console.log("onMessageArrived:"+message.payloadString);
-  resp_div.innerHTML += "<br><p>"+message.payloadString+"</p>"
+  resp_div.innerHTML += "<br><p>"+message.payloadString+"</p>";
+  server_disconnected = false;
 }
 
 function server_not_connected_message(){
-	resp_div.innerHTML += "<br><p>It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.</p>"
+	if (server_disconnected){
+		resp_div.innerHTML += "<br><p>It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.</p>";
+	}
 }
