@@ -1,13 +1,40 @@
-<title>Are you sick?</title>
+<head>
+  <title>Doctor Agent</title>
+  <link href="chat.css" rel="stylesheet" id="bootstrap-css">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+  <script src="chat.js"></script>
+  <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=MQTTConnect"></script>
+  <!------ Include the above in your HEAD tag ---------->
+  <!------ Wedsite design adapted from Chat by Pavel Komiagin - https://bootsnipp.com/snippets/ZlkBn ---------->
+</head>
 <body>
-	<br>
-	Ask our agent if you have fever.
-	<br>
-	<input type="text" id="textfield"/>
-	<br>
-	<button type="submit" onclick="MQTTSendMessage()" id="submit">Ask</button>
-	<div id="response"></div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
-	<script src="agent.js"></script>
-	<script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=MQTTConnect"></script>
+  <div class="chat_window">
+    <div class="top_menu">
+      <div class="buttons">
+        <!--div class="button close"></div>
+        <div class="button minimize"></div>
+        <div class="button maximize"></div-->
+      </div>
+      <div class="title">Chat with Doctor Agent</div>
+    </div>
+    <ul class="messages"></ul>
+    <div class="bottom_wrapper clearfix">
+      <div class="message_input_wrapper">
+        <input class="message_input" placeholder="Type your message here..." />
+      </div>
+      <div class="send_message">
+        <div class="icon"></div>
+        <div class="text">Send</div>
+      </div>
+    </div>
+  </div>
+  <div class="message_template">
+    <li class="message">
+      <div class="avatar"></div>
+      <div class="text_wrapper">
+        <div class="text"></div>
+      </div>
+    </li>
+  </div>
 </body>
