@@ -120,7 +120,13 @@ function MQTTSendMessage(msg){
     }
     else{
         app_global.server_disconnected = true;
-        setTimeout(server_not_connected_message, 5000);
+        setTimeout(function server_not_connected_message(){
+            if (app_global.server_disconnected){
+                var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
+                printMessage(text,"left");
+                app.global.server_disconnected = false;
+            }
+        }, 5000);
 
         // Send message to broker
         var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
@@ -139,10 +145,3 @@ function onMessageArrived(message) {
   app_global.server_disconnected = false;
 }
 
-function server_not_connected_message(){
-    if (app_global.server_disconnected){
-        var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
-        app_global.server_disconnected = false;
-        printMessage(text,"left");
-    }
-}
