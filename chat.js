@@ -124,7 +124,7 @@ function MQTTSendMessage(msg){
             if (app_global.server_disconnected){
                 var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
                 printMessage(text,"left");
-                app.global.server_disconnected = false;
+                app_global.server_disconnected = false;
             }
         }, 5000);
 
