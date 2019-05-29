@@ -57,6 +57,9 @@ set_agent_name();
                 return sendMessage(getMessageText());
             }
         });
+        setTimeout(function() {
+            app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
+        }, 10)
         // sendMessage('Hello Philip! :)');
         // setTimeout(function () {
         //     return sendMessage('Hi Sandy! How are you?');
