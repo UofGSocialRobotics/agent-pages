@@ -1,4 +1,22 @@
-// SETTINGS
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                           CONFIGURATION                                      --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+var config = {
+    broker : "wss://iot.eclipse.org/ws",
+    main_topic : "UoGSR/ca/",
+    topic_publish : "UoGSR/ca/Client/",
+    topic_subscribe : "UoGSR/ca/Server_out/",  
+    connection_message : "new client connected",
+    confirmed_connection_message : "Connection confirmed",
+    disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
+    turn_by_turn : true,
+};
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                         CLASS DEFINITION                                     --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 function getTimestamp(){
     return Math.floor(Date.now() / 1000);
 }
@@ -22,21 +40,17 @@ class Timer {
     }
 
     get timeElapsed(){
-        return (getTimestamp() - this.started_at);
+        if (this.started){
+            return (getTimestamp() - this.started_at);
+        } else {
+            return 0;
+        }
     }
 };
 
-
-var config = {
-    broker : "wss://iot.eclipse.org/ws",
-    main_topic : "UoGSR/ca/",
-    topic_publish : "UoGSR/ca/Client/",
-    topic_subscribe : "UoGSR/ca/Server_out/",  
-    connection_message : "new client connected",
-    confirmed_connection_message : "Connection confirmed",
-    disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
-    turn_by_turn : true,
-};
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                         GLOBAL VARIABLES                                     --------//
+//--------------------------------------------------------------------------------------------------------------//
 
 var app_global = {
     agent_name : "Cora",
@@ -64,16 +78,11 @@ var app_global = {
 };
 
 
-function set_agent_name(){
-    var tab_title =  document.getElementById("tab_title");
-    tab_title.innerHTML = "Chat with " + app_global.agent_name;
-    var chat_title =  document.getElementById("chat_title");
-    chat_title.innerHTML = "Chat with " + app_global.agent_name;
-    app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
-    app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
-    app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);
-}
-set_agent_name();
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                           ON LOAD                                            --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+
 
 (function () {
     var Message;
@@ -100,12 +109,79 @@ set_agent_name();
     });
 }.call(this));
 
+
+
+function set_agent_name(){
+    var tab_title =  document.getElementById("tab_title");
+    tab_title.innerHTML = "Chat with " + app_global.agent_name;
+    var chat_title =  document.getElementById("chat_title");
+    chat_title.innerHTML = "Chat with " + app_global.agent_name;
+    app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
+    app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
+    app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);
+}
+set_agent_name();
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                           CHAT METHODS                                       --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function Message(arg) {
+    this.text = arg.text, this.message_side = arg.message_side;
+    this.draw = function (_this) {
+        return function () {
+            var $message;
+            $message = $($('.message_template').clone().html());
+            $message.addClass(_this.message_side).find('.text').html(_this.text);
+            $('.messages').append($message);
+            return setTimeout(function () {
+                return $message.addClass('appeared');
+            }, 0);
+        };
+    }(this);
+    return this;
+};
+
 function sendMessage(msg) {
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right')
         return MQTTSendMessage(msg);
     }
+};
+
+// called when a message arrives
+function onMessageArrived(message) {
+    console.log("onMessageArrived:"+message.payloadString);
+    app_global.disconnection_timer.stop();
+
+    if (app_global.error == false){
+        // app_global.server_disconnected = false;
+        app_global.disconnection_timer.stop();
+
+        if (message.payloadString != config.confirmed_connection_message){
+            printMessage(message.payloadString,'left');        
+        }
+        if (message.payloadString == config.disconnection_message){
+            app_global.css_elm.setAttribute("href",app_global.css_val.error);
+            disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
+        }
+        else{
+            if (config.turn_by_turn){
+                activate_user_input();
+            }
+        }
+    }
+    else {
+        console.log("Error, will not print new messsage.")
+    }
+  // activate_user_input();
 }
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                        DEAL WITH INTERFACE                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 
 function disable_user_input(placeholder_message){
     //disable text input and set placeholder
@@ -139,21 +215,6 @@ function getMessageText(){
     return $message_input.val();
 };
 
-function Message(arg) {
-    this.text = arg.text, this.message_side = arg.message_side;
-    this.draw = function (_this) {
-        return function () {
-            var $message;
-            $message = $($('.message_template').clone().html());
-            $message.addClass(_this.message_side).find('.text').html(_this.text);
-            $('.messages').append($message);
-            return setTimeout(function () {
-                return $message.addClass('appeared');
-            }, 0);
-        };
-    }(this);
-    return this;
-};
 
 function printMessage(text,message_side) {
     var $messages, message;
@@ -177,6 +238,10 @@ function deleteAll(string,to_delete){
     return string;
 }
 
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                       BROKER/MQTT COMMUNICATION                              --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 function updateTopicSubscribe(client_id){
     config.topic_subscribe += client_id;
 }
@@ -186,6 +251,7 @@ function onConnect(){
     console.log("Connected");
     MQTTSendMessage(config.connection_message);
     app_global.mqtt.subscribe(config.topic_subscribe);
+    // app_global.disconnection_timer.init();
 }
 
 function MQTTConnect(jsonip){
@@ -207,10 +273,9 @@ function MQTTSendMessage(msg){
 
     // if disconnection
     setTimeout(function server_not_connected_message(){
-        // console.log("Time elapsed : "+app_global.disconnection_timer.timeElapsed.toString());
-        // console.log("Time connection timeout : "+app_global.connection_timeout.toString());
-        // console.log("Bool : "+(app_global.disconnection_timer.timeElapsed < app_global.connection_timeout).toString());
-        if (app_global.disconnection_timer.timeElapsed < app_global.connection_timeout){
+        console.log("time elapsed "+ app_global.disconnection_timer.timeElapsed.toString());
+        console.log("Bool connection timed out: "+(app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
+        if (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout){
             console.log("Server disconnected error");
             var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
             printMessage(text,"left");
@@ -219,12 +284,13 @@ function MQTTSendMessage(msg){
             app_global.error = true;
             disable_user_input(app_global.user_input_placeholder_val.server_down);
         }
-    }, app_global.connection_timeout);
+    }, app_global.connection_timeout * 1000 + 1000);
 
     // Send message to broker
     var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
     message.destinationName = config.topic_publish;
     app_global.mqtt.send(message);
+    app_global.disconnection_timer.init();
 
     //Print in console
     console.log("Sending message: "+msg);
@@ -235,32 +301,23 @@ function MQTTSendMessage(msg){
     }
 }
 
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                 LOACALHOST SERVER COMMUNICATION                              --------//
+//--------------------------------------------------------------------------------------------------------------//
 
+// var connection = new WebSocket('ws://html5rocks.websocket.org/echo', ['soap', 'xmpp']);
 
-// called when a message arrives
-function onMessageArrived(message) {
-    console.log("onMessageArrived:"+message.payloadString);
+// // When the connection is open, send some data to the server
+// connection.onopen = function () {
+//   connection.send('Ping'); // Send the message 'Ping' to the server
+// };
 
-    if (app_global.error == false){
-        // app_global.server_disconnected = false;
-        app_global.disconnection_timer.stop();
+// // Log errors
+// connection.onerror = function (error) {
+//   console.log('WebSocket Error ' + error);
+// };
 
-        if (message.payloadString != config.confirmed_connection_message){
-            printMessage(message.payloadString,'left');        
-        }
-        if (message.payloadString == config.disconnection_message){
-            app_global.css_elm.setAttribute("href",app_global.css_val.error);
-            disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
-        }
-        else{
-            if (config.turn_by_turn){
-                activate_user_input();
-            }
-        }
-    }
-    else {
-        console.log("Error, will not print new messsage.")
-    }
-  // activate_user_input();
-}
-
+// // Log messages from the server
+// connection.onmessage = function (e) {
+//   console.log('Server: ' + e.data);
+// };
