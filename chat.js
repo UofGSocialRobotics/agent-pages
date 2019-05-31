@@ -1,4 +1,32 @@
 // SETTINGS
+function getTimestamp(){
+    return Math.floor(Date.now() / 1000);
+}
+
+class Timer {
+    constructor(){
+        this.started = false;
+        this.started_at = 0;
+    }
+
+    init(){
+        this.started = true;
+        if (this.started_at == 0){
+            this.started_at = getTimestamp();
+        }
+    }
+
+    stop(){
+        this.started = false;
+        this.started_at = 0;
+    }
+
+    get timeElapsed(){
+        return (getTimestamp() - this.started_at);
+    }
+};
+
+
 var config = {
     broker : "wss://iot.eclipse.org/ws",
     main_topic : "UoGSR/ca/",
@@ -12,11 +40,13 @@ var config = {
 
 var app_global = {
     agent_name : "Cora",
-    connection_timeout : 20000,
+    connection_timeout : 5,
     error : false,
     resp_div : document.getElementById("response"),
     clientIP : false,
-    server_disconnected : true,
+    // server_disconnected : true,
+    // last_message_send_at : getTimestamp(),
+    disconnection_timer : new Timer(),
     mqtt : false,
     clientID : false,
     css_elm : document.getElementById("error_css"),
@@ -172,14 +202,20 @@ function MQTTConnect(jsonip){
 
 
 function MQTTSendMessage(msg){
-    app_global.server_disconnected = true;
+    //Start disconnection timer
+    // app_global.disconnection_timer.init();
+
+    // if disconnection
     setTimeout(function server_not_connected_message(){
-        if (app_global.server_disconnected){
+        // console.log("Time elapsed : "+app_global.disconnection_timer.timeElapsed.toString());
+        // console.log("Time connection timeout : "+app_global.connection_timeout.toString());
+        // console.log("Bool : "+(app_global.disconnection_timer.timeElapsed < app_global.connection_timeout).toString());
+        if (app_global.disconnection_timer.timeElapsed < app_global.connection_timeout){
             console.log("Server disconnected error");
             var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
             printMessage(text,"left");
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
-            app_global.server_disconnected = false;
+            // app_global.last_message_send_at = getTimestamp();
             app_global.error = true;
             disable_user_input(app_global.user_input_placeholder_val.server_down);
         }
@@ -204,8 +240,11 @@ function MQTTSendMessage(msg){
 // called when a message arrives
 function onMessageArrived(message) {
     console.log("onMessageArrived:"+message.payloadString);
+
     if (app_global.error == false){
-        app_global.server_disconnected = false;
+        // app_global.server_disconnected = false;
+        app_global.disconnection_timer.stop();
+
         if (message.payloadString != config.confirmed_connection_message){
             printMessage(message.payloadString,'left');        
         }
