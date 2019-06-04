@@ -54,10 +54,11 @@ class Timer {
 
 var app_global = {
     agent_name : "Cora",
-    use_broker : false,
+    use_broker : true,
     socket : false,
     connection_timeout : 5,
     error : false,
+    error_message_posted : false,
     resp_div : document.getElementById("response"),
     clientIP : false,
     // server_disconnected : true,
@@ -331,7 +332,7 @@ function server_not_connected_message(){
     console.log("time elapsed "+ app_global.disconnection_timer.timeElapsed.toString());
     console.log("Bool connection timed out: "+(app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
     console.log("app_global.error: "+app_global.error.toString());
-    if (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error){
+    if ((app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error) && !app_global.error_message_posted){
         setTimeout(function(){
             console.log("Server disconnected error");
             var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
@@ -339,6 +340,7 @@ function server_not_connected_message(){
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
             // app_global.last_message_send_at = getTimestamp();
             app_global.error = true;
+            app_global.error_message_posted = true;
             disable_user_input(app_global.user_input_placeholder_val.server_down);
         },10);
     }
