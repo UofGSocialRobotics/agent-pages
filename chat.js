@@ -3,7 +3,7 @@
 //--------------------------------------------------------------------------------------------------------------//
 
 var config = {
-    broker : "wss://iot.eclipse.org/ws",
+    broker : "wss://iot.eclipse.org/ws", //"wss://mqtt.eclipse.org/ws",
     main_topic : "UoGSR/ca/",
     topic_publish : "UoGSR/ca/Client/",
     topic_subscribe : "UoGSR/ca/Server_out/",  
@@ -54,6 +54,8 @@ class Timer {
 
 var app_global = {
     agent_name : "Cora",
+    use_broker : false,
+    socket : false,
     connection_timeout : 5,
     error : false,
     resp_div : document.getElementById("response"),
@@ -122,6 +124,84 @@ function set_agent_name(){
 }
 set_agent_name();
 
+//--------------------------------------------------------------------------------------------------------------//
+//--------                            DECIDE IF USING WEBSOCKETS OR BORKER                              --------//
+//-------- > Currently you can use websockets only when running the client and the server on localhost  --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+// $(document).ready(function(){
+function Connect(jsonip){
+    switch(window.location.protocol) {
+        case 'http:':
+            app_global.use_broker = true;
+            MQTTConnect(jsonip);
+            break;
+        case 'https:':
+        //remote file over http or https
+            app_global.use_broker = true;
+            MQTTConnect(jsonip);
+            break;
+        case 'file:':
+            if(app_global.use_broker==false){
+                console.log("We re local - will not be using broker.");
+                console.log("If you want to use the broker, set use_broker to true in app_global.");
+                try{
+                    init_websocket();
+                }
+                catch(err){
+                    console.log("error");
+                    console.log(err.message);
+                    server_not_connected_message();
+                }
+            }
+            else{
+                MQTTConnect(jsonip);
+            }
+            break;
+        default: 
+            app_global.use_broker = true;
+            MQTTConnect(jsonip);
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                     WEBSOCKETS METHODS                                       --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function init_websocket(){
+    app_global.socket = new WebSocket('ws://127.0.0.1:9000/');
+    app_global.socket.onerror = function(event){
+        app_global.error = true;
+        server_not_connected_message();
+    }
+    app_global.socket.onopen = function(event){
+        send_message_ws(config.connection_message);
+    }
+    app_global.socket.onmessage = function(event){
+        console.log("Received message from python server (localhost):")
+        console.log(event.data);
+        handle_server_message(event.data);
+    };
+}
+
+function isOpen(ws) { 
+    console.log(ws.OPEN);
+    console.log("ws.OPEN");
+    return ws.readyState === ws.OPEN ;
+}
+
+function send_message_ws(msg){
+    if (isOpen(app_global.socket)){
+        app_global.socket.send(msg);
+        return true;
+    }
+    else{
+        app_global.error = true;
+        server_not_connected_message();
+        return false;
+    }
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           CHAT METHODS                                       --------//
@@ -146,23 +226,33 @@ function Message(arg) {
 function sendMessage(msg) {
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right')
-        return MQTTSendMessage(msg);
+        if (app_global.use_broker){
+            return MQTTSendMessage(msg);
+        }
+        else{
+            try{
+                return send_message_ws(msg);
+            } catch(err) {
+                app_global.error = true;
+                server_not_connected_message();
+            }
+        }
     }
 };
 
 // called when a message arrives
-function onMessageArrived(message) {
-    console.log("onMessageArrived:"+message.payloadString);
+function handle_server_message(message) {
+    console.log("handle_server_message:"+message);
     app_global.disconnection_timer.stop();
 
     if (app_global.error == false){
         // app_global.server_disconnected = false;
         app_global.disconnection_timer.stop();
 
-        if (message.payloadString != config.confirmed_connection_message){
-            printMessage(message.payloadString,'left');        
+        if (message != config.confirmed_connection_message){
+            printMessage(message,'left');        
         }
-        if (message.payloadString == config.disconnection_message){
+        if (message == config.disconnection_message){
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
             disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
         }
@@ -175,7 +265,6 @@ function onMessageArrived(message) {
     else {
         console.log("Error, will not print new messsage.")
     }
-  // activate_user_input();
 }
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -238,6 +327,22 @@ function deleteAll(string,to_delete){
     return string;
 }
 
+function server_not_connected_message(){
+    console.log("time elapsed "+ app_global.disconnection_timer.timeElapsed.toString());
+    console.log("Bool connection timed out: "+(app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
+    console.log("app_global.error: "+app_global.error.toString());
+    if (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error){
+        setTimeout(function(){
+            console.log("Server disconnected error");
+            var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
+            printMessage(text,"left");
+            app_global.css_elm.setAttribute("href",app_global.css_val.error);
+            // app_global.last_message_send_at = getTimestamp();
+            app_global.error = true;
+            disable_user_input(app_global.user_input_placeholder_val.server_down);
+        },10);
+    }
+}
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                       BROKER/MQTT COMMUNICATION                              --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -272,19 +377,7 @@ function MQTTSendMessage(msg){
     // app_global.disconnection_timer.init();
 
     // if disconnection
-    setTimeout(function server_not_connected_message(){
-        console.log("time elapsed "+ app_global.disconnection_timer.timeElapsed.toString());
-        console.log("Bool connection timed out: "+(app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
-        if (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout){
-            console.log("Server disconnected error");
-            var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
-            printMessage(text,"left");
-            app_global.css_elm.setAttribute("href",app_global.css_val.error);
-            // app_global.last_message_send_at = getTimestamp();
-            app_global.error = true;
-            disable_user_input(app_global.user_input_placeholder_val.server_down);
-        }
-    }, app_global.connection_timeout * 1000 + 1000);
+    setTimeout(server_not_connected_message, app_global.connection_timeout * 1000 + 1000);
 
     // Send message to broker
     var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
@@ -301,23 +394,9 @@ function MQTTSendMessage(msg){
     }
 }
 
-//--------------------------------------------------------------------------------------------------------------//
-//--------                                 LOACALHOST SERVER COMMUNICATION                              --------//
-//--------------------------------------------------------------------------------------------------------------//
 
-// var connection = new WebSocket('ws://html5rocks.websocket.org/echo', ['soap', 'xmpp']);
-
-// // When the connection is open, send some data to the server
-// connection.onopen = function () {
-//   connection.send('Ping'); // Send the message 'Ping' to the server
-// };
-
-// // Log errors
-// connection.onerror = function (error) {
-//   console.log('WebSocket Error ' + error);
-// };
-
-// // Log messages from the server
-// connection.onmessage = function (e) {
-//   console.log('Server: ' + e.data);
-// };
+// called when a message arrives
+function onMessageArrived(message) {
+    console.log("onMessageArrived:"+message.payloadString);
+    handle_server_message(message.payloadString);
+}
