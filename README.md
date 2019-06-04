@@ -2,7 +2,6 @@
 
 This repo is part of the Cora (Conversation Rapport-building Agent) project, which objective is to build a conversational agent. This is the client part of the project.
 
-https://uofgsocialrobotics.github.io/agent-pages/
 
 ## Running the client	
 
@@ -15,7 +14,7 @@ To run the client on localhost:
 * download or clone this repo.
 * open `index.html` in a browser.
 
-You can force the client to connect to the server via a public broker. To do so, in `chat.js`, set `app_global.use_broker` to `false`:
+Even when running the client on localhost, you can force the client to connect to the server via a public broker. To do so, in `chat.js`, set `app_global.use_broker` to `false`:
 ```javascript
 var app_global = {
     ...
@@ -23,5 +22,8 @@ var app_global = {
     ...
 }
 ````
+
+Acces the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/.
+
 
 ___Note:___ All tests were run on the Chome browser.
