@@ -255,7 +255,8 @@ function handle_server_message(message) {
 			if (config.tts_activated) {
 				window.speechSynthesis.speak(new SpeechSynthesisUtterance(message));
 			}
-            printMessage(message,'left');        
+			var json_message = JSON.parse(message); 
+            printMessage(json_message.sentence,'left');        
         }
         if (message == config.disconnection_message){
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
