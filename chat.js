@@ -12,6 +12,7 @@ var config = {
     disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
     turn_by_turn : true,
 	tts_activated : false,
+    asr_activated : false,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -256,7 +257,11 @@ function handle_server_message(message) {
 				window.speechSynthesis.speak(new SpeechSynthesisUtterance(message));
 			}
 			var json_message = JSON.parse(message); 
-            printMessage(json_message.sentence,'left');        
+            printMessage(json_message.sentence,'left');  
+            if (json_message.movie_poster){
+                console.log(json_message.movie_poster);
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
+            }    
         }
         if (message == config.disconnection_message){
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
@@ -406,4 +411,33 @@ function MQTTSendMessage(msg){
 function onMessageArrived(message) {
     console.log("onMessageArrived:"+message.payloadString);
     handle_server_message(message.payloadString);
+}
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                              TTS                                             --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function startDictation() {
+
+    if (window.hasOwnProperty('webkitSpeechRecognition')) {
+
+        var recognition = new webkitSpeechRecognition();
+
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.lang = "en-US";
+        recognition.start();
+
+        recognition.onresult = function(e) {
+            document.getElementById('transcript').value = e.results[0][0].transcript;
+            recognition.stop();
+            document.getElementById('labnol').submit();
+        };
+
+        recognition.onerror = function(e) {
+            recognition.stop();
+        };
+
+    }
 }
