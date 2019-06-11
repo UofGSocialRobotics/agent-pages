@@ -11,6 +11,7 @@ var config = {
     confirmed_connection_message : "Connection confirmed",
     disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
     turn_by_turn : true,
+	tts_activated : false,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -54,7 +55,7 @@ class Timer {
 
 var app_global = {
     agent_name : "Cora",
-    use_broker : true,
+    use_broker : false,
     socket : false,
     connection_timeout : 5,
     error : false,
@@ -251,6 +252,9 @@ function handle_server_message(message) {
         app_global.disconnection_timer.stop();
 
         if (message != config.confirmed_connection_message){
+			if (config.tts_activated) {
+				window.speechSynthesis.speak(new SpeechSynthesisUtterance(message));
+			}
             printMessage(message,'left');        
         }
         if (message == config.disconnection_message){

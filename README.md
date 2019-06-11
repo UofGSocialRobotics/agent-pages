@@ -23,6 +23,15 @@ var app_global = {
 }
 ````
 
+To activate TTS:
+```javascript
+var config = {
+    ...
+    tts_activated : true,
+    ...
+}
+````
+
 Acces the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/.
 
 
