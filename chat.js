@@ -263,11 +263,7 @@ function Message(arg) {
 
 function sendMessage() {
     msg = getMessageText();
-    console.log("sendMessage");
-    console.log(msg);
-    console.log(app_global.error);
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
-        console.log("sendMessage2");        
         printMessage(msg,'right');
         var res = false;
         if (app_global.use_broker){
@@ -284,15 +280,10 @@ function sendMessage() {
 
         // Disable user input
         if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
-            console.log("if");
             disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
         }
         else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
-            console.log("else if");
             change_microphone_image("off");
-        }
-        else {
-            console.log("else");
         }
         return res;
     }
@@ -338,12 +329,18 @@ function handle_server_message(message) {
     else {
         console.log("Error, will not print new messsage.")
     }
+    setFocusToTextBox();
 }
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                        DEAL WITH INTERFACE                                   --------//
 //--------------------------------------------------------------------------------------------------------------//
-
+function setFocusToTextBox(){
+    if (config.asr_activated == false){
+        user_text_input = document.getElementById("user_text_input");
+        user_text_input.focus();
+    }
+}
 
 function disable_user_input(placeholder_message){
     //disable text input and set placeholder
@@ -398,7 +395,7 @@ function printMessage(text,message_side) {
         message_side: message_side
     });
     message.draw();
-    return $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
+    $messages.animate({ scrollTop: $messages.prop('scrollHeight') }, 300);
 };
 
 function deleteAll(string,to_delete){
