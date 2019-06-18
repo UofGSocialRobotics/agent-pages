@@ -16,6 +16,39 @@ var config = {
 };
 
 //--------------------------------------------------------------------------------------------------------------//
+//--------                                         ACCESS CHAT WINDOW                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+function accessChatWindow(tts_asr){
+    var message_speech = document.getElementById("message_speech"); 
+    var message_text = document.getElementById("message_text");
+    if (tts_asr){
+        config.tts_activated = true;
+        config.asr_activated = true;
+        console.log("Will be using TTS and ASR.");
+        message_speech.style.display = "block";
+        message_text.style.display = "none";
+    }
+    else{
+        message_speech.style.display = "none";
+        message_text.style.display = "block";
+    }
+    if(app_global.error){
+        change_microphone_image("off");
+    }
+    var menu_page = document.getElementById("menu_page");
+    menu_page.style.display = "none";
+    var chat_window = document.getElementById("chat_window");
+    chat_window.style.display = "block";
+
+
+    setTimeout(function() {
+        set_agent_name();
+    }, 100)
+    
+}
+
+
+//--------------------------------------------------------------------------------------------------------------//
 //--------                                         CLASS DEFINITION                                     --------//
 //--------------------------------------------------------------------------------------------------------------//
 
@@ -88,17 +121,16 @@ var app_global = {
 //--------------------------------------------------------------------------------------------------------------//
 
 
-
 (function () {
     var Message;
     
     $(function () {
         $('.send_message').click(function (e) {
-            return sendMessage(getMessageText());
+            return sendMessage();
         });
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
-                return sendMessage(getMessageText());
+                return sendMessage();
             }
         });
         setTimeout(function() {
@@ -117,10 +149,14 @@ var app_global = {
 
 
 function set_agent_name(){
+    // console.log("set_agent_name");
+    var title = "Chat with " + app_global.agent_name;
     var tab_title =  document.getElementById("tab_title");
-    tab_title.innerHTML = "Chat with " + app_global.agent_name;
+    tab_title.innerHTML = title;
     var chat_title =  document.getElementById("chat_title");
-    chat_title.innerHTML = "Chat with " + app_global.agent_name;
+    chat_title.innerHTML = title;
+    var menu_title =  document.getElementById("menu_title");
+    menu_title.innerHTML = title;
     app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);
@@ -179,6 +215,7 @@ function init_websocket(){
         server_not_connected_message();
     }
     app_global.socket.onopen = function(event){
+        console.log("Web socket open");
         send_message_ws(config.connection_message);
     }
     app_global.socket.onmessage = function(event){
@@ -189,8 +226,6 @@ function init_websocket(){
 }
 
 function isOpen(ws) { 
-    console.log(ws.OPEN);
-    console.log("ws.OPEN");
     return ws.readyState === ws.OPEN ;
 }
 
@@ -226,26 +261,46 @@ function Message(arg) {
     return this;
 };
 
-function sendMessage(msg) {
+function sendMessage() {
+    msg = getMessageText();
+    console.log("sendMessage");
+    console.log(msg);
+    console.log(app_global.error);
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
-        printMessage(msg,'right')
+        console.log("sendMessage2");        
+        printMessage(msg,'right');
+        var res = false;
         if (app_global.use_broker){
-            return MQTTSendMessage(msg);
+            res = MQTTSendMessage(msg);
         }
         else{
             try{
-                return send_message_ws(msg);
+                res = send_message_ws(msg);
             } catch(err) {
                 app_global.error = true;
                 server_not_connected_message();
             }
         }
+
+        // Disable user input
+        if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
+            console.log("if");
+            disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
+        }
+        else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
+            console.log("else if");
+            change_microphone_image("off");
+        }
+        else {
+            console.log("else");
+        }
+        return res;
     }
 };
 
 // called when a message arrives
 function handle_server_message(message) {
-    console.log("handle_server_message:"+message);
+    // console.log("handle_server_message:"+message);
     app_global.disconnection_timer.stop();
 
     if (app_global.error == false){
@@ -253,10 +308,14 @@ function handle_server_message(message) {
         app_global.disconnection_timer.stop();
 
         if (message != config.confirmed_connection_message){
+            var json_message = JSON.parse(message); 
 			if (config.tts_activated) {
-				window.speechSynthesis.speak(new SpeechSynthesisUtterance(message));
+                var u = new SpeechSynthesisUtterance(json_message.sentence);
+                u.onend = function (event) {
+                    change_microphone_image("wait");
+                };
+				window.speechSynthesis.speak(u);
 			}
-			var json_message = JSON.parse(message); 
             printMessage(json_message.sentence,'left');  
             if (json_message.movie_poster){
                 console.log(json_message.movie_poster);
@@ -268,9 +327,12 @@ function handle_server_message(message) {
             disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
         }
         else{
-            if (config.turn_by_turn){
+            if (config.turn_by_turn && config.asr_activated == false){
                 activate_user_input();
             }
+            // else if (config.asr_activated){
+            //     change_microphone_image("wait");
+            // }
         }
     }
     else {
@@ -297,22 +359,30 @@ function disable_user_input(placeholder_message){
 }
 
 function activate_user_input(){
-    //activate textfield
-    var user_input_elm = document.getElementById("user_text_input");
-    user_input_elm.setAttribute("style","");
-    user_input_elm.setAttribute("placeholder",app_global.user_input_placeholder_val.can_type);
-    user_input_elm.disabled = false;
-    //activate button
-    var send_button = document.getElementById("send_message_button");
-    send_button.classList.remove('disable_send_message');
-    send_button.classList.add('send_message');
-    app_global.user_wait = false;
+    if (config.asr_activated == false){
+        //activate textfield
+        var user_input_elm = document.getElementById("user_text_input");
+        user_input_elm.setAttribute("style","");
+        user_input_elm.setAttribute("placeholder",app_global.user_input_placeholder_val.can_type);
+        user_input_elm.disabled = false;
+        //activate button
+        var send_button = document.getElementById("send_message_button");
+        send_button.classList.remove('disable_send_message');
+        send_button.classList.add('send_message');
+        app_global.user_wait = false;
+    }
 }
 
 function getMessageText(){
-    var $message_input;
-    $message_input = $('.message_input');
-    return $message_input.val();
+    if (config.asr_activated){
+        return document.getElementById("transcript").value;
+    }
+    else{
+        return document.getElementById("user_text_input").value;
+    }
+    // var $message_input;
+    // $message_input = $('.message_input');
+    // return $message_input.val();
 };
 
 
@@ -352,8 +422,89 @@ function server_not_connected_message(){
             app_global.error = true;
             app_global.error_message_posted = true;
             disable_user_input(app_global.user_input_placeholder_val.server_down);
+            console.log("Disable green_microphone button");
+            console.log(config.asr_activated);
+            if (config.asr_activated){
+                console.log("Disable green_microphone button");
+                change_microphone_image("off");
+            }
         },10);
     }
+}
+
+function change_microphone_image(status){
+    console.log("microphone status: "+status);
+    if(status=="active"){
+        display_microphone(false, true, false, false);
+    }
+    else if(status=="done"){
+        display_microphone(false, false, false, true);
+    }
+    else if(status=="off"){
+        display_microphone(false, false, true, false);
+    }
+    else if(status=="wait"){
+        display_microphone(true, false, false, false);
+    }
+}
+
+function display_microphone(green, red, grey, send){
+    green_microphone = document.getElementById('green_microphone');
+    red_microphone = document.getElementById('red_microphone');
+    grey_microphone = document.getElementById('grey_microphone');
+    send_button = document.getElementById('send_img');
+
+    green_microphone.style.display = "none";
+    red_microphone.style.display = "none";
+    grey_microphone.style.display = "none";
+    send_button.style.display = "none";
+
+    if (green){
+        green_microphone.style.display = "block";
+    }
+    if (red){
+        red_microphone.style.display = "block";
+    }
+    if (grey){
+        grey_microphone.style.display = "block";
+    }
+    if (send){
+        send_button.style.display = "block";
+    }
+}
+
+function on_microphone_hover(){
+    document.getElementById('green_microphone').src = "img/microphone_green_white.png";
+}
+function off_microphone_hover(){
+    document.getElementById('green_microphone').src = "img/green_microphone.png";
+}
+
+function on_send_hover(){
+    document.getElementById('send_img').src = "img/send_white.png";
+}
+function off_send_hover(){
+    document.getElementById('send_img').src = "img/send.png";
+}
+
+
+function on_click_microphone(){
+    green_microphone = document.getElementById('green_microphone');
+    // console.log(b.src);
+    if (green_microphone.src.includes("img/microphone_green_white.png")){
+        console.log("Starting dictation");
+        startDictation();
+    }
+    else{
+        console.log("Cannot speak now.");
+    }
+}
+
+function on_click_send(){
+    // console.log(b.src);
+    change_microphone_image("wait");
+    console.log("sending msg");
+    sendMessage();
 }
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                       BROKER/MQTT COMMUNICATION                              --------//
@@ -398,12 +549,7 @@ function MQTTSendMessage(msg){
     app_global.disconnection_timer.init();
 
     //Print in console
-    console.log("Sending message: "+msg);
-
-    // Disable user input
-    if (msg != config.connection_message && config.turn_by_turn){
-        disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
-    }
+    console.log("Sending MQTT message: "+msg);
 }
 
 
@@ -417,7 +563,14 @@ function onMessageArrived(message) {
 //--------                                              TTS                                             --------//
 //--------------------------------------------------------------------------------------------------------------//
 
+// function ASR_action(txt){
+//     console.log("ARS :-)");
+//     console.log(txt);
+// }
+
 function startDictation() {
+
+    change_microphone_image("active");
 
     if (window.hasOwnProperty('webkitSpeechRecognition')) {
 
@@ -432,11 +585,16 @@ function startDictation() {
         recognition.onresult = function(e) {
             document.getElementById('transcript').value = e.results[0][0].transcript;
             recognition.stop();
-            document.getElementById('labnol').submit();
+            change_microphone_image("done");    
+            // ASR_action(e.results[0][0].transcript);
+            // document.getElementById('labnol').submit();
         };
 
         recognition.onerror = function(e) {
             recognition.stop();
+            console.log("dictation error.");
+            alert("There was a problem with dictation, we could not hear you.\n1 - Check that your green_microphone is on.\n2 - Go to a quiet place / speak louder.");
+            change_microphone_image("wait");
         };
 
     }

@@ -2,6 +2,7 @@
 
 This repo is part of the Cora (Conversation Rapport-building Agent) project, which objective is to build a conversational agent. This is the client part of the project.
 
+___Note:___ All tests were run on the Chome browser.
 
 ## Running the client	
 
@@ -32,7 +33,13 @@ var config = {
 }
 ````
 
-Acces the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/.
+Access the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/.
 
+## Mic settings 
 
-___Note:___ All tests were run on the Chome browser.
+To allow the website to access your microphone:
+1. Go to the website.
+2. Click "green lock" icon or "i in circle" icon beside the URL in address bar.
+3. In the menu, choose "Always allow on this site" for Microphone.
+4. Reload.
+

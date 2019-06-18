@@ -49,7 +49,7 @@ body {
 .top_menu .buttons .button.maximize {
   background-color: #a3d063;
 }
-.top_menu .title {
+.chat_window_title {
   text-align: center;
   color: #bcbdc0;
   font-size: 20px;
@@ -84,7 +84,7 @@ body {
   color: #c48843;
 }
 .messages .message.right .avatar {
-  background-image:url('user.png');
+  background-image:url('img/user.png');
   /*background-color: #33ACFF;*/
   float: right;
 }
@@ -156,6 +156,24 @@ body {
   position: relative;
   padding: 0 20px;
 }
+.bottom_wrapper .ASR_input_wrapper {
+  display: inline-block;
+  height: 50px;
+  border-radius: 25px;
+  border: 1px solid #bcbdc0;
+  width: calc(100% - 60px);
+  position: relative;
+  padding: 0 20px;
+}
+.bottom_wrapper .ASR_input_wrapper .message_input {
+  border: none;
+  height: 100%;
+  box-sizing: border-box;
+  width: calc(100% - 40px);
+  position: absolute;
+  outline-width: 0;
+  color: gray;
+}
 .bottom_wrapper .message_input_wrapper .message_input {
   border: none;
   height: 100%;
@@ -165,6 +183,20 @@ body {
   outline-width: 0;
   color: gray;
 }
+.bottom_wrapper .microphone {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  border-radius: 50px;
+  /*background-color: #a3d063;
+  border: 2px solid #a3d063;
+  color: #fff;*/
+  cursor: pointer;
+  transition: all 0.2s linear;
+  text-align: center;
+  float: right;
+}
+
 .bottom_wrapper .send_message {
   width: 140px;
   height: 50px;
@@ -226,4 +258,41 @@ body {
     bottom:2px;
     right:5px;
     text-align: right;
+}
+.menu_buttons_wrapper{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+.menu_buttons {
+  max-width: 500px;
+  width: 250px;
+  height: 50px;
+  display: block;
+  border-radius: 50px;
+  background-color: #a3d063;
+  border: 2px solid #a3d063;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  text-align: center;
+}
+.menu_buttons .text {
+  font-size: 18px;
+  font-weight: 300;
+  display: inline-block;
+  line-height: 48px;
+}
+.menu_buttons:hover {
+  color: #a3d063;
+  background-color: #fff;
+}
+.menu_title {
+  text-align: center;
+  color: #626160;
+  font-size: 30px;
+  margin-top: 10px;
 }
