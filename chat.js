@@ -308,10 +308,14 @@ function handle_server_message(message) {
 				window.speechSynthesis.speak(u);
 			}
             printMessage(json_message.sentence,'left');  
-            if (json_message.movie_poster){
-                console.log(json_message.movie_poster);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
-            }    
+            if (json_message.image){
+                console.log(json_message.image);
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
+            }
+			if (json_message.food_recipe){
+                console.log(json_message.food_recipe);
+				printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
+			}   			
         }
         if (message == config.disconnection_message){
             app_global.css_elm.setAttribute("href",app_global.css_val.error);
