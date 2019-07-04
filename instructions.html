@@ -1,0 +1,56 @@
+<head>
+    <title id="tab_title"></title>
+    <link href="chat.css" rel="stylesheet" id="bootstrap-css">
+    <link href="avatar.css" rel="stylesheet" id="error_css">
+</head>
+<body>
+    <div id="menu_page">
+        <div id="menu_title" class="menu_title"></div>
+    </div>
+    <div id="server_error" class="server_error" style="display:none;">   
+        It looks like our server is not connected.
+        <br>
+        We apologize for the inconvenience.
+    </div>
+    <div id="main_text" class="main_text" style="display:block">
+        You are hosting a movie night at your house tonight. 
+        A lot of your friends will be coming, and you have been so busy this week that you completely forgot to come up with some movie options for your friends to pick from.
+        <br>
+        <br>
+        Luckily, you remember that you downloaded AGENTNAME on your computer earlier that week. 
+        From what you've heard from your friends, AGENTNAME is knowledgable a bout movies, and can tell you the actors, genre, and plot associated with the movie she recommends.
+        <br>
+        <br>
+        Even though you've never interacted with her before, you know that she can help you find some movies to consider in time for your movie night.
+        <br>
+        <br>
+        <br>
+        When you are ready, click on the button below, and say "hello" to AGENTNAME to start the interaction! 
+        <br>
+        <br>
+        <i>Don't forget to push the microphne button before talking, and please be aware that can be a little slow sometimes.</i>
+        <br>
+        <br>
+        <br>
+        <br>
+        <center>
+            <div id="quit" class="menu_buttons" onclick="go_to_chat();">
+                <div class="icon"></div>
+                <div class="text">Next</div>
+            </div> 
+        </center>
+    </div>
+    <div class="project-presentation">
+        Conversational Agent developed by the <a href="http://social-lab.inp.gla.ac.uk/" title="SOCIAAL Group">SOCIAAL Group</a> at the <a href="https://www.gla.ac.uk/" title="University of Gloasgow">University of Glasgow</a>
+    </div>
+    <div class="credits">
+        <br>
+        Icons made by <a href="https://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> - are licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+        <br>
+        Chat design adapted from <a href="https://bootsnipp.com/snippets/ZlkBn" title="Bootsnipp">Chat by Pavel Komiagin</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js" type="text/javascript"></script>
+    <script src="chat.js"></script>
+    <script type="application/javascript" src="https://api.ipify.org?format=jsonp&callback=Connect"></script>
+</body>

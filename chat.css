@@ -183,6 +183,18 @@ body {
   outline-width: 0;
   color: gray;
 }
+.amt_id {
+  padding: 7px;
+  font-size: 16px;
+  border-width: 1px;
+  border-color: #777777;
+  background-color: #FFFFFF;
+  color: #000000;
+  border-style: solid;
+  border-radius: 20px;
+  box-shadow: 0px 0px 5px rgba(66,66,66,.75);
+  text-shadow: 0px 0px 0px rgba(66,66,66,.75);
+  }
 .bottom_wrapper .microphone {
   width: 50px;
   height: 50px;
@@ -244,20 +256,20 @@ body {
 }
 
 .project-presentation{
-  font-size:8px;
-    position:absolute;
-    bottom:2px;
-    left:5px;
+  font-size: calc(4px + 0.5vw);
+  position:absolute;
+  bottom:2px;
+  left:5px;
 }
 .disclaimer{
   color: red;
 }
 .credits{
-  font-size:8px;
-    position:absolute;
-    bottom:2px;
-    right:5px;
-    text-align: right;
+  font-size: calc(4px + 0.5vw);
+  position:absolute;
+  bottom:2px;
+  right:5px;
+  text-align: right;
 }
 .menu_buttons_wrapper{
   margin: 0;
@@ -266,6 +278,14 @@ body {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+.bottom_button_wrapper{
+  margin: 0;
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  /*-ms-transform: translate(-50%, -50%);*/
+  transform: translate(-50%, 0%);
 }
 .menu_buttons {
   max-width: 500px;
@@ -295,4 +315,63 @@ body {
   color: #626160;
   font-size: 30px;
   margin-top: 10px;
+}
+
+.server_error {
+  /*font-family: Verdana, Geneva, sans-serif;*/
+  font-size: 26px;
+  letter-spacing: -0.2px;
+  word-spacing: 2px;
+  color: #FF2424;
+  font-weight: 700;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  /*-ms-transform: translate(-50%, -50%);*/
+  transform: translate(-10%, -50%);
+}
+
+.main_text {
+  /*font-family: "Trebuchet MS", Helvetica, sans-serif;*/
+  font-size: calc(7px + min(1.5vw, 1vh));
+  letter-spacing: -0.2px;
+  word-spacing: 2px;
+  color: #757575;
+  font-weight: 400;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-align: left;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  /*-ms-transform: translate(-50%, -50%);*/
+  transform: translate(-10%, -50%);
+}
+.amtid_text {
+  /*font-family: "Trebuchet MS", Helvetica, sans-serif;*/
+  font-size: calc(7px + min(1.5vw, 1vh));
+  letter-spacing: -0.2px;
+  word-spacing: 2px;
+  color: #757575;
+  font-weight: 400;
+  text-decoration: none;
+  font-style: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /*-ms-transform: translate(-50%, -50%);*/
+  transform: translate(-50%, -50%);
 }

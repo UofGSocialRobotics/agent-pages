@@ -9,6 +9,7 @@ var config = {
     topic_subscribe : "UoGSR/ca/Server_out/",  
     connection_message : "new client connected",
     confirmed_connection_message : "Connection confirmed",
+    amtinfo_ack : "ACK AMT_INFO",
     disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
     turn_by_turn : true,
 	tts_activated : false,
@@ -88,8 +89,9 @@ class Timer {
 //--------------------------------------------------------------------------------------------------------------//
 
 var app_global = {
+    current_url : null,
     agent_name : "Cora",
-    use_broker : false,
+    use_broker : true,
     socket : false,
     connection_timeout : 5,
     error : false,
@@ -113,8 +115,14 @@ var app_global = {
         server_down : "Our server is disconnected, you cannot chat with AGENTNAME",
         client_disconnected : "You were disconnected, you cannot chat with AGENTNAME",
     },
+    amt_msg : {
+        "amt_id" : null,
+        "app_global.amt_msg" : null,
+    },
 };
 
+app_global.current_url = window.location.pathname;
+// console.log(current_url);
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           ON LOAD                                            --------//
@@ -126,16 +134,21 @@ var app_global = {
     
     $(function () {
         $('.send_message').click(function (e) {
-            return sendMessage();
+            return send_chat();
         });
         $('.message_input').keyup(function (e) {
             if (e.which === 13) {
-                return sendMessage();
+                return send_chat();
+            }
+        });
+        $('.amtid_input').keyup(function (e) {
+            if (e.which === 13) {
+                return send_amtid();
             }
         });
         setTimeout(function() {
             app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
-        }, 10)
+        }, 5)
         // sendMessage('Hello Philip! :)');
         // setTimeout(function () {
         //     return sendMessage('Hi Sandy! How are you?');
@@ -146,22 +159,81 @@ var app_global = {
     });
 }.call(this));
 
-
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
 
 function set_agent_name(){
     // console.log("set_agent_name");
     var title = "Chat with " + app_global.agent_name;
     var tab_title =  document.getElementById("tab_title");
     tab_title.innerHTML = title;
-    var chat_title =  document.getElementById("chat_title");
-    chat_title.innerHTML = title;
+    if (is_chat()){
+        var chat_title =  document.getElementById("chat_title");
+        chat_title.innerHTML = title;
+    }
     var menu_title =  document.getElementById("menu_title");
     menu_title.innerHTML = title;
     app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);
+
+    page = get_page();
+    if (page=="intro.html" || page == "instructions.html"){
+        var main_text =  document.getElementById("main_text").innerHTML;
+        main_text = replaceAll(main_text,"AGENTNAME",app_global.agent_name);
+        document.getElementById("main_text").innerHTML = main_text;
+    }
 }
 set_agent_name();
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                  WEBSITE NAVIGATION METHODS                                  --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function is_chat(){
+    return app_global.current_url.includes("chat.html");
+}
+
+function get_page(){
+    return app_global.current_url.split("/").pop();
+}
+
+function go_to_intro(){
+    location.replace("intro.html")
+}
+function go_to_instructions(){
+    location.replace("instructions.html")
+}
+function go_to_chat(){
+    location.replace("chat.html")
+}
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                          FORM METHODS                                        --------//
+//--------              ----> stuffs to save for amt (ID, questionnaire answers, etc.)                  --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function check_amtid(id){
+    //TODO
+    if (id) return true;
+    return false;
+}
+
+function send_amtid(){
+    var id = document.getElementById("amtid_input").value;
+    if (check_amtid(id)){
+        app_global.amt_msg["amt_id"] = id;
+        var msg = JSON.stringify(app_global.amt_msg);
+        console.log(msg);
+        res = send_message(msg);
+    }
+    else{
+        alert("Enter your AMT ID.");
+    }
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                            DECIDE IF USING WEBSOCKETS OR BORKER                              --------//
@@ -261,23 +333,11 @@ function Message(arg) {
     return this;
 };
 
-function sendMessage() {
+function send_chat() {
     msg = getMessageText();
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right');
-        var res = false;
-        if (app_global.use_broker){
-            res = MQTTSendMessage(msg);
-        }
-        else{
-            try{
-                res = send_message_ws(msg);
-            } catch(err) {
-                app_global.error = true;
-                server_not_connected_message();
-            }
-        }
-
+        res = send_message(msg);
         // Disable user input
         if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
             disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
@@ -289,6 +349,22 @@ function sendMessage() {
     }
 };
 
+function send_message(text){
+    console.log("in send Message")
+    var res = false;
+    if (app_global.use_broker){
+        res = MQTTSendMessage(text);
+    }
+    else{
+        try{
+            res = send_message_ws(msg);
+        } catch(err) {
+            app_global.error = true;
+            server_not_connected_message();
+        }
+    }
+}
+
 // called when a message arrives
 function handle_server_message(message) {
     // console.log("handle_server_message:"+message);
@@ -297,41 +373,46 @@ function handle_server_message(message) {
     if (app_global.error == false){
         // app_global.server_disconnected = false;
         app_global.disconnection_timer.stop();
-
-        if (message != config.confirmed_connection_message){
-            var json_message = JSON.parse(message); 
-			if (config.tts_activated) {
-                var u = new SpeechSynthesisUtterance(json_message.sentence);
-                u.onend = function (event) {
-                    change_microphone_image("wait");
-                };
-				window.speechSynthesis.speak(u);
-			}
-            printMessage(json_message.sentence,'left');  
-            if (json_message.image){
-                console.log(json_message.image);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
-            }
-			if (json_message.food_recipe){
-                console.log(json_message.food_recipe);
-				printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
-			}   			
-        }
-        if (message == config.disconnection_message){
-            app_global.css_elm.setAttribute("href",app_global.css_val.error);
-            disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
-        }
-        else{
-            if (config.turn_by_turn && config.asr_activated == false){
-                activate_user_input();
-            }
-            // else if (config.asr_activated){
-            //     change_microphone_image("wait");
-            // }
-        }
+        if (get_page() == "chat.html") handle_chat_message(message);
+        if (get_page() == "amtid.html" && config.amtinfo_ack == message) go_to_intro();
     }
     else {
         console.log("Error, will not print new messsage.")
+    }
+    
+}
+
+function handle_chat_message(message){
+    if (message != config.confirmed_connection_message){
+        var json_message = JSON.parse(message); 
+        if (config.tts_activated) {
+            var u = new SpeechSynthesisUtterance(json_message.sentence);
+            u.onend = function (event) {
+                change_microphone_image("wait");
+            };
+            window.speechSynthesis.speak(u);
+        }
+        printMessage(json_message.sentence,'left');  
+        if (json_message.image){
+            console.log(json_message.image);
+            printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
+        }
+        if (json_message.food_recipe){
+            console.log(json_message.food_recipe);
+            printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
+        }               
+    }
+    if (message == config.disconnection_message){
+        app_global.css_elm.setAttribute("href",app_global.css_val.error);
+        disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
+    }
+    else{
+        if (config.turn_by_turn && config.asr_activated == false){
+            activate_user_input();
+        }
+        // else if (config.asr_activated){
+        //     change_microphone_image("wait");
+        // }
     }
     setFocusToTextBox();
 }
@@ -416,20 +497,33 @@ function server_not_connected_message(){
     if ((app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error) && !app_global.error_message_posted){
         setTimeout(function(){
             console.log("Server disconnected error");
-            var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
-            printMessage(text,"left");
-            app_global.css_elm.setAttribute("href",app_global.css_val.error);
-            // app_global.last_message_send_at = getTimestamp();
-            app_global.error = true;
-            app_global.error_message_posted = true;
-            disable_user_input(app_global.user_input_placeholder_val.server_down);
-            console.log("Disable green_microphone button");
-            console.log(config.asr_activated);
-            if (config.asr_activated){
-                console.log("Disable green_microphone button");
-                change_microphone_image("off");
-            }
+            if (is_chat()) chat_error();
+            else page_error();
         },10);
+    }
+}
+
+function page_error(){
+    var text = "";
+    server_error = document.getElementById('server_error');
+    server_error.style.display = "block";
+    main_text_div = document.getElementById('main_text');
+    main_text_div.style.display = "none";
+}
+
+function chat_error(){
+    var text = "It looks like our server is not connected and we can't answer your question.<br>We apologize for the inconvenience.";
+    printMessage(text,"left");
+    app_global.css_elm.setAttribute("href",app_global.css_val.error);
+    // app_global.last_message_send_at = getTimestamp();
+    app_global.error = true;
+    app_global.error_message_posted = true;
+    disable_user_input(app_global.user_input_placeholder_val.server_down);
+    console.log("Disable green_microphone button");
+    console.log(config.asr_activated);
+    if (config.asr_activated){
+        console.log("Disable green_microphone button");
+        change_microphone_image("off");
     }
 }
 
@@ -505,7 +599,7 @@ function on_click_send(){
     // console.log(b.src);
     change_microphone_image("wait");
     console.log("sending msg");
-    sendMessage();
+    send_chat();
 }
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                       BROKER/MQTT COMMUNICATION                              --------//
@@ -523,11 +617,21 @@ function onConnect(){
     // app_global.disconnection_timer.init();
 }
 
+function makeid(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+}
+
 function MQTTConnect(jsonip){
     app_global.clientIP = jsonip.ip;
     console.log("Connecting to "+config.broker);
     var tmp = deleteAll(app_global.clientIP,".");
-    app_global.clientID = "c" + tmp; //+ new Date().getTime();
+    app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
     updateTopicSubscribe(app_global.clientID)
     app_global.mqtt = new Paho.MQTT.Client(config.broker, app_global.clientID);
     app_global.mqtt.onMessageArrived = onMessageArrived;
@@ -545,8 +649,13 @@ function MQTTSendMessage(msg){
 
     // Send message to broker
     var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
+    console.log("MQTTSendMessage");
+    console.log(app_global.clientID+": "+msg);
     message.destinationName = config.topic_publish;
+    console.log(config.topic_publish);
+    console.log(app_global.mqtt.isConnected());
     app_global.mqtt.send(message);
+
     app_global.disconnection_timer.init();
 
     //Print in console
@@ -558,6 +667,7 @@ function MQTTSendMessage(msg){
 function onMessageArrived(message) {
     console.log("onMessageArrived:"+message.payloadString);
     handle_server_message(message.payloadString);
+    console.log(app_global.mqtt.isConnected());
 }
 
 //--------------------------------------------------------------------------------------------------------------//
