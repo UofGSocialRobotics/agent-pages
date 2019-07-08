@@ -129,19 +129,19 @@ var QUESTIONS = {
     "question1" : "1) I felt I was in sync with AGENTNAME.",
     "question2" : "2) I was able to say everything I wanted to say during the interaction.",
     "question3" : "3) AGENTNAME was interested in what I was saying.",
-    "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
-    "question5" : "5) AGENTNAME was warm and caring.",
-    "question6" : "6) AGENTNAME was friendly to me.",
-    "question7" : "7) AGENTNAME and I established rapport.",
-    "question8" : "8) I felt I had no connection with AGENTNAME",
-    "question9" : "9) The movies recommended to me during this interaction matched my interests.",
-    "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-    "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
-    "question12" : "12) I easily found the movies I was looking for.",
-    "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
-    "question14" : "14) I was satisfied with the movies recommended to me.",
-    "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
-    "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+    // "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
+    // "question5" : "5) AGENTNAME was warm and caring.",
+    // "question6" : "6) AGENTNAME was friendly to me.",
+    // "question7" : "7) AGENTNAME and I established rapport.",
+    // "question8" : "8) I felt I had no connection with AGENTNAME",
+    // "question9" : "9) The movies recommended to me during this interaction matched my interests.",
+    // "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
+    // "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
+    // "question12" : "12) I easily found the movies I was looking for.",
+    // "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
+    // "question14" : "14) I was satisfied with the movies recommended to me.",
+    // "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
+    // "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -236,8 +236,44 @@ function go_to_chat(){
 function go_to_questionnaire(){
     location.replace("questionnaire.html")
 }
+function go_to_thanks(){
+    location.replace("thanks.html")
+}
 
 
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                     QUESTIONNAIRE METHODS                                    --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function get_questionnaire_answers(){
+    var answers = {};
+    var n_question = Object.keys(QUESTIONS).length;
+    var count_questions = 0;
+    for (key in QUESTIONS){
+        var radios = document.getElementsByName('likert_'+key);
+        count_questions++;
+        for (var i = 0, length = radios.length; i < length; i++){
+            if (radios[i].checked){
+                // do whatever you want with the checked radio
+                a = radios[i].value.slice(-1);
+                answers[key] = a;
+                // console.log(a);
+                // only one radio can be logically checked, don't check the rest
+                break;
+            }
+        }
+        if (count_questions == n_question){
+            if (Object.keys(answers).length == n_question){
+                console.log(answers);
+                // console.log(answers.length, QUESTIONS.length);  
+                go_to_thanks();
+            }
+            else{
+                alert("You must answer all questions.")
+            }
+        }
+    }
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                          FORM METHODS                                        --------//
@@ -654,13 +690,13 @@ function create_likert_scale(q_id, q_text){
     html = "<label class=\"statement\">"+replace_agent_name(q_text)+"</label><ul class='likert'>";
     for (i = 1; i <= app_global.points_likert_scale; i++) {
         console.log(i);
-        if (i == 1) html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"><label>totally disagree</label></li>";
+        if (i == 1) html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>totally disagree</label></li>";
         else if (i == app_global.points_likert_scale) {
-            html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"><label>totally agree</label></li></ul>";
+            html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>totally agree</label></li></ul>";
             console.log(questionnaire.innerHTML);
             questionnaire.innerHTML += html;
         }
-        else html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"></li>";
+        else html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"></li>";
     }
 }
 

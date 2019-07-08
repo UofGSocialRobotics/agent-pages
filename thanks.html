@@ -6,6 +6,7 @@
 <body>
     <div id="page-container">
         <div id="content-wrap">
+            <div style="color:#FFFFFF;font-size:1px">.</div>
             <div id="menu_page">
                 <div id="menu_title" class="menu_title"></div>
             </div>
@@ -15,33 +16,7 @@
                 <br>
                 We apologize for the inconvenience.
             </div> 
-            <div id="questionnaire_wrap">
-                <div class="wrap">
-                    <form id="questionnaire" action="">
-                        <script>
-                            function create_questionnaire(){
-                                for (var key in QUESTIONS){
-                                    console.log(key,QUESTIONS[key]);
-                                    create_likert_scale(key,QUESTIONS[key]);
-                                }
-                            }
-                            setTimeout(create_questionnaire, 250);
-                        </script>
-                      <!--   <div class="buttons">
-                            <button class="clear">Clear</button>
-                            <button class="submit">Submit</button>
-                        </div> -->
-                    </form>
-                </div>
-                <center>
-                    <div id="quit" class="menu_buttons" onclick="get_questionnaire_answers();">
-                        <div class="icon"></div>
-                        <div class="text">Submit</div>
-                    </div> 
-                </center>
-                <br><br>
-            </div>
-        </div>
+            Thank you for your participation.
         <footer class="footer">
             <div class="project-presentation">
                 Conversational Agent developed by the <a href="http://social-lab.inp.gla.ac.uk/" title="SOCIAAL Group">SOCIAAL Group</a> at the <a href="https://www.gla.ac.uk/" title="University of Gloasgow">University of Glasgow</a>
