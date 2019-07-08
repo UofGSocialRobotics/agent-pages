@@ -233,6 +233,10 @@ function go_to_instructions(){
 function go_to_chat(){
     location.replace("chat.html")
 }
+function go_to_questionnaire(){
+    location.replace("questionnaire.html")
+}
+
 
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -397,48 +401,62 @@ function handle_server_message(message) {
     if (app_global.error == false){
         // app_global.server_disconnected = false;
         app_global.disconnection_timer.stop();
-        if (get_page() == "chat.html") handle_chat_message(message);
+        if (get_page() == "chat.html") {
+            try{
+                handle_chat_message(message);
+            }
+            catch(error) {
+                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_chat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                console.log(error);
+            }
+        }
         if (get_page() == "amtid.html" && config.amtinfo_ack == message) go_to_intro();
     }
     else {
-        console.log("Error, will not print new messsage.")
+        console.log("Error, will not print new message.")
     }
     
 }
 
 function handle_chat_message(message){
-    if (message != config.confirmed_connection_message){
-        var json_message = JSON.parse(message); 
-        if (config.tts_activated) {
-            var u = new SpeechSynthesisUtterance(json_message.sentence);
-            u.onend = function (event) {
-                change_microphone_image("wait");
-            };
-            window.speechSynthesis.speak(u);
-        }
-        printMessage(json_message.sentence,'left');  
-        if (json_message.image){
-            console.log(json_message.image);
-            printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
-        }
-        if (json_message.food_recipe){
-            console.log(json_message.food_recipe);
-            printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
-        }               
-    }
     if (message == config.disconnection_message){
         app_global.css_elm.setAttribute("href",app_global.css_val.error);
         disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
     }
-    else{
-        if (config.turn_by_turn && config.asr_activated == false){
-            activate_user_input();
+    else {
+        if (message != config.confirmed_connection_message){
+            var json_message = JSON.parse(message); 
+            if (config.tts_activated) {
+                var u = new SpeechSynthesisUtterance(json_message.sentence);
+                u.onend = function (event) {
+                    change_microphone_image("wait");
+                };
+                window.speechSynthesis.speak(u);
+            }
+            printMessage(json_message.sentence,'left');  
+            if (json_message.image){
+                console.log(json_message.image);
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
+            }
+            if (json_message.food_recipe){
+                console.log(json_message.food_recipe);
+                printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
+            }    
+            if (agent_says_bye(json_message)){
+                            terminate_conversation();
+            }
+            else if (config.turn_by_turn && config.asr_activated == false){
+                activate_user_input();
+                setFocusToTextBox();
+            }           
         }
-        // else if (config.asr_activated){
-        //     change_microphone_image("wait");
-        // }
     }
-    setFocusToTextBox();
+}
+
+function agent_says_bye(json_message){
+    // return true;
+    if (json_message.intent && json_message.intent == "bye") return true;
+    else return false;
 }
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -644,6 +662,16 @@ function create_likert_scale(q_id, q_text){
         }
         else html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"></li>";
     }
+}
+
+function terminate_conversation(){
+    console.log("conversation is over");
+    var questionnaire_button = document.getElementById("go_to_questionnaire");
+    questionnaire_button.style.display = "block";
+    var message_speech = document.getElementById("message_speech"); 
+    var message_text = document.getElementById("message_text");
+    message_speech.style.display = "none";
+    message_text.style.display = "none";
 }
 
 //--------------------------------------------------------------------------------------------------------------//
