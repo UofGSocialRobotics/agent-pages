@@ -119,10 +119,30 @@ var app_global = {
         "amt_id" : null,
         "app_global.amt_msg" : null,
     },
+    points_likert_scale : 5,
 };
 
 app_global.current_url = window.location.pathname;
 // console.log(current_url);
+
+var QUESTIONS = {
+    "question1" : "1) I felt I was in sync with AGENTNAME.",
+    "question2" : "2) I was able to say everything I wanted to say during the interaction.",
+    "question3" : "3) AGENTNAME was interested in what I was saying.",
+    "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
+    "question5" : "5) AGENTNAME was warm and caring.",
+    "question6" : "6) AGENTNAME was friendly to me.",
+    "question7" : "7) AGENTNAME and I established rapport.",
+    "question8" : "8) I felt I had no connection with AGENTNAME",
+    "question9" : "9) The movies recommended to me during this interaction matched my interests.",
+    "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
+    "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
+    "question12" : "12) I easily found the movies I was looking for.",
+    "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
+    "question14" : "14) I was satisfied with the movies recommended to me.",
+    "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
+    "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+};
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           ON LOAD                                            --------//
@@ -161,6 +181,10 @@ app_global.current_url = window.location.pathname;
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function replace_agent_name(text){
+    return replaceAll(text,"AGENTNAME",app_global.agent_name);
 }
 
 function set_agent_name(){
@@ -508,7 +532,11 @@ function page_error(){
     server_error = document.getElementById('server_error');
     server_error.style.display = "block";
     main_text_div = document.getElementById('main_text');
-    main_text_div.style.display = "none";
+    if (main_text_div) main_text_div.style.display = "none";
+    amtid_text_div = document.getElementById('amtid_text');
+    if (amtid_text_div) amtid_text_div.style.display = "none";
+    questionnaire_div = document.getElementById('questionnaire_wrap');
+    if (questionnaire_div) questionnaire_div.style.display = "none";
 }
 
 function chat_error(){
@@ -601,6 +629,23 @@ function on_click_send(){
     console.log("sending msg");
     send_chat();
 }
+
+
+function create_likert_scale(q_id, q_text){
+    questionnaire = document.getElementById("questionnaire");
+    html = "<label class=\"statement\">"+replace_agent_name(q_text)+"</label><ul class='likert'>";
+    for (i = 1; i <= app_global.points_likert_scale; i++) {
+        console.log(i);
+        if (i == 1) html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"><label>totally disagree</label></li>";
+        else if (i == app_global.points_likert_scale) {
+            html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"><label>totally agree</label></li></ul>";
+            console.log(questionnaire.innerHTML);
+            questionnaire.innerHTML += html;
+        }
+        else html += "<li><input type=\"radio\" name=\"likert\" value=\""+q_id+"_"+i+"\"></li>";
+    }
+}
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                       BROKER/MQTT COMMUNICATION                              --------//
 //--------------------------------------------------------------------------------------------------------------//
