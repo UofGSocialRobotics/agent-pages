@@ -7,7 +7,7 @@ var config = {
     main_topic : "UoGSR/ca/",
     topic_publish : "UoGSR/ca/Client/",
     topic_subscribe : "UoGSR/ca/Server_out/",  
-    connection_message : "new client connected",
+    connection_message : "client connected",
     confirmed_connection_message : "Connection confirmed",
     amtinfo_ack : "ACK AMT_INFO",
     disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
@@ -97,7 +97,7 @@ var app_global = {
     error : false,
     error_message_posted : false,
     resp_div : document.getElementById("response"),
-    clientIP : false,
+    // clientIP : false,
     // server_disconnected : true,
     // last_message_send_at : getTimestamp(),
     disconnection_timer : new Timer(),
@@ -115,14 +115,11 @@ var app_global = {
         server_down : "Our server is disconnected, you cannot chat with AGENTNAME",
         client_disconnected : "You were disconnected, you cannot chat with AGENTNAME",
     },
-    amt_msg : {
-        "amt_id" : null,
-        "app_global.amt_msg" : null,
-    },
+    amt_msg : "for_data_collection",
     points_likert_scale : 5,
 };
 
-app_global.current_url = window.location.pathname;
+app_global.current_url = window.location.href;
 // console.log(current_url);
 
 var QUESTIONS = {
@@ -217,6 +214,7 @@ set_agent_name();
 //--------------------------------------------------------------------------------------------------------------//
 
 function is_chat(){
+    // console.log(app_global.current_url);
     return app_global.current_url.includes("chat.html");
 }
 
@@ -225,22 +223,29 @@ function get_page(){
 }
 
 function go_to_intro(){
-    location.replace("intro.html")
+    location.replace("intro.html?clientid="+app_global.clientID)
 }
 function go_to_instructions(){
-    location.replace("instructions.html")
+    location.replace("instructions.html?clientid="+app_global.clientID)
 }
 function go_to_chat(){
-    location.replace("chat.html")
+    location.replace("chat.html?clientid="+app_global.clientID)
 }
 function go_to_questionnaire(){
-    location.replace("questionnaire.html")
+    location.replace("questionnaire.html?clientid="+app_global.clientID)
 }
 function go_to_thanks(){
-    location.replace("thanks.html")
+    location.replace("thanks.html?clientid="+app_global.clientID)
 }
 
 
+function get_client_id(){
+    var splited_url = app_global.current_url.split("clientid="); //window.location.href
+    if (splited_url.length > 1) app_global.clientID = splited_url[1];
+    else app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
+    console.log(app_global.clientID);
+}
+get_client_id();
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -265,8 +270,10 @@ function get_questionnaire_answers(){
         if (count_questions == n_question){
             if (Object.keys(answers).length == n_question){
                 console.log(answers);
+                var to_send = {};
+                to_send[app_global.amt_msg] = {"questionnaire_answers" : answers};
+                send_message(JSON.stringify(to_send), go_to_thanks);
                 // console.log(answers.length, QUESTIONS.length);  
-                go_to_thanks();
             }
             else{
                 alert("You must answer all questions.")
@@ -289,8 +296,12 @@ function check_amtid(id){
 function send_amtid(){
     var id = document.getElementById("amtid_input").value;
     if (check_amtid(id)){
-        app_global.amt_msg["amt_id"] = id;
-        var msg = JSON.stringify(app_global.amt_msg);
+        // app_global.amt_msg["amt_id"] = id;
+        var key = app_global.amt_msg;
+        var id_dict = {};
+        id_dict[key] = {"amt_id" : id};
+        console.log(id_dict);
+        var msg = JSON.stringify(id_dict);
         console.log(msg);
         res = send_message(msg);
     }
@@ -348,6 +359,7 @@ function init_websocket(){
     app_global.socket = new WebSocket('ws://127.0.0.1:9000/');
     app_global.socket.onerror = function(event){
         app_global.error = true;
+        console.log("init_websocket set app_global.error to true");
         server_not_connected_message();
     }
     app_global.socket.onopen = function(event){
@@ -367,11 +379,17 @@ function isOpen(ws) {
 
 function send_message_ws(msg){
     if (isOpen(app_global.socket)){
-        app_global.socket.send(msg);
+        json_msg = {};
+        json_msg["client_id"] = app_global.clientID;
+        json_msg["msg_text"] = msg;
+        json_string = JSON.stringify(json_msg);
+        console.log(json_string);
+        app_global.socket.send(json_string);
         return true;
     }
     else{
         app_global.error = true;
+        console.log("send_message_ws set app_global.error to true");
         server_not_connected_message();
         return false;
     }
@@ -413,7 +431,7 @@ function send_chat() {
     }
 };
 
-function send_message(text){
+function send_message(text, callback = null){
     console.log("in send Message")
     var res = false;
     if (app_global.use_broker){
@@ -421,12 +439,16 @@ function send_message(text){
     }
     else{
         try{
-            res = send_message_ws(msg);
+            res = send_message_ws(text);
         } catch(err) {
+            console.log(err);
             app_global.error = true;
+            console.log("send_message set app_global.error to true");
             server_not_connected_message();
         }
     }
+    console.log("sent "+text);
+    typeof callback == "function" && callback();
 }
 
 // called when a message arrives
@@ -437,7 +459,7 @@ function handle_server_message(message) {
     if (app_global.error == false){
         // app_global.server_disconnected = false;
         app_global.disconnection_timer.stop();
-        if (get_page() == "chat.html") {
+        if (is_chat()) {
             try{
                 handle_chat_message(message);
             }
@@ -455,6 +477,7 @@ function handle_server_message(message) {
 }
 
 function handle_chat_message(message){
+    console.log("handle_chat_message");
     if (message == config.disconnection_message){
         app_global.css_elm.setAttribute("href",app_global.css_val.error);
         disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
@@ -575,6 +598,8 @@ function server_not_connected_message(){
     if ((app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error) && !app_global.error_message_posted){
         setTimeout(function(){
             console.log("Server disconnected error");
+            console.log("time out?" + app_global.disconnection_timer.timeElapsed > app_global.connection_timeout);
+            console.log("app_global.error?" + app_global.error);
             if (is_chat()) chat_error();
             else page_error();
         },10);
@@ -599,6 +624,7 @@ function chat_error(){
     app_global.css_elm.setAttribute("href",app_global.css_val.error);
     // app_global.last_message_send_at = getTimestamp();
     app_global.error = true;
+    console.log("chat error set app_global.error to true");
     app_global.error_message_posted = true;
     disable_user_input(app_global.user_input_placeholder_val.server_down);
     console.log("Disable green_microphone button");
@@ -689,11 +715,10 @@ function create_likert_scale(q_id, q_text){
     questionnaire = document.getElementById("questionnaire");
     html = "<label class=\"statement\">"+replace_agent_name(q_text)+"</label><ul class='likert'>";
     for (i = 1; i <= app_global.points_likert_scale; i++) {
-        console.log(i);
         if (i == 1) html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>totally disagree</label></li>";
         else if (i == app_global.points_likert_scale) {
             html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>totally agree</label></li></ul>";
-            console.log(questionnaire.innerHTML);
+            // console.log(questionnaire.innerHTML);
             questionnaire.innerHTML += html;
         }
         else html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"></li>";
@@ -737,10 +762,8 @@ function makeid(length) {
 }
 
 function MQTTConnect(jsonip){
-    app_global.clientIP = jsonip.ip;
+    // app_global.clientIP = jsonip.ip;
     console.log("Connecting to "+config.broker);
-    var tmp = deleteAll(app_global.clientIP,".");
-    app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
     updateTopicSubscribe(app_global.clientID)
     app_global.mqtt = new Paho.MQTT.Client(config.broker, app_global.clientID);
     app_global.mqtt.onMessageArrived = onMessageArrived;
