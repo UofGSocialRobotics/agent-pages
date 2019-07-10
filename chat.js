@@ -91,7 +91,7 @@ class Timer {
 var app_global = {
     current_url : null,
     agent_name : "Cora",
-    use_broker : true,
+    use_broker : false,
     socket : false,
     connection_timeout : 5,
     error : false,
