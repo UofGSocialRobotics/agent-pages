@@ -1,0 +1,60 @@
+mixin page(connect=false, chat_window=false) 
+    doctype html
+    html
+        head
+            title(id="tab_title")
+            link(href="chat.css", rel="stylesheet", id="bootstrap-css")
+            link(href="avatar.css", rel="stylesheet", id="error_css")
+
+        body(onload=connect ? "on_load();Connect();" : "on_load();")
+            div(class="site-wrapper")
+                //- script
+                //-     | var b = !{JSON.stringify(title_bool)};
+                //-     | console.log("title_bool");
+                //-     | console.log(b);
+                if chat_window == false
+                    header
+                        div(id="page_title")
+                main
+                    div(id="server_error", style="display:none;")
+                        | It looks like our server is not connected.
+                        | We apologize for the inconvenience.
+                    if chat_window
+                        block
+                    else
+                        div(id="main_text", style="display:block;")
+                            block
+                footer
+                    table(style="width:100%;")
+                        colgroup
+                            col(style="width=50%")
+                            col(style="width=50%")
+                        tr
+                            th(style="text-align:left;vertical-align:bottom;")
+                                div(class="project-presentation")
+                                    br
+                                    br
+                                    | Conversational Agent developed by the 
+                                    a(href="http://social-lab.inp.gla.ac.uk/", title="SOCIAAL Group") SOCIAAL Group
+                                    | &nbsp at the &nbsp
+                                    a(href="https://www.gla.ac.uk/", title="University of Gloasgow") University of Gloasgow
+                                    br
+                                    | Contact us at <a href = "mailto: uofg.virtualagents@gmail.com">uofg.virtualagents@gmail.com</a>
+                            th(style="text-align:right;vertical-align:bottom;")
+                                div(class="credits")
+                                    br
+                                    br
+                                    | Icons made by 
+                                    a(href="https://www.freepik.com/", title="Freepik") Freepik
+                                    | &nbsp from &nbsp
+                                    a(href="https://www.flaticon.com/", title="flaticon") www.flaticon.com
+                                    | &nbsp are licensed by &nbsp
+                                    a(href="http://creativecommons.org/licenses/by/3.0/", title="Creative Commons BY 3.0") CC 3.0 BY
+                                    br
+                                    | Chat design adapted from 
+                                    a(href="https://bootsnipp.com/snippets/ZlkBn", title="Bootsnipp") Chat by Pavel Komiagin
+                    
+
+            script(src="https://code.jquery.com/jquery-1.11.1.min.js")
+            script(src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js")
+            script(src="chat.js" )

@@ -1,0 +1,10 @@
+mixin navigation_button(text, onclick_function, style_display="display:block;")    
+        div(class="page_buttons", onclick=onclick_function, style=style_display)
+            div(class="icon")
+            div(class="text")=text
+
+mixin next_page(next_function) 
+    center
+        + navigation_button("Next",next_function)
+
+

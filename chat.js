@@ -14,40 +14,50 @@ var config = {
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
+    use_broker : false,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                         ACCESS CHAT WINDOW                                   --------//
 //--------------------------------------------------------------------------------------------------------------//
-function accessChatWindow(tts_asr){
+function accessChatWindow(){
     var message_speech = document.getElementById("message_speech"); 
     var message_text = document.getElementById("message_text");
-    if (tts_asr){
-        config.tts_activated = true;
-        config.asr_activated = true;
+    // if (tts_asr){
+    //     config.tts_activated = true;
+    //     config.asr_activated = true;
+    console.log(config.asr_activated ==true);
+    console.log(typeof config.asr_activated);
+    if(config.asr_activated == true && config.tts_activated == true){
         console.log("Will be using TTS and ASR.");
         message_speech.style.display = "block";
         message_text.style.display = "none";
     }
     else{
+        console.log("Will NOT be using TTS and ASR.");
         message_speech.style.display = "none";
         message_text.style.display = "block";
     }
     if(app_global.error){
         change_microphone_image("off");
     }
-    var menu_page = document.getElementById("menu_page");
-    menu_page.style.display = "none";
-    var chat_window = document.getElementById("chat_window");
-    chat_window.style.display = "block";
+    // var page_title = document.getElementById("page_title");
+    // page_title.style.display = "none";
+    // var chat_window = document.getElementById("chat_window");
+    // chat_window.style.display = "block";
 
 
-    setTimeout(function() {
-        set_agent_name();
-    }, 100)
+    // setTimeout(function() {
+    //     set_agent_name();
+    // }, 100)
+    return callback_accessChatWindow();
     
 }
 
+function callback_accessChatWindow(){
+    set_agent_name();
+    keyboard_functions();
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                         CLASS DEFINITION                                     --------//
@@ -91,7 +101,6 @@ class Timer {
 var app_global = {
     current_url : null,
     agent_name : "Cora",
-    use_broker : false,
     socket : false,
     connection_timeout : 5,
     error : false,
@@ -117,28 +126,33 @@ var app_global = {
     },
     amt_msg : "for_data_collection",
     points_likert_scale : 5,
+    q_id : false,
 };
 
 app_global.current_url = window.location.href;
 // console.log(current_url);
 
 var QUESTIONS = {
-    "question1" : "1) I felt I was in sync with AGENTNAME.",
-    "question2" : "2) I was able to say everything I wanted to say during the interaction.",
-    "question3" : "3) AGENTNAME was interested in what I was saying.",
-    // "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
-    // "question5" : "5) AGENTNAME was warm and caring.",
-    // "question6" : "6) AGENTNAME was friendly to me.",
-    // "question7" : "7) AGENTNAME and I established rapport.",
-    // "question8" : "8) I felt I had no connection with AGENTNAME",
-    // "question9" : "9) The movies recommended to me during this interaction matched my interests.",
-    // "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-    // "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
-    // "question12" : "12) I easily found the movies I was looking for.",
-    // "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
-    // "question14" : "14) I was satisfied with the movies recommended to me.",
-    // "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
-    // "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+    "q1": {
+        "question1" : "1) I felt I was in sync with AGENTNAME.",
+        "question2" : "2) I was able to say everything I wanted to say during the interaction.",
+        "question3" : "3) AGENTNAME was interested in what I was saying.",
+        "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
+        "question5" : "5) AGENTNAME was warm and caring.",
+        "question6" : "6) AGENTNAME was friendly to me.",
+        "question7" : "7) AGENTNAME and I established rapport.",
+        "question8" : "8) I felt I had no connection with AGENTNAME",
+    },
+    "q2" : {
+        "question9" : "9) The movies recommended to me during this interaction matched my interests.",
+        "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
+        "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
+        "question12" : "12) I easily found the movies I was looking for.",
+        "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
+        "question14" : "14) I was satisfied with the movies recommended to me.",
+        "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
+        "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+    }
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -146,35 +160,25 @@ var QUESTIONS = {
 //--------------------------------------------------------------------------------------------------------------//
 
 
-(function () {
+function keyboard_functions() {
     var Message;
-    
-    $(function () {
-        $('.send_message').click(function (e) {
-            return send_chat();
-        });
-        $('.message_input').keyup(function (e) {
-            if (e.which === 13) {
-                return send_chat();
-            }
-        });
-        $('.amtid_input').keyup(function (e) {
-            if (e.which === 13) {
-                return send_amtid();
-            }
-        });
-        setTimeout(function() {
-            app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
-        }, 5)
-        // sendMessage('Hello Philip! :)');
-        // setTimeout(function () {
-        //     return sendMessage('Hi Sandy! How are you?');
-        // }, 1000);
-        // return setTimeout(function () {
-        //     return sendMessage('I\'m fine, thank you!');
-        // }, 2000);
+    console.log("in keyboard_functions");
+    $('.send_message').on("click", function (e) {
+        return send_chat();
     });
-}.call(this));
+
+    $('.message_input').keyup(function (e) {
+        if (e.which === 13) {
+            return send_chat();
+        }
+    });
+    $('#amtid_input').keyup(function (e) {
+        if (e.which === 13) {
+            return send_amtid();
+        }
+    });
+}
+
 
 function replaceAll(str, find, replace) {
     return str.replace(new RegExp(find, 'g'), replace);
@@ -193,8 +197,10 @@ function set_agent_name(){
         var chat_title =  document.getElementById("chat_title");
         chat_title.innerHTML = title;
     }
-    var menu_title =  document.getElementById("menu_title");
-    menu_title.innerHTML = title;
+    else{
+        var page_title =  document.getElementById("page_title");
+        page_title.innerHTML = title + "<br><br>";
+    }
     app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);
@@ -206,7 +212,67 @@ function set_agent_name(){
         document.getElementById("main_text").innerHTML = main_text;
     }
 }
-set_agent_name();
+
+function remove_other_var(s){
+    var s_splited = s.split("?");
+    return s_splited[0];
+}
+
+function get_client_id(){
+    var splited_url = app_global.current_url.split("clientid="); //window.location.href
+    if (splited_url.length > 1) app_global.clientID = remove_other_var(splited_url[1]);
+    else app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
+    console.log(app_global.clientID);
+}
+
+function get_tts_asr(callback){
+    page = get_page();
+    if (page=="chat.html"){
+        var splited_url = app_global.current_url.split("tts_asr="); //window.location.href
+        if (splited_url.length > 1) {
+            var asrtts_bool= (remove_other_var(splited_url[1]) == "true");
+            config.tts_activated = asrtts_bool;
+            config.asr_activated = asrtts_bool;
+        }
+        console.log("tts_ars activated = "+config.asr_activated.toString());
+        callback();
+    }
+}
+
+function get_q_id(callback){
+    console.log("in get_q_id");
+    page = get_page();
+    if (page=="questionnaire.html"){
+        var splited_url = app_global.current_url.split("q_id="); //window.location.href
+        if (splited_url.length > 1) {
+            var q_id = remove_other_var(splited_url[1]);
+            if(q_id in QUESTIONS){
+                app_global.q_id = q_id;
+                console.log("Questionnaire id = "+app_global.q_id);
+                callback();
+            }
+            else q_id_error("q_id "+q_id+" does not exists.");
+        }
+        else q_id_error("No q_id found.");
+    }
+    else q_id_error();
+}
+
+function q_id_error(details=false){
+    if (details != false) console.log(details);
+    console.log('ERROR while reading q_id');
+}
+
+function on_load(){
+    keyboard_functions();
+    set_agent_name();
+    get_client_id();
+    app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
+    get_tts_asr(accessChatWindow);
+    page = get_page();
+    if (page == "questionnaire.html") get_q_id(create_questionnaire);
+    if (page == "thanks.html") amt_validation_code();
+}
 
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -219,7 +285,7 @@ function is_chat(){
 }
 
 function get_page(){
-    return app_global.current_url.split("/").pop();
+    return app_global.current_url.split("/").pop().split("?")[0];
 }
 
 function go_to_intro(){
@@ -228,33 +294,32 @@ function go_to_intro(){
 function go_to_instructions(){
     location.replace("instructions.html?clientid="+app_global.clientID)
 }
-function go_to_chat(){
-    location.replace("chat.html?clientid="+app_global.clientID)
+function go_to_chat_setup(){
+    location.replace("chat_setup.html?clientid="+app_global.clientID)
 }
-function go_to_questionnaire(){
-    location.replace("questionnaire.html?clientid="+app_global.clientID)
+function go_to_chat(tts_asr){
+    location.replace("chat.html?clientid="+app_global.clientID+"?tts_asr="+tts_asr.toString())
+}
+function go_to_questionnaire(x){
+    location.replace("questionnaire.html?clientid="+app_global.clientID+"?q_id="+x)
+}
+function go_to_page_after_questionnaire(){
+    if (app_global.q_id == "q1") go_to_questionnaire("q2");
+    else if (app_global.q_id == "q2") go_to_thanks();
+    else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
 }
 function go_to_thanks(){
     location.replace("thanks.html?clientid="+app_global.clientID)
 }
-
-
-function get_client_id(){
-    var splited_url = app_global.current_url.split("clientid="); //window.location.href
-    if (splited_url.length > 1) app_global.clientID = splited_url[1];
-    else app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
-    console.log(app_global.clientID);
-}
-get_client_id();
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
 
 function get_questionnaire_answers(){
     var answers = {};
-    var n_question = Object.keys(QUESTIONS).length;
+    var n_question = Object.keys(QUESTIONS[app_global.q_id]).length;
     var count_questions = 0;
-    for (key in QUESTIONS){
+    for (key in QUESTIONS[app_global.q_id]){
         var radios = document.getElementsByName('likert_'+key);
         count_questions++;
         for (var i = 0, length = radios.length; i < length; i++){
@@ -272,7 +337,7 @@ function get_questionnaire_answers(){
                 console.log(answers);
                 var to_send = {};
                 to_send[app_global.amt_msg] = {"questionnaire_answers" : answers};
-                send_message(JSON.stringify(to_send), go_to_thanks);
+                send_message(JSON.stringify(to_send), go_to_page_after_questionnaire);
                 // console.log(answers.length, QUESTIONS.length);  
             }
             else{
@@ -310,6 +375,7 @@ function send_amtid(){
     }
 }
 
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                            DECIDE IF USING WEBSOCKETS OR BORKER                              --------//
 //-------- > Currently you can use websockets only when running the client and the server on localhost  --------//
@@ -319,16 +385,16 @@ function send_amtid(){
 function Connect(jsonip){
     switch(window.location.protocol) {
         case 'http:':
-            app_global.use_broker = true;
+            config.use_broker = true;
             MQTTConnect(jsonip);
             break;
         case 'https:':
         //remote file over http or https
-            app_global.use_broker = true;
+            config.use_broker = true;
             MQTTConnect(jsonip);
             break;
         case 'file:':
-            if(app_global.use_broker==false){
+            if(config.use_broker==false){
                 console.log("We re local - will not be using broker.");
                 console.log("If you want to use the broker, set use_broker to true in app_global.");
                 try{
@@ -345,7 +411,7 @@ function Connect(jsonip){
             }
             break;
         default: 
-            app_global.use_broker = true;
+            config.use_broker = true;
             MQTTConnect(jsonip);
     }
 }
@@ -416,7 +482,9 @@ function Message(arg) {
 };
 
 function send_chat() {
+    // console.log("debug: in send chat");
     msg = getMessageText();
+    // console.log(app_global.user_wait,msg,app_global.error);
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right');
         res = send_message(msg);
@@ -432,9 +500,9 @@ function send_chat() {
 };
 
 function send_message(text, callback = null){
-    console.log("in send Message")
+    // console.log("in send Message")
     var res = false;
-    if (app_global.use_broker){
+    if (config.use_broker){
         res = MQTTSendMessage(text);
     }
     else{
@@ -557,11 +625,15 @@ function activate_user_input(){
 }
 
 function getMessageText(){
-    if (config.asr_activated){
+    if (config.asr_activated == true){
+        console.log("Should we really be here????");
         return document.getElementById("transcript").value;
     }
     else{
-        return document.getElementById("user_text_input").value;
+        var user_text_input = document.getElementById("user_text_input");
+        // console.log(user_text_input);
+        // console.log(user_text_input.value);
+        return user_text_input.value;
     }
     // var $message_input;
     // $message_input = $('.message_input');
@@ -710,6 +782,15 @@ function on_click_send(){
     send_chat();
 }
 
+function create_questionnaire(){
+    if (app_global.q_id in QUESTIONS){
+        for (var key in QUESTIONS[app_global.q_id]){
+            // console.log(key,QUESTIONS[key]);
+            create_likert_scale(key,QUESTIONS[app_global.q_id][key]);
+        }
+    }
+    else q_id_error();
+}
 
 function create_likert_scale(q_id, q_text){
     questionnaire = document.getElementById("questionnaire");
@@ -841,4 +922,14 @@ function startDictation() {
         };
 
     }
+}
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                       AMT VALIDATION CODE                                    --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function amt_validation_code(){
+    var amt_div = document.getElementById("AMT_validation_code");
+    var code = "VAL"+app_global.clientID;
+    amt_div.innerHTML = code;
 }

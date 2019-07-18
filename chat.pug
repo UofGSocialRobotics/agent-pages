@@ -1,0 +1,32 @@
+include page.pug
+include helper.pug
+
++page(true, true)
+    div(class="chat_window")
+        div(class="top_menu")
+            div(id="chat_title", class="chat_window_title")
+        ul(class="messages")
+        div(class="bottom_wrapper clearfix")
+            div(id="go_to_questionnaire", style="display:none;")
+                center
+                    +navigation_button("Next", "go_to_questionnaire(\"q1\");")
+            div(id="message_text", style="display:none;")
+                div(class="message_input_wrapper")
+                    input(class="message_input", placeholder="Type your message here...", id="user_text_input", autofocus)
+                div(class="send_message", id="send_message_button")
+                    div(class="icon")
+                    div(class="text") Send
+            div(id="message_speech", style="display:none;")
+                div(class="ASR_input_wrapper")
+                    input(class="message_input", placeholder="Click on the microhpone and speak", id="transcript")
+                div(id="send_message_button", class="microphone")
+                    img(id="green_microphone", onclick="on_click_microphone()", src="img/green_microphone.png", onmouseover="on_microphone_hover();", onmouseout="off_microphone_hover();")
+                    img(id="red_microphone", src="img/red_microphone.png", style="display:none;cursor:not-allowed")      
+                    img(id="grey_microphone", src="img/grey_microphone.png", style="display:none;cursor:not-allowed")     
+                    img(id="send_img" onclick="on_click_send()" src="img/send.png"  style="display:none" onmouseover="on_send_hover();" onmouseout="off_send_hover();")         
+
+    div(class="message_template")
+        li(class="message")
+            div(class="avatar")
+            div(class="text_wrapper")
+                div(class="text")
