@@ -14,7 +14,7 @@ var config = {
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-    use_broker : false,
+    use_broker : true,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -23,11 +23,6 @@ var config = {
 function accessChatWindow(){
     var message_speech = document.getElementById("message_speech"); 
     var message_text = document.getElementById("message_text");
-    // if (tts_asr){
-    //     config.tts_activated = true;
-    //     config.asr_activated = true;
-    console.log(config.asr_activated ==true);
-    console.log(typeof config.asr_activated);
     if(config.asr_activated == true && config.tts_activated == true){
         console.log("Will be using TTS and ASR.");
         message_speech.style.display = "block";
@@ -236,7 +231,7 @@ function remove_other_var(s){
 function get_client_id(){
     var splited_url = app_global.current_url.split("clientid="); //window.location.href
     if (splited_url.length > 1) app_global.clientID = remove_other_var(splited_url[1]);
-    else app_global.clientID = "c" + makeid(10); //+ new Date().getTime();
+    else app_global.clientID = "c" + makeid(6); //+ new Date().getTime();
     console.log(app_global.clientID);
 }
 
@@ -697,8 +692,8 @@ function server_not_connected_message(){
     if ((app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error) && !app_global.error_message_posted){
         setTimeout(function(){
             console.log("Server disconnected error");
-            console.log("time out?" + app_global.disconnection_timer.timeElapsed > app_global.connection_timeout);
-            console.log("app_global.error?" + app_global.error);
+            console.log("time out?" + (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
+            console.log("app_global.error?" + (app_global.error).toString());
             if (is_chat()) chat_error();
             else page_error();
         },10);
@@ -726,8 +721,6 @@ function chat_error(){
     console.log("chat error set app_global.error to true");
     app_global.error_message_posted = true;
     disable_user_input(app_global.user_input_placeholder_val.server_down);
-    console.log("Disable green_microphone button");
-    console.log(config.asr_activated);
     if (config.asr_activated){
         console.log("Disable green_microphone button");
         change_microphone_image("off");
@@ -897,11 +890,11 @@ function MQTTSendMessage(msg){
 
     // Send message to broker
     var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
-    console.log("MQTTSendMessage");
-    console.log(app_global.clientID+": "+msg);
+    // console.log("MQTTSendMessage");
+    // console.log(app_global.clientID+": "+msg);
     message.destinationName = config.topic_publish;
-    console.log(config.topic_publish);
-    console.log(app_global.mqtt.isConnected());
+    // console.log(config.topic_publish);
+    console.log("Connection open? "+app_global.mqtt.isConnected().toString());
     app_global.mqtt.send(message);
 
     app_global.disconnection_timer.init();
@@ -915,7 +908,7 @@ function MQTTSendMessage(msg){
 function onMessageArrived(message) {
     console.log("onMessageArrived:"+message.payloadString);
     handle_server_message(message.payloadString);
-    console.log(app_global.mqtt.isConnected());
+    // console.log(app_global.mqtt.isConnected());
 }
 
 //--------------------------------------------------------------------------------------------------------------//
