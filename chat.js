@@ -14,7 +14,7 @@ var config = {
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-    use_broker : false,
+    use_broker : true,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -133,6 +133,13 @@ var PAGES = {
     CHAT : "chat.html",
     QUESTIONNAIRE : "questionnaire.html",
     THANKS : "thanks.html",
+}
+
+var MSG_TYPES = {
+    INFO : 'info',
+    DATA_COLLECTION : "data_collection",
+    ACK : "ack",
+    DIALOG : "dialog"
 }
 
 app_global.current_url = window.location.href;
@@ -355,9 +362,9 @@ function get_questionnaire_answers(){
         if (count_questions == n_question){
             if (Object.keys(answers).length == n_question){
                 console.log(answers);
-                var to_send = {};
-                if (page==PAGES.QUESTIONNAIRE) to_send[app_global.amt_msg] = {"questionnaire_answers" : answers};
-                else to_send[app_global.amt_msg] = {"pre_study_questionnaire_answers" : answers};
+                var to_send = {'type': MSG_TYPES.DATA_COLLECTION};
+                if (page==PAGES.QUESTIONNAIRE) to_send['content'] = {"questionnaire_answers" : answers};
+                else to_send['content'] = {"pre_study_questionnaire_answers" : answers};
                 send_message(JSON.stringify(to_send), go_to_page_after_questionnaire);
                 // console.log(answers.length, QUESTIONS.length);  
             }
@@ -383,9 +390,10 @@ function send_amtid(){
     var id = document.getElementById("amtid_input").value;
     if (check_amtid(id)){
         // app_global.amt_msg["amt_id"] = id;
-        var key = app_global.amt_msg;
+        // var key = app_global.amt_msg;
         var id_dict = {};
-        id_dict[key] = {"amt_id" : id};
+        id_dict["content"] = {"amt_id" : id};
+        id_dict["type"] = MSG_TYPES.DATA_COLLECTION;
         console.log(id_dict);
         var msg = JSON.stringify(id_dict);
         console.log(msg);
@@ -438,6 +446,15 @@ function Connect(jsonip){
 }
 
 
+function create_json_string_message(content, type){
+    var d = {
+        'content': content,
+        'type': type,
+        'client_id': app_global.clientID
+    }
+    return JSON.stringify(d);
+}
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     WEBSOCKETS METHODS                                       --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -451,7 +468,7 @@ function init_websocket(){
     }
     app_global.socket.onopen = function(event){
         console.log("Web socket open");
-        send_message_ws(config.connection_message);
+        send_message_ws(create_json_string_message(config.connection_message, MSG_TYPES.INFO));
     }
     app_global.socket.onmessage = function(event){
         console.log("Received message from python server (localhost):")
@@ -494,9 +511,7 @@ function Message(arg) {
             $message = $($('.message_template').clone().html());
             $message.addClass(_this.message_side).find('.text').html(_this.text);
             $('.messages').append($message);
-            return setTimeout(function () {
-                return $message.addClass('appeared');
-            }, 0);
+            $message.addClass('appeared');
         };
     }(this);
     return this;
@@ -508,7 +523,7 @@ function send_chat() {
     // console.log(app_global.user_wait,msg,app_global.error);
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right');
-        res = send_message(msg);
+        res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
         // Disable user input
         if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
             disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
@@ -854,7 +869,7 @@ function updateTopicSubscribe(client_id){
 function onConnect(){
     //Once a connection has been made, make a subsrcription and send a message
     console.log("Connected");
-    MQTTSendMessage(config.connection_message);
+    MQTTSendMessage(JSON.stringify({'content':config.connection_message, 'type':MSG_TYPES.INFO}) );
     app_global.mqtt.subscribe(config.topic_subscribe);
     // app_global.disconnection_timer.init();
 }
