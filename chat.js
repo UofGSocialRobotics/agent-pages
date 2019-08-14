@@ -14,7 +14,7 @@ var config = {
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-    use_broker : true,
+    use_broker : false,
 };
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -406,7 +406,7 @@ function send_amtid(){
 
 
 //--------------------------------------------------------------------------------------------------------------//
-//--------                            DECIDE IF USING WEBSOCKETS OR BORKER                              --------//
+//--------                            DECIDE IF USING WEBSOCKETS OR BROKER                              --------//
 //-------- > Currently you can use websockets only when running the client and the server on localhost  --------//
 //--------------------------------------------------------------------------------------------------------------//
 
@@ -599,12 +599,9 @@ function handle_chat_message(message){
             printMessage(json_message.sentence,'left');  
             if (json_message.image){
                 console.log(json_message.image);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"50%\" /></p>",'left'+"");      
-            }
-            if (json_message.food_recipe){
-                console.log(json_message.food_recipe);
-                printMessage("<p style=\"text-align:center;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> Click here to get the recipe </a></p>",'left'+"");                   
-            }    
+				console.log(json_message.food_recipe);
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
+            } 
             if (agent_says_bye(json_message)){
                             terminate_conversation();
             }
