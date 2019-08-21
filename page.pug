@@ -6,7 +6,7 @@ mixin page(connect=false, chat_window=false)
             link(href="chat.css", rel="stylesheet", id="bootstrap-css")
             link(href="avatar.css", rel="stylesheet", id="error_css")
 
-        body(onload=connect ? "on_load();Connect();" : "on_load();")
+        body(onload=connect ? "on_load();" : "on_load();")
             div(class="site-wrapper")
                 //- script
                 //-     | var b = !{JSON.stringify(title_bool)};
@@ -57,4 +57,5 @@ mixin page(connect=false, chat_window=false)
 
             script(src="https://code.jquery.com/jquery-1.11.1.min.js")
             script(src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js")
+            script(src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js")
             script(src="chat.js" )

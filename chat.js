@@ -3,20 +3,52 @@
 //--------------------------------------------------------------------------------------------------------------//
 
 var config = {
-    broker : "wss://iot.eclipse.org/ws", //"wss://mqtt.eclipse.org/ws",
-    main_topic : "UoGSR/ca/",
-    topic_publish : "UoGSR/ca/Client/",
-    topic_subscribe : "UoGSR/ca/Server_out/",  
-    connection_message : "client connected",
-    confirmed_connection_message : "Connection confirmed",
-    amtinfo_ack : "ACK AMT_INFO",
-    disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
+    // broker : "wss://iot.eclipse.org/ws", //"wss://mqtt.eclipse.org/ws",
+    // main_topic : "UoGSR/ca/",
+    // topic_publish : "UoGSR/ca/Client/",
+    // topic_subscribe : "UoGSR/ca/Server_out/",  
+    // connection_message : "client connected",
+    // confirmed_connection_message : "Connection confirmed",
+    // amtinfo_ack : "ACK AMT_INFO",
+    // disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-    use_broker : true,
+    // use_broker : false,
 };
 
+
+var configFirebase = {
+    apiKey: "AIzaSyAOUs8A2cS_xeit0eB2_fOrO9rCoGnoTsQ",
+    authDomain: "coraapp-eba76.firebaseio.com",
+    databaseURL: "https://coraapp-eba76.firebaseio.com",
+    // projectId: "datacollection-2f3de",
+    storageBucket: "coraapp-eba76.appspot.com",
+    // messagingSenderId: "608271042127"
+  };
+  firebase.initializeApp(configFirebase);
+
+  FIREBASE_KEYS = {
+      USERS : "Users",
+      SESSIONS : "Sessions",
+      DATETIME : "datetime",
+      CLIENTID : "client_id",
+      ACKFOR : "for",
+    //   CHATJSON : "chat_json",
+      UTTERANCE: "utterance",
+      AMTID : "amt_id",
+      ACK : "ack",
+      DATACOLLECTION : "data_collection",
+      DIALOG : "dialog",
+      POSTSTUDYANSWERS : "questionnaire_answers",
+      PRESTUDYANSWERS : "pre_study_questionnaire_answers"
+  };
+  FIREBASE_REFS = {
+      SESSIONS : false,
+      USERS : false,
+      CURRENT_SESSION : false
+  };
+  FIREBASE_SESSION_STRUCTURE = {};
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                         ACCESS CHAT WINDOW                                   --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -36,15 +68,6 @@ function accessChatWindow(){
     if(app_global.error){
         change_microphone_image("off");
     }
-    // var page_title = document.getElementById("page_title");
-    // page_title.style.display = "none";
-    // var chat_window = document.getElementById("chat_window");
-    // chat_window.style.display = "block";
-
-
-    // setTimeout(function() {
-    //     set_agent_name();
-    // }, 100)
     return callback_accessChatWindow();
     
 }
@@ -134,6 +157,7 @@ var PAGES = {
     QUESTIONNAIRE : "questionnaire.html",
     THANKS : "thanks.html",
 }
+var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.INSTRUCTIONS, PAGES.PRE_STUDY_QUESTIONNAIRE, PAGES.CHAT_SETUP, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -230,15 +254,32 @@ function set_agent_name(){
 }
 
 function remove_other_var(s){
-    var s_splited = s.split("?");
-    return s_splited[0];
+    if (s.includes("?")){
+        var s_splited = s.split("?");
+        return s_splited[0];
+    } else return s;
+}
+
+function get_client_id_from_url(splited_url, callback){
+    app_global.clientID = remove_other_var(splited_url);
+    console.log(app_global.clientID);
+    callback();
 }
 
 function get_client_id(){
     var splited_url = app_global.current_url.split("clientid="); //window.location.href
-    if (splited_url.length > 1) app_global.clientID = remove_other_var(splited_url[1]);
-    else app_global.clientID = "c" + makeid(6); //+ new Date().getTime();
-    console.log(app_global.clientID);
+    if (splited_url.length > 1) get_client_id_from_url(splited_url[1], init_firebase_current_session_ref);
+    else {
+        console.log("Creating new user");
+        var ref_new_user = FIREBASE_REFS.USERS.push("New user").then(function get_name(snapshot){
+            console.log("Successfully created new user");
+            app_global.clientID = snapshot.key;
+            FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION][FIREBASE_KEYS.CLIENTID] = snapshot.key;
+            console.log(app_global.clientID);
+            create_new_session(snapshot.key);
+            app_global.disconnection_timer.init();
+        });
+    }
 }
 
 function get_tts_asr(callback){
@@ -279,10 +320,80 @@ function q_id_error(details=false){
     console.log('ERROR while reading q_id');
 }
 
+function init_firebase_static_refs(callback){
+    FIREBASE_REFS.SESSIONS = firebase.database().ref().child(FIREBASE_KEYS.SESSIONS);
+    FIREBASE_REFS.USERS = firebase.database().ref().child(FIREBASE_KEYS.USERS);
+    callback();
+}
+function init_firebase_current_session_ref(){
+    FIREBASE_REFS.CURRENT_SESSION = firebase.database().ref(FIREBASE_KEYS.SESSIONS+"/"+app_global.clientID);
+    FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
+}
+function create_new_session(key){
+    if (key){
+        var new_session = {};
+        new_session[key] = FIREBASE_SESSION_STRUCTURE;
+        FIREBASE_REFS.SESSIONS.update(new_session).then(function(){
+            FIREBASE_REFS.CURRENT_SESSION = FIREBASE_REFS.SESSIONS.child(key);
+        }).catch(function(error){
+             firebase_error(error);
+        });
+    }
+    else {
+        console.log("ERROR: clientID not set, cannot create a new session!!");
+    }
+}
+function firebase_error(error){
+    console.log("===================== ERROR WITH FIREBASE !!!!! ==================");
+    console.log(error);
+}
+function firebase_listen_ack_connection(){
+    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
+        return check_ack_listner();
+    });
+}
+
+function check_ack_listner(snapshot){
+    console.log(snapshot.val);
+    if (snapshot.val == true){
+        app_global.disconnection_timer.stop();
+        var reset_ack_to_false = {};
+        reset_ack_to_false[FIREBASE_KEYS.ACK] = false;
+        FIREBASE_REFS.CURRENT_SESSION.update(reset_ack_to_false);
+        return true;
+    }
+    else return false;
+}
+function check_ack(){
+    console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
+    // return check_ack_listner(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
+    var cond = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
+        return check_ack_listner(snapshot);
+    });
+    if (cond) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+// function set_firebase_sessions_structure(){
+var data_col = {};
+data_col[FIREBASE_KEYS.AMTID] = false;
+data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
+data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
+data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = false;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
+// }
+
 function on_load(){
+    init_firebase_static_refs(get_client_id);
+    // set_firebase_sessions_structure();
     keyboard_functions();
     set_agent_name();
-    get_client_id();
     app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
     get_tts_asr(accessChatWindow);
     page = get_page();
@@ -335,6 +446,31 @@ function go_to_page_after_questionnaire(){
 function go_to_thanks(){
     location.replace(PAGES.THANKS+"?clientid="+app_global.clientID)
 }
+function go_to_next_page(param){
+    var index_page = PAGES_SEQUENCE.indexOf(get_page());
+    if (index_page >= 0){
+        if (index_page < PAGES_SEQUENCE.length){
+            var next_page = PAGES_SEQUENCE[index_page+1];
+            switch(next_page){
+                case PAGES.INTRO:
+                    go_to_intro();
+                    break;
+                case PAGES.INSTRUCTIONS:
+                    go_to_instructions();
+                    break;
+                case PAGES.PRE_STUDY_QUESTIONNAIRE:
+                    go_to_pre_study_questionnaire();
+                    break;
+                case PAGES.CHAT_SETUP:
+                    go_to_chat_setup();
+                    break;
+                default:
+                    console.log("ERROR: not implemented for "+next_page);
+                    break;                
+            }
+        }
+    }
+}
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -362,10 +498,10 @@ function get_questionnaire_answers(){
         if (count_questions == n_question){
             if (Object.keys(answers).length == n_question){
                 console.log(answers);
-                var to_send = {'type': MSG_TYPES.DATA_COLLECTION};
-                if (page==PAGES.QUESTIONNAIRE) to_send['content'] = {"questionnaire_answers" : answers};
-                else to_send['content'] = {"pre_study_questionnaire_answers" : answers};
-                send_message(JSON.stringify(to_send), go_to_page_after_questionnaire);
+                // var to_send = {'type': MSG_TYPES.DATA_COLLECTION};
+                if (page==PAGES.QUESTIONNAIRE) send_data_collection(answers, FIREBASE_KEYS.POSTSTUDYANSWERS);
+                else send_data_collection(answers, FIREBASE_KEYS.PRESTUDYANSWERS);
+                // send_message(JSON.stringify(to_send), go_to_page_after_questionnaire);
                 // console.log(answers.length, QUESTIONS.length);  
             }
             else{
@@ -374,6 +510,8 @@ function get_questionnaire_answers(){
         }
     }
 }
+
+
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                          FORM METHODS                                        --------//
@@ -386,18 +524,46 @@ function check_amtid(id){
     return false;
 }
 
+function send_data_collection(piece_of_data, datacol_key){
+    if (check_ack()){
+        if ((typeof piece_of_data) == "string"){
+            var data = {};
+            var new_dict = {};
+            new_dict['value'] = piece_of_data;
+            new_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
+            data[datacol_key] = new_dict;
+        }
+        else {
+            var data = {};
+            piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
+            data[datacol_key] = piece_of_data;
+        }
+        console.log("witting data in firebase");
+        console.log(FIREBASE_REFS.CURRENT_SESSION.path);
+        FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DATACOLLECTION).update(data).then(function(snapshot){
+            go_to_next_page();
+        });
+    }
+    else{
+        app_global.error = true;
+        page_error();
+    }
+}
+
+function send_dialog(text){
+    var data = {};
+    data["speaker"] = "user";
+    data["text"] = text;
+    data[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
+    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
+        console.log("Save in Firebase: " + text);
+    });
+}
+
 function send_amtid(){
     var id = document.getElementById("amtid_input").value;
     if (check_amtid(id)){
-        // app_global.amt_msg["amt_id"] = id;
-        // var key = app_global.amt_msg;
-        var id_dict = {};
-        id_dict["content"] = {"amt_id" : id};
-        id_dict["type"] = MSG_TYPES.DATA_COLLECTION;
-        console.log(id_dict);
-        var msg = JSON.stringify(id_dict);
-        console.log(msg);
-        res = send_message(msg);
+        send_data_collection(id, FIREBASE_KEYS.AMTID);
     }
     else{
         alert("Enter your AMT ID.");
@@ -411,40 +577,43 @@ function send_amtid(){
 //--------------------------------------------------------------------------------------------------------------//
 
 // $(document).ready(function(){
-function Connect(jsonip){
-    switch(window.location.protocol) {
-        case 'http:':
-            config.use_broker = true;
-            MQTTConnect(jsonip);
-            break;
-        case 'https:':
-        //remote file over http or https
-            config.use_broker = true;
-            MQTTConnect(jsonip);
-            break;
-        case 'file:':
-            if(config.use_broker==false){
-                console.log("We re local - will not be using broker.");
-                console.log("If you want to use the broker, set use_broker to true in app_global.");
-                try{
-                    init_websocket();
-                }
-                catch(err){
-                    console.log("error");
-                    console.log(err.message);
-                    server_not_connected_message();
-                }
-            }
-            else{
-                MQTTConnect(jsonip);
-            }
-            break;
-        default: 
-            config.use_broker = true;
-            MQTTConnect(jsonip);
-    }
-}
+// function Connect(jsonip){
+//     switch(window.location.protocol) {
+//         case 'http:':
+//             config.use_broker = true;
+//             MQTTConnect(jsonip);
+//             break;
+//         case 'https:':
+//         //remote file over http or https
+//             config.use_broker = true;
+//             MQTTConnect(jsonip);
+//             break;
+//         case 'file:':
+//             if(config.use_broker==false){
+//                 console.log("We re local - will not be using broker.");
+//                 console.log("If you want to use the broker, set use_broker to true in app_global.");
+//                 try{
+//                     init_websocket();
+//                 }
+//                 catch(err){
+//                     console.log("error");
+//                     console.log(err.message);
+//                     server_not_connected_message();
+//                 }
+//             }
+//             else{
+//                 MQTTConnect(jsonip);
+//             }
+//             break;
+//         default: 
+//             config.use_broker = true;
+//             MQTTConnect(jsonip);
+//     }
+// }
 
+function message_new_client(){
+
+}
 
 function create_json_string_message(content, type){
     var d = {
@@ -523,7 +692,8 @@ function send_chat() {
     // console.log(app_global.user_wait,msg,app_global.error);
     if (app_global.user_wait == false && msg!="" && app_global.error == false){
         printMessage(msg,'right');
-        res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
+        // res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
+        send_dialog(msg);
         // Disable user input
         if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
             disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
@@ -531,29 +701,31 @@ function send_chat() {
         else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
             change_microphone_image("off");
         }
-        return res;
+        // return res;
     }
 };
 
-function send_message(text, callback = null){
-    // console.log("in send Message")
-    var res = false;
-    if (config.use_broker){
-        res = MQTTSendMessage(text);
-    }
-    else{
-        try{
-            res = send_message_ws(text);
-        } catch(err) {
-            console.log(err);
-            app_global.error = true;
-            console.log("send_message set app_global.error to true");
-            server_not_connected_message();
-        }
-    }
-    console.log("sent "+text);
-    typeof callback == "function" && callback();
-}
+// function send_message(text, callback = null){
+//     // console.log("in send Message")
+//     var res = false;
+//     if (config.use_broker){
+//         res = MQTTSendMessage(text);
+//     }
+//     else{
+//         try{
+//             res = send_message_ws(text);
+//         } catch(err) {
+//             console.log(err);
+//             app_global.error = true;
+//             console.log("send_message set app_global.error to true");
+//             server_not_connected_message();
+//         }
+//     }
+//     console.log("sent "+text);
+//     typeof callback == "function" && callback();
+// }
+
+
 
 // called when a message arrives
 function handle_server_message(message) {
