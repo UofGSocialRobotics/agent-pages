@@ -41,7 +41,13 @@ var configFirebase = {
       DATACOLLECTION : "data_collection",
       DIALOG : "dialog",
       POSTSTUDYANSWERS : "questionnaire_answers",
-      PRESTUDYANSWERS : "pre_study_questionnaire_answers"
+      PRESTUDYANSWERS : "pre_study_questionnaire_answers",
+      SOURCE : "source",
+      TEXT : "text"
+  };
+  FIREBASE_VALUES = {
+        CLIENT : "client",
+        AGENT : "agent"
   };
   FIREBASE_REFS = {
       SESSIONS : false,
@@ -145,6 +151,7 @@ var app_global = {
     amt_msg : "for_data_collection",
     points_likert_scale : 5,
     q_id : false,
+    last_dialog_at : false,
 };
 
 var PAGES = {
@@ -385,7 +392,8 @@ data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
 data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
-FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = false;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
 // }
 
@@ -447,7 +455,9 @@ function go_to_thanks(){
     location.replace(PAGES.THANKS+"?clientid="+app_global.clientID)
 }
 function go_to_next_page(param){
-    var index_page = PAGES_SEQUENCE.indexOf(get_page());
+    var current_page = get_page();
+    if (current_page == PAGES.QUESTIONNAIRE) go_to_page_after_questionnaire();
+    var index_page = PAGES_SEQUENCE.indexOf(current_page);
     if (index_page >= 0){
         if (index_page < PAGES_SEQUENCE.length){
             var next_page = PAGES_SEQUENCE[index_page+1];
@@ -524,19 +534,26 @@ function check_amtid(id){
     return false;
 }
 
+function add_datetime_and_client_id(dictionary){
+    if (dictionary == false) var updated_dict = {};
+    else var updated_dict = dictionary;
+    updated_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
+    updated_dict[FIREBASE_KEYS.CLIENTID] =  app_global.clientID;
+    return updated_dict;
+}
+
 function send_data_collection(piece_of_data, datacol_key){
     if (check_ack()){
         if ((typeof piece_of_data) == "string"){
             var data = {};
-            var new_dict = {};
+            var new_dict = add_datetime_and_client_id(false);
             new_dict['value'] = piece_of_data;
-            new_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
             data[datacol_key] = new_dict;
         }
         else {
             var data = {};
-            piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
-            data[datacol_key] = piece_of_data;
+            // piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
+            data[datacol_key] = add_datetime_and_client_id(piece_of_data);
         }
         console.log("witting data in firebase");
         console.log(FIREBASE_REFS.CURRENT_SESSION.path);
@@ -551,12 +568,31 @@ function send_data_collection(piece_of_data, datacol_key){
 }
 
 function send_dialog(text){
-    var data = {};
-    data["speaker"] = "user";
-    data["text"] = text;
-    data[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
+    var data = add_datetime_and_client_id(dictionary=false);
+    data[FIREBASE_KEYS.SOURCE] = FIREBASE_VALUES.CLIENT;
+    data[FIREBASE_KEYS.TEXT] = text;
+    console.log(data);
+    console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path)
     FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
         console.log("Save in Firebase: " + text);
+    });
+
+    console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
+    var dialog_ref = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG);
+    console.log(dialog_ref.path);
+
+    dialog_ref.limitToLast(2).on('child_added', function(snapshot) {
+        // all records after the last continue to invoke this function
+        var key = snapshot.key;
+        console.log("Debug: change in firebase/dialog.");
+        if (key != FIREBASE_KEYS.CLIENTID){
+            var dialog = snapshot.val();
+            if (dialog[FIREBASE_KEYS.SOURCE] == FIREBASE_VALUES.AGENT) {
+                console.log("Received dialog:")
+                console.log(dialog);
+                handle_server_message(dialog);
+            }
+        }
     });
 }
 
@@ -571,50 +607,6 @@ function send_amtid(){
 }
 
 
-//--------------------------------------------------------------------------------------------------------------//
-//--------                            DECIDE IF USING WEBSOCKETS OR BORKER                              --------//
-//-------- > Currently you can use websockets only when running the client and the server on localhost  --------//
-//--------------------------------------------------------------------------------------------------------------//
-
-// $(document).ready(function(){
-// function Connect(jsonip){
-//     switch(window.location.protocol) {
-//         case 'http:':
-//             config.use_broker = true;
-//             MQTTConnect(jsonip);
-//             break;
-//         case 'https:':
-//         //remote file over http or https
-//             config.use_broker = true;
-//             MQTTConnect(jsonip);
-//             break;
-//         case 'file:':
-//             if(config.use_broker==false){
-//                 console.log("We re local - will not be using broker.");
-//                 console.log("If you want to use the broker, set use_broker to true in app_global.");
-//                 try{
-//                     init_websocket();
-//                 }
-//                 catch(err){
-//                     console.log("error");
-//                     console.log(err.message);
-//                     server_not_connected_message();
-//                 }
-//             }
-//             else{
-//                 MQTTConnect(jsonip);
-//             }
-//             break;
-//         default: 
-//             config.use_broker = true;
-//             MQTTConnect(jsonip);
-//     }
-// }
-
-function message_new_client(){
-
-}
-
 function create_json_string_message(content, type){
     var d = {
         'content': content,
@@ -624,49 +616,7 @@ function create_json_string_message(content, type){
     return JSON.stringify(d);
 }
 
-//--------------------------------------------------------------------------------------------------------------//
-//--------                                     WEBSOCKETS METHODS                                       --------//
-//--------------------------------------------------------------------------------------------------------------//
 
-function init_websocket(){
-    app_global.socket = new WebSocket('ws://127.0.0.1:9000/');
-    app_global.socket.onerror = function(event){
-        app_global.error = true;
-        console.log("init_websocket set app_global.error to true");
-        server_not_connected_message();
-    }
-    app_global.socket.onopen = function(event){
-        console.log("Web socket open");
-        send_message_ws(create_json_string_message(config.connection_message, MSG_TYPES.INFO));
-    }
-    app_global.socket.onmessage = function(event){
-        console.log("Received message from python server (localhost):")
-        console.log(event.data);
-        handle_server_message(event.data);
-    };
-}
-
-function isOpen(ws) { 
-    return ws.readyState === ws.OPEN ;
-}
-
-function send_message_ws(msg){
-    if (isOpen(app_global.socket)){
-        json_msg = {};
-        json_msg["client_id"] = app_global.clientID;
-        json_msg["msg_text"] = msg;
-        json_string = JSON.stringify(json_msg);
-        console.log(json_string);
-        app_global.socket.send(json_string);
-        return true;
-    }
-    else{
-        app_global.error = true;
-        console.log("send_message_ws set app_global.error to true");
-        server_not_connected_message();
-        return false;
-    }
-}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           CHAT METHODS                                       --------//
@@ -759,8 +709,10 @@ function handle_chat_message(message){
         disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
     }
     else {
-        if (message != config.confirmed_connection_message){
-            var json_message = JSON.parse(message); 
+        if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
+            // var json_message = JSON.parse(message); 
+            app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
+            json_message = message;
             if (config.tts_activated) {
                 var u = new SpeechSynthesisUtterance(json_message.sentence);
                 u.onend = function (event) {
