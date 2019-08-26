@@ -728,11 +728,16 @@ function handle_chat_message(message){
                 window.speechSynthesis.speak(u);
             }
             printMessage(json_message.sentence,'left');  
-            if (json_message.image){
-                console.log(json_message.image);
+            if (json_message.recipe_card){
+                console.log(json_message.recipe_card);
 				console.log(json_message.food_recipe);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.image+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
-            } 
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
+            }
+			if (json_message.movie_poster){
+                console.log(json_message.movie_poster);
+                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
+            }
+			
             if (agent_says_bye(json_message)){
                             terminate_conversation();
             }
