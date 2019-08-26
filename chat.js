@@ -3,88 +3,21 @@
 //--------------------------------------------------------------------------------------------------------------//
 
 var config = {
-    // broker : "wss://iot.eclipse.org/ws", //"wss://mqtt.eclipse.org/ws",
-    // main_topic : "UoGSR/ca/",
-    // topic_publish : "UoGSR/ca/Client/",
-    // topic_subscribe : "UoGSR/ca/Server_out/",  
-    // connection_message : "client connected",
-    // confirmed_connection_message : "Connection confirmed",
-    // amtinfo_ack : "ACK AMT_INFO",
-    // disconnection_message : "ERROR, you were disconnected. Start session again by refreshing page.",
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-    // use_broker : false,
 };
 
 
 var configFirebase = {
-    apiKey: "AIzaSyAOUs8A2cS_xeit0eB2_fOrO9rCoGnoTsQ",
-    authDomain: "coraapp-eba76.firebaseio.com",
-    databaseURL: "https://coraapp-eba76.firebaseio.com",
-    // projectId: "datacollection-2f3de",
-    storageBucket: "coraapp-eba76.appspot.com",
-    // messagingSenderId: "608271042127"
-  };
-  firebase.initializeApp(configFirebase);
-
-  FIREBASE_KEYS = {
-      USERS : "Users",
-      SESSIONS : "Sessions",
-      DATETIME : "datetime",
-      CLIENTID : "client_id",
-      ACKFOR : "for",
-    //   CHATJSON : "chat_json",
-      UTTERANCE: "utterance",
-      AMTID : "amt_id",
-      ACK : "ack",
-      DATACOLLECTION : "data_collection",
-      DIALOG : "dialog",
-      POSTSTUDYANSWERS : "questionnaire_answers",
-      PRESTUDYANSWERS : "pre_study_questionnaire_answers",
-      SOURCE : "source",
-      TEXT : "text"
-  };
-  FIREBASE_VALUES = {
-        CLIENT : "client",
-        AGENT : "agent"
-  };
-  FIREBASE_REFS = {
-      SESSIONS : false,
-      USERS : false,
-      CURRENT_SESSION : false
-  };
-  FIREBASE_SESSION_STRUCTURE = {};
-//--------------------------------------------------------------------------------------------------------------//
-//--------                                         ACCESS CHAT WINDOW                                   --------//
-//--------------------------------------------------------------------------------------------------------------//
-function accessChatWindow(){
-    var message_speech = document.getElementById("message_speech"); 
-    var message_text = document.getElementById("message_text");
-    if(config.asr_activated == true && config.tts_activated == true){
-        console.log("Will be using TTS and ASR.");
-        message_speech.style.display = "block";
-        message_text.style.display = "none";
-    }
-    else{
-        console.log("Will NOT be using TTS and ASR.");
-        message_speech.style.display = "none";
-        message_text.style.display = "block";
-    }
-    if(app_global.error){
-        change_microphone_image("off");
-    }
-    return callback_accessChatWindow();
-    
-}
-
-function callback_accessChatWindow(){
-    set_agent_name();
-    keyboard_functions();
-}
+    apiKey: "U2FsdGVkX18jZcK+nwNOHT4JnZf8Te8uYrjx77+mYj82EnUI2LiXnv6lB+kJ/a/maCYIjntJt5s4wdj/bIOheA==",
+    authDomain: "U2FsdGVkX18vkDrVmVBVF2Dfh8m4gSXcOAOkr2PRelLmL4hsvu1mS8gJch5NTbWd",
+    databaseURL: "U2FsdGVkX1+Qaft1SxJdWoukM/d1AylyCidNR/ML/6J6q/SB2s7cZR7/Q56acogXXNj+hHKsPk5ww69pLXQI/Q==",
+    storageBucket: "U2FsdGVkX18SO89wQ1NKUuxPdEaey6nYDPzQuVaPeCQ8hCOXLVoVGva/+qS4ZP1Q"
+};
 
 //--------------------------------------------------------------------------------------------------------------//
-//--------                                         CLASS DEFINITION                                     --------//
+//--------                                      TIMER CLASS DEFINITION                                  --------//
 //--------------------------------------------------------------------------------------------------------------//
 
 function getTimestamp(){
@@ -203,9 +136,140 @@ var PRE_STUDY_QUESTIONNAIRE = {
     "question1" : "For movie recommendations, do you favor novelty or similarity?"
 }
 
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                      FIREBASE GLOBAL VARIABLES                               --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+FIREBASE_KEYS = {
+    USERS : "Users",
+    SESSIONS : "Sessions",
+    DATETIME : "datetime",
+    CLIENTID : "client_id",
+    ACKFOR : "for",
+//   CHATJSON : "chat_json",
+    UTTERANCE: "utterance",
+    AMTID : "amt_id",
+    ACK : "ack",
+    DATACOLLECTION : "data_collection",
+    DIALOG : "dialog",
+    POSTSTUDYANSWERS : "questionnaire_answers",
+    PRESTUDYANSWERS : "pre_study_questionnaire_answers",
+    SOURCE : "source",
+    TEXT : "text"
+};
+
+FIREBASE_VALUES = {
+    CLIENT : "client",
+    AGENT : "agent"
+};
+
+FIREBASE_REFS = {
+    SESSIONS : false,
+    USERS : false,
+    CURRENT_SESSION : false
+};
+
+FIREBASE_SESSION_STRUCTURE = {};
+
+// function set_firebase_sessions_structure(){
+var data_col = {};
+data_col[FIREBASE_KEYS.AMTID] = false;
+data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
+data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
+data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
+FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
+// }
+
+
+// //--------------------------------------------------------------------------------------------------------------//
+// //--------                                      TIMER CLASS DEFINITION                                  --------//
+// //--------------------------------------------------------------------------------------------------------------//
+
+// function getTimestamp(){
+//     return Math.floor(Date.now() / 1000);
+// }
+
+// class Timer {
+//     constructor(){
+//         this.started = false;
+//         this.started_at = 0;
+//     }
+
+//     init(){
+//         this.started = true;
+//         if (this.started_at == 0){
+//             this.started_at = getTimestamp();
+//         }
+//     }
+
+//     stop(){
+//         this.started = false;
+//         this.started_at = 0;
+//     }
+
+//     get timeElapsed(){
+//         if (this.started){
+//             return (getTimestamp() - this.started_at);
+//         } else {
+//             return 0;
+//         }
+//     }
+// };
+
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                         ACCESS CHAT WINDOW                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+function accessChatWindow(){
+    var message_speech = document.getElementById("message_speech"); 
+    var message_text = document.getElementById("message_text");
+    if(config.asr_activated == true && config.tts_activated == true){
+        console.log("Will be using TTS and ASR.");
+        message_speech.style.display = "block";
+        message_text.style.display = "none";
+    }
+    else{
+        console.log("Will NOT be using TTS and ASR.");
+        message_speech.style.display = "none";
+        message_text.style.display = "block";
+    }
+    if(app_global.error){
+        change_microphone_image("off");
+    }
+    return callback_accessChatWindow();
+    
+}
+
+function callback_accessChatWindow(){
+    set_agent_name();
+    keyboard_functions();
+}
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           ON LOAD                                            --------//
 //--------------------------------------------------------------------------------------------------------------//
+
+function on_load(){
+    if (decrypt_config() == true) {
+        initialize_firebase();
+        init_firebase_static_refs(get_client_id);
+    }
+    // set_firebase_sessions_structure();
+    keyboard_functions();
+    set_agent_name();
+    app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
+    get_tts_asr(accessChatWindow);
+    page = get_page();
+    if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
+    if (page == PAGES.THANKS) amt_validation_code();
+    if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();
+}
+
 
 function keyboard_functions() {
     var Message;
@@ -224,15 +288,6 @@ function keyboard_functions() {
             return send_amtid();
         }
     });
-}
-
-
-function replaceAll(str, find, replace) {
-    return str.replace(new RegExp(find, 'g'), replace);
-}
-
-function replace_agent_name(text){
-    return replaceAll(text,"AGENTNAME",app_global.agent_name);
 }
 
 function set_agent_name(){
@@ -259,6 +314,24 @@ function set_agent_name(){
         document.getElementById("main_text").innerHTML = main_text;
     }
 }
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                     HELPER FUNCTIONS                                         --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+
+function replaceAll(str, find, replace) {
+    return str.replace(new RegExp(find, 'g'), replace);
+}
+
+function replace_agent_name(text){
+    return replaceAll(text,"AGENTNAME",app_global.agent_name);
+}
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                         URL VARIABLES                                        --------//
+//--------------------------------------------------------------------------------------------------------------//
 
 function remove_other_var(s){
     if (s.includes("?")){
@@ -327,6 +400,24 @@ function q_id_error(details=false){
     console.log('ERROR while reading q_id');
 }
 
+
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                         FIREBASE FUNCTIONS                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+
+//--------                                           Helper functions                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function firebase_error(error){
+    console.log("===================== ERROR WITH FIREBASE !!!!! ==================");
+    console.log(error);
+}
+
+//--------                                 Connection and new session set up                            --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 function init_firebase_static_refs(callback){
     FIREBASE_REFS.SESSIONS = firebase.database().ref().child(FIREBASE_KEYS.SESSIONS);
     FIREBASE_REFS.USERS = firebase.database().ref().child(FIREBASE_KEYS.USERS);
@@ -350,10 +441,22 @@ function create_new_session(key){
         console.log("ERROR: clientID not set, cannot create a new session!!");
     }
 }
-function firebase_error(error){
-    console.log("===================== ERROR WITH FIREBASE !!!!! ==================");
-    console.log(error);
+
+function decrypt_config(){
+    Object.keys(configFirebase).forEach(function(key) {
+        configFirebase[key] = CryptoJS.AES.decrypt(configFirebase[key], "Secret Passphrase").toString(CryptoJS.enc.Utf8);
+    });
+    return true;
 }
+
+function initialize_firebase(){
+    firebase.initializeApp(configFirebase);
+}
+
+
+//--------                                    Acknowledgments functions                                 --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 function firebase_listen_ack_connection(){
     FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
         return check_ack_listner();
@@ -384,32 +487,6 @@ function check_ack(){
         return false;
     }
 }
-
-// function set_firebase_sessions_structure(){
-var data_col = {};
-data_col[FIREBASE_KEYS.AMTID] = false;
-data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
-data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
-data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
-FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
-FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
-FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
-FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
-// }
-
-function on_load(){
-    init_firebase_static_refs(get_client_id);
-    // set_firebase_sessions_structure();
-    keyboard_functions();
-    set_agent_name();
-    app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
-    get_tts_asr(accessChatWindow);
-    page = get_page();
-    if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
-    if (page == PAGES.THANKS) amt_validation_code();
-    if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();
-}
-
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                  WEBSITE NAVIGATION METHODS                                  --------//
@@ -481,6 +558,7 @@ function go_to_next_page(param){
         }
     }
 }
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -508,11 +586,8 @@ function get_questionnaire_answers(){
         if (count_questions == n_question){
             if (Object.keys(answers).length == n_question){
                 console.log(answers);
-                // var to_send = {'type': MSG_TYPES.DATA_COLLECTION};
                 if (page==PAGES.QUESTIONNAIRE) send_data_collection(answers, FIREBASE_KEYS.POSTSTUDYANSWERS);
                 else send_data_collection(answers, FIREBASE_KEYS.PRESTUDYANSWERS);
-                // send_message(JSON.stringify(to_send), go_to_page_after_questionnaire);
-                // console.log(answers.length, QUESTIONS.length);  
             }
             else{
                 alert("You must answer all questions.")
@@ -524,8 +599,7 @@ function get_questionnaire_answers(){
 
 
 //--------------------------------------------------------------------------------------------------------------//
-//--------                                          FORM METHODS                                        --------//
-//--------              ----> stuffs to save for amt (ID, questionnaire answers, etc.)                  --------//
+//--------                                       SEND MESSAGES FUNCTIONS                                --------//
 //--------------------------------------------------------------------------------------------------------------//
 
 function check_amtid(id){
@@ -606,18 +680,34 @@ function send_amtid(){
     }
 }
 
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                     RECEIVE MESSAGES FUNCTIONS                               --------//
+//--------------------------------------------------------------------------------------------------------------//
 
-function create_json_string_message(content, type){
-    var d = {
-        'content': content,
-        'type': type,
-        'client_id': app_global.clientID
+// called when a message arrives
+function handle_server_message(message) {
+    // console.log("handle_server_message:"+message);
+    app_global.disconnection_timer.stop();
+
+    if (app_global.error == false){
+        // app_global.server_disconnected = false;
+        app_global.disconnection_timer.stop();
+        if (is_chat()) {
+            try{
+                handle_chat_message(message);
+            }
+            catch(error) {
+                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_chat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                console.log(error);
+            }
+        }
+        if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
     }
-    return JSON.stringify(d);
+    else {
+        console.log("Error, will not print new message.")
+    }
+    
 }
-
-
-
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           CHAT METHODS                                       --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -655,52 +745,7 @@ function send_chat() {
     }
 };
 
-// function send_message(text, callback = null){
-//     // console.log("in send Message")
-//     var res = false;
-//     if (config.use_broker){
-//         res = MQTTSendMessage(text);
-//     }
-//     else{
-//         try{
-//             res = send_message_ws(text);
-//         } catch(err) {
-//             console.log(err);
-//             app_global.error = true;
-//             console.log("send_message set app_global.error to true");
-//             server_not_connected_message();
-//         }
-//     }
-//     console.log("sent "+text);
-//     typeof callback == "function" && callback();
-// }
 
-
-
-// called when a message arrives
-function handle_server_message(message) {
-    // console.log("handle_server_message:"+message);
-    app_global.disconnection_timer.stop();
-
-    if (app_global.error == false){
-        // app_global.server_disconnected = false;
-        app_global.disconnection_timer.stop();
-        if (is_chat()) {
-            try{
-                handle_chat_message(message);
-            }
-            catch(error) {
-                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_chat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
-                console.log(error);
-            }
-        }
-        if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
-    }
-    else {
-        console.log("Error, will not print new message.")
-    }
-    
-}
 
 function handle_chat_message(message){
     console.log("handle_chat_message");
@@ -786,20 +831,13 @@ function activate_user_input(){
 
 function getMessageText(){
     if (config.asr_activated == true){
-        console.log("Should we really be here????");
         return document.getElementById("transcript").value;
     }
     else{
         var user_text_input = document.getElementById("user_text_input");
-        // console.log(user_text_input);
-        // console.log(user_text_input.value);
         return user_text_input.value;
     }
-    // var $message_input;
-    // $message_input = $('.message_input');
-    // return $message_input.val();
 };
-
 
 function printMessage(text,message_side) {
     var $messages, message;
@@ -822,6 +860,9 @@ function deleteAll(string,to_delete){
     }
     return string;
 }
+
+//--------                                                Errors                                        --------//
+//--------------------------------------------------------------------------------------------------------------//
 
 function server_not_connected_message(){
     console.log("time elapsed "+ app_global.disconnection_timer.timeElapsed.toString());
@@ -864,6 +905,9 @@ function chat_error(){
         change_microphone_image("off");
     }
 }
+
+//--------                                        Speak and listen mode                                 --------//
+//--------------------------------------------------------------------------------------------------------------//
 
 function change_microphone_image(status){
     console.log("microphone status: "+status);
@@ -933,12 +977,31 @@ function on_click_microphone(){
     }
 }
 
+//--------                                              Send message                                    --------//
+//--------------------------------------------------------------------------------------------------------------//
+
 function on_click_send(){
     // console.log(b.src);
     change_microphone_image("wait");
     console.log("sending msg");
     send_chat();
 }
+
+//--------                                           Terminate chat                                     --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function terminate_conversation(){
+    console.log("conversation is over");
+    var questionnaire_button = document.getElementById("go_to_questionnaire");
+    questionnaire_button.style.display = "block";
+    var message_speech = document.getElementById("message_speech"); 
+    var message_text = document.getElementById("message_text");
+    message_speech.style.display = "none";
+    message_text.style.display = "none";
+}
+
+//--------                                       Questionnaire pages                                    --------//
+//--------------------------------------------------------------------------------------------------------------//
 
 function create_questionnaire(){
     if (app_global.q_id in QUESTIONS){
@@ -972,82 +1035,7 @@ function create_likert_scale(q_id, q_text, label_1="totally disagree", label_5="
     }
 }
 
-function terminate_conversation(){
-    console.log("conversation is over");
-    var questionnaire_button = document.getElementById("go_to_questionnaire");
-    questionnaire_button.style.display = "block";
-    var message_speech = document.getElementById("message_speech"); 
-    var message_text = document.getElementById("message_text");
-    message_speech.style.display = "none";
-    message_text.style.display = "none";
-}
 
-//--------------------------------------------------------------------------------------------------------------//
-//--------                                       BROKER/MQTT COMMUNICATION                              --------//
-//--------------------------------------------------------------------------------------------------------------//
-
-function updateTopicSubscribe(client_id){
-    config.topic_subscribe += client_id;
-}
-
-function onConnect(){
-    //Once a connection has been made, make a subsrcription and send a message
-    console.log("Connected");
-    MQTTSendMessage(JSON.stringify({'content':config.connection_message, 'type':MSG_TYPES.INFO}) );
-    app_global.mqtt.subscribe(config.topic_subscribe);
-    // app_global.disconnection_timer.init();
-}
-
-function makeid(length) {
-   var result           = '';
-   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
-   for ( var i = 0; i < length; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
-   return result;
-}
-
-function MQTTConnect(jsonip){
-    // app_global.clientIP = jsonip.ip;
-    console.log("Connecting to "+config.broker);
-    updateTopicSubscribe(app_global.clientID)
-    app_global.mqtt = new Paho.MQTT.Client(config.broker, app_global.clientID);
-    app_global.mqtt.onMessageArrived = onMessageArrived;
-    var options = { timeout: 30, onSuccess: onConnect,};
-    app_global.mqtt.connect(options);
-}
-
-
-function MQTTSendMessage(msg){
-    //Start disconnection timer
-    // app_global.disconnection_timer.init();
-
-    // if disconnection
-    setTimeout(server_not_connected_message, app_global.connection_timeout * 1000 + 1000);
-
-    // Send message to broker
-    var message = new Paho.MQTT.Message(app_global.clientID+": "+msg);
-    // console.log("MQTTSendMessage");
-    // console.log(app_global.clientID+": "+msg);
-    message.destinationName = config.topic_publish;
-    // console.log(config.topic_publish);
-    console.log("Connection open? "+app_global.mqtt.isConnected().toString());
-    app_global.mqtt.send(message);
-
-    app_global.disconnection_timer.init();
-
-    //Print in console
-    console.log("Sending MQTT message: "+msg);
-}
-
-
-// called when a message arrives
-function onMessageArrived(message) {
-    console.log("onMessageArrived:"+message.payloadString);
-    handle_server_message(message.payloadString);
-    // console.log(app_global.mqtt.isConnected());
-}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                              TTS                                             --------//
