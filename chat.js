@@ -6,10 +6,6 @@ var config = {
     turn_by_turn : true,
 	tts_activated : false,
     asr_activated : false,
-<<<<<<< HEAD
-=======
-    use_broker : false,
->>>>>>> 1857520c9ef60d96a6d2bca631a9ee2691514fd8
 };
 
 
@@ -187,44 +183,6 @@ FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
 // }
-
-
-// //--------------------------------------------------------------------------------------------------------------//
-// //--------                                      TIMER CLASS DEFINITION                                  --------//
-// //--------------------------------------------------------------------------------------------------------------//
-
-// function getTimestamp(){
-//     return Math.floor(Date.now() / 1000);
-// }
-
-// class Timer {
-//     constructor(){
-//         this.started = false;
-//         this.started_at = 0;
-//     }
-
-//     init(){
-//         this.started = true;
-//         if (this.started_at == 0){
-//             this.started_at = getTimestamp();
-//         }
-//     }
-
-//     stop(){
-//         this.started = false;
-//         this.started_at = 0;
-//     }
-
-//     get timeElapsed(){
-//         if (this.started){
-//             return (getTimestamp() - this.started_at);
-//         } else {
-//             return 0;
-//         }
-//     }
-// };
-
-
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                         ACCESS CHAT WINDOW                                   --------//
@@ -655,7 +613,6 @@ function send_dialog(text){
         console.log("Save in Firebase: " + text);
     });
 
-<<<<<<< HEAD
     console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
     var dialog_ref = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG);
     console.log(dialog_ref.path);
@@ -670,40 +627,6 @@ function send_dialog(text){
                 console.log("Received dialog:")
                 console.log(dialog);
                 handle_server_message(dialog);
-=======
-//--------------------------------------------------------------------------------------------------------------//
-//--------                            DECIDE IF USING WEBSOCKETS OR BROKER                              --------//
-//-------- > Currently you can use websockets only when running the client and the server on localhost  --------//
-//--------------------------------------------------------------------------------------------------------------//
-
-// $(document).ready(function(){
-function Connect(jsonip){
-    switch(window.location.protocol) {
-        case 'http:':
-            config.use_broker = true;
-            MQTTConnect(jsonip);
-            break;
-        case 'https:':
-        //remote file over http or https
-            config.use_broker = true;
-            MQTTConnect(jsonip);
-            break;
-        case 'file:':
-            if(config.use_broker==false){
-                console.log("We re local - will not be using broker.");
-                console.log("If you want to use the broker, set use_broker to true in app_global.");
-                try{
-                    init_websocket();
-                }
-                catch(err){
-                    console.log("error");
-                    console.log(err.message);
-                    server_not_connected_message();
-                }
-            }
-            else{
-                MQTTConnect(jsonip);
->>>>>>> 1857520c9ef60d96a6d2bca631a9ee2691514fd8
             }
         }
     });
