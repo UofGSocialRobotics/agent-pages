@@ -85,6 +85,12 @@ var app_global = {
     points_likert_scale : 5,
     q_id : false,
     last_dialog_at : false,
+    data_to_send : {
+        datacol_key: false,
+        piece_of_data: false,
+        text: false,
+        dialog_stated: false,
+    }
 };
 
 var PAGES = {
@@ -419,34 +425,132 @@ function initialize_firebase(){
 //--------                                    Acknowledgments functions                                 --------//
 //--------------------------------------------------------------------------------------------------------------//
 
-function firebase_listen_ack_connection(){
-    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
-        return check_ack_listner();
-    });
-}
-
-function check_ack_listner(snapshot){
-    console.log(snapshot.val);
-    if (snapshot.val == true){
-        app_global.disconnection_timer.stop();
-        var reset_ack_to_false = {};
-        reset_ack_to_false[FIREBASE_KEYS.ACK] = false;
-        FIREBASE_REFS.CURRENT_SESSION.update(reset_ack_to_false);
-        return true;
-    }
-    else return false;
-}
-function check_ack(){
+function check_ack(callback){
+    console.log("in check_ack");
     console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
     // return check_ack_listner(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
     var cond = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
-        return check_ack_listner(snapshot);
+        console.log(snapshot.val());
+        console.log("we are here");
+        if (snapshot.val() == true) {
+            var data = {};
+            data[FIREBASE_KEYS.ACK] = false;
+            FIREBASE_REFS.CURRENT_SESSION.update(data);
+            callback();
+        }
+        else{
+            app_global.error = true;
+            server_not_connected_message();
+        }
     });
-    if (cond) {
-        return true;
+}
+
+//--------                                       Update firebase functions                              --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function check_amtid(id){
+    //TODO
+    if (id) return true;
+    return false;
+}
+
+function add_datetime_and_client_id(dictionary){
+    if (dictionary == false) var updated_dict = {};
+    else var updated_dict = dictionary;
+    updated_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
+    updated_dict[FIREBASE_KEYS.CLIENTID] =  app_global.clientID;
+    return updated_dict;
+}
+
+function send_data_collection_callback(){
+    console.log("in send_data_collection_callback");
+    var piece_of_data = app_global.data_to_send.piece_of_data;
+    var datacol_key = app_global.data_to_send.datacol_key;
+    if (piece_of_data == false || datacol_key == false){
+        console.log("ERROR: text not set!!!");
     }
     else {
-        return false;
+        if ((typeof piece_of_data) == "string"){
+            var data = {};
+            var new_dict = add_datetime_and_client_id(false);
+            new_dict['value'] = piece_of_data;
+            data[datacol_key] = new_dict;
+        }
+        else {
+            var data = {};
+            // piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
+            data[datacol_key] = add_datetime_and_client_id(piece_of_data);
+        }
+        console.log("witting data in firebase");
+        console.log(FIREBASE_REFS.CURRENT_SESSION.path);
+        FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DATACOLLECTION).update(data).then(function(snapshot){
+            go_to_next_page();
+        });
+    }
+}
+
+function send_data_collection(piece_of_data, datacol_key){
+    console.log("in send_data_collection");
+    app_global.data_to_send.datacol_key = datacol_key;
+    app_global.data_to_send.piece_of_data = piece_of_data;
+    check_ack(send_data_collection_callback);
+}
+
+function send_dialog_callback(){
+    console.log("in send_dialog_callback");
+    var text = app_global.data_to_send.text;
+    if (text == false){
+        console.log("ERROR: text not set!!!");
+    }
+    else {
+        var data = add_datetime_and_client_id(dictionary=false);
+        data[FIREBASE_KEYS.SOURCE] = FIREBASE_VALUES.CLIENT;
+        data[FIREBASE_KEYS.TEXT] = text;
+        console.log(data);
+        console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path)
+        FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
+            console.log("Save in Firebase: " + text);
+        });
+
+        console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
+        var dialog_ref = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG);
+        console.log(dialog_ref.path);
+
+        dialog_ref.limitToLast(2).on('child_added', function(snapshot) {
+            // all records after the last continue to invoke this function
+            var key = snapshot.key;
+            console.log("Debug: change in firebase/dialog.");
+            if (key != FIREBASE_KEYS.CLIENTID){
+                var dialog = snapshot.val();
+                if (dialog[FIREBASE_KEYS.SOURCE] == FIREBASE_VALUES.AGENT) {
+                    console.log("Received dialog:")
+                    console.log(dialog);
+                    handle_server_message(dialog);
+                }
+            }
+        });
+    }
+}
+
+function send_dialog(text){
+    console.log("in send_dialog");
+    app_global.data_to_send.text = text;
+    if (app_global.data_to_send.dialog_stated){
+        send_dialog_callback();
+    }
+    else {
+        app_global.data_to_send.dialog_stated = true;
+        check_ack(send_dialog_callback);
+    }
+}
+
+function send_amtid(){
+    var id = document.getElementById("amtid_input").value;
+    if (check_amtid(id)){
+        send_data_collection(id, FIREBASE_KEYS.AMTID);
+    }
+    else{
+        alert("Enter your AMT ID.");
     }
 }
 
@@ -521,6 +625,7 @@ function go_to_next_page(param){
     }
 }
 
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -559,88 +664,6 @@ function get_questionnaire_answers(){
 }
 
 
-
-//--------------------------------------------------------------------------------------------------------------//
-//--------                                       SEND MESSAGES FUNCTIONS                                --------//
-//--------------------------------------------------------------------------------------------------------------//
-
-function check_amtid(id){
-    //TODO
-    if (id) return true;
-    return false;
-}
-
-function add_datetime_and_client_id(dictionary){
-    if (dictionary == false) var updated_dict = {};
-    else var updated_dict = dictionary;
-    updated_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
-    updated_dict[FIREBASE_KEYS.CLIENTID] =  app_global.clientID;
-    return updated_dict;
-}
-
-function send_data_collection(piece_of_data, datacol_key){
-    if (check_ack()){
-        if ((typeof piece_of_data) == "string"){
-            var data = {};
-            var new_dict = add_datetime_and_client_id(false);
-            new_dict['value'] = piece_of_data;
-            data[datacol_key] = new_dict;
-        }
-        else {
-            var data = {};
-            // piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
-            data[datacol_key] = add_datetime_and_client_id(piece_of_data);
-        }
-        console.log("witting data in firebase");
-        console.log(FIREBASE_REFS.CURRENT_SESSION.path);
-        FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DATACOLLECTION).update(data).then(function(snapshot){
-            go_to_next_page();
-        });
-    }
-    else{
-        app_global.error = true;
-        page_error();
-    }
-}
-
-function send_dialog(text){
-    var data = add_datetime_and_client_id(dictionary=false);
-    data[FIREBASE_KEYS.SOURCE] = FIREBASE_VALUES.CLIENT;
-    data[FIREBASE_KEYS.TEXT] = text;
-    console.log(data);
-    console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path)
-    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
-        console.log("Save in Firebase: " + text);
-    });
-
-    console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
-    var dialog_ref = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG);
-    console.log(dialog_ref.path);
-
-    dialog_ref.limitToLast(2).on('child_added', function(snapshot) {
-        // all records after the last continue to invoke this function
-        var key = snapshot.key;
-        console.log("Debug: change in firebase/dialog.");
-        if (key != FIREBASE_KEYS.CLIENTID){
-            var dialog = snapshot.val();
-            if (dialog[FIREBASE_KEYS.SOURCE] == FIREBASE_VALUES.AGENT) {
-                console.log("Received dialog:")
-                console.log(dialog);
-                handle_server_message(dialog);
-            }
-        }
-    });
-}
-
-function send_amtid(){
-    var id = document.getElementById("amtid_input").value;
-    if (check_amtid(id)){
-        send_data_collection(id, FIREBASE_KEYS.AMTID);
-    }
-    else{
-        alert("Enter your AMT ID.");
-    }
-}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     RECEIVE MESSAGES FUNCTIONS                               --------//
@@ -828,13 +851,13 @@ function server_not_connected_message(){
     console.log("Bool connection timed out: "+(app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
     console.log("app_global.error: "+app_global.error.toString());
     if ((app_global.disconnection_timer.timeElapsed > app_global.connection_timeout || app_global.error) && !app_global.error_message_posted){
-        setTimeout(function(){
-            console.log("Server disconnected error");
-            console.log("time out?" + (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
-            console.log("app_global.error?" + (app_global.error).toString());
-            if (is_chat()) chat_error();
-            else page_error();
-        },10);
+        // setTimeout(function(){
+        console.log("Server disconnected error");
+        console.log("time out?" + (app_global.disconnection_timer.timeElapsed > app_global.connection_timeout).toString());
+        console.log("app_global.error?" + (app_global.error).toString());
+        if (is_chat()) chat_error();
+        else page_error();
+        // },10);
     }
 }
 
