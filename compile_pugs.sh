@@ -7,3 +7,4 @@ pug questionnaire.pug
 pug thanks.pug
 # pug contact.pug
 pug amtid.pug
+pug cora_project.pug
