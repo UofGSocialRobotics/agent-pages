@@ -7,7 +7,7 @@ ___Note:___ All tests were run on the Chrome browser.
 
 ## Running the client	
 
-Access the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/chat_setup.html.
+Access the client running on the web here: https://uofgsocialrobotics.github.io/agent-pages/amtid.html.
 
 ## Mic settings 
 
