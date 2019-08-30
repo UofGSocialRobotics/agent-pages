@@ -58,7 +58,7 @@ class Timer {
 var app_global = {
     current_url : null,
     agent_name : "Cora",
-	voices : [],
+    voices : [],
     socket : false,
     connection_timeout : 5,
     error : false,
@@ -752,9 +752,9 @@ function handle_chat_message(message){
                 u.onend = function (event) {
                     change_microphone_image("wait");
                 };
-				u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
+		u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
                 u.rate = 1.5;
-				window.speechSynthesis.speak(u);
+		window.speechSynthesis.speak(u);
             }
             printMessage(json_message.sentence,'left');  
             if (json_message.recipe_card){
