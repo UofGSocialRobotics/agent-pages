@@ -58,6 +58,7 @@ class Timer {
 var app_global = {
     current_url : null,
     agent_name : "Cora",
+    voices : [],
     socket : false,
     connection_timeout : 5,
     error : false,
@@ -235,7 +236,10 @@ function on_load(){
     page = get_page();
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
     if (page == PAGES.THANKS) amt_validation_code();
-    if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();
+    if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
+	window.speechSynthesis.onvoiceschanged = function() {
+    app_global.voices=window.speechSynthesis.getVoices();
+};
 }
 
 
@@ -748,13 +752,15 @@ function handle_chat_message(message){
                 u.onend = function (event) {
                     change_microphone_image("wait");
                 };
-                window.speechSynthesis.speak(u);
+		u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
+                u.rate = 1.5;
+		window.speechSynthesis.speak(u);
             }
             printMessage(json_message.sentence,'left');  
             if (json_message.recipe_card){
                 console.log(json_message.recipe_card);
 				console.log(json_message.food_recipe);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
+                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
             }
 			if (json_message.movie_poster){
                 console.log(json_message.movie_poster);
