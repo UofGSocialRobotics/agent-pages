@@ -1,0 +1,11 @@
+include page.pug
+include helper.pug
+
++page(true)
+    div(id="questionnaire_wrap")
+        div(class="wrap")
+            form(id="questionnaire")
+
+        center
+            +navigation_button("Submit","get_questionnaire_answers();")
+        
