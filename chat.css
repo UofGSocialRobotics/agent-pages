@@ -414,6 +414,81 @@ form .buttons {
   padding:0 4.25%;
   text-align:right
 } 
+
+/* Likert 11 points */
+
+form .likert11points {
+  list-style: none;
+  width: 700px;
+  margin: 0;
+  padding: 0 0 35px;
+  display: block;
+}
+
+form .likert11points:last-of-type {
+  border-bottom: 0;
+}
+
+form .likert11points:before {
+  content: '';
+  position: relative;
+  top: 11px;
+  left: 0px;
+  display: block;
+  background-color: #C2C2C2;
+  height: 4px;
+  width: 625px;
+}
+
+form .likert11points li {
+  display: inline-block;
+  width: 57px;
+  text-align: center;
+  vertical-align: top;
+}
+
+form .likert11points li input[type=radio] {
+  display: block;
+  position: relative;
+  top: 0;
+  left: 50%;
+  margin-left: -6px;
+
+}
+
+.likert-freq-scale-table {
+  border: none;
+  width: 700px;
+}
+
+.likert-freq-scale-table td {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  padding: 10px 5px;
+  overflow: hidden;
+  word-break: normal;
+}
+
+.likert-freq-scale-table th {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: normal;
+  padding: 10px 5px;
+  overflow: hidden;
+  word-break: normal;
+}
+
+.likert-freq-scale-table .tg-wp8o {
+  text-align: center;
+  vertical-align: top
+}
+
+.likert-freq-scale-table .tg-xwyw {
+  text-align: center;
+  vertical-align: middle
+}
+/* END Likert 11 points */
+
 form .buttons button {
   padding: 5px 10px;
   background-color: #67ab49;

@@ -99,12 +99,13 @@ var PAGES = {
     INTRO : "intro.html",
     INSTRUCTIONS : "instructions.html",
     PRE_STUDY_QUESTIONNAIRE : "pre_study_questionnaire.html",
+    FOOD_DIAGNOSIS : "food_diagnosis.html",
     CHAT_SETUP : "chat_setup.html",
     CHAT : "chat.html",
     QUESTIONNAIRE : "questionnaire.html",
     THANKS : "thanks.html",
 }
-var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.INSTRUCTIONS, PAGES.PRE_STUDY_QUESTIONNAIRE, PAGES.CHAT_SETUP, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.INSTRUCTIONS, PAGES.FOOD_DIAGNOSIS, PAGES.CHAT_SETUP, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -143,6 +144,18 @@ var PRE_STUDY_QUESTIONNAIRE = {
     "question1" : "For movie recommendations, do you favor novelty or similarity?"
 }
 
+var DIAGNOSIS_FOODS = {
+    "question1": "SUPER FOOD SALAD",
+    "question2": "VEGETABLE STIR FRY",
+    "question3": "BAKED FISH WITH VEGETABLES",
+    "question4": "TURKEY AND ROAST VEGETABLES",
+    "question5": "CHICKEN BREAST SALAD",
+    "question6": "PIZZA",
+    "question7": "BURGER AND CHIPS",
+    "question8": "FISH AND CHIPS",
+    "question9": "DONER KEBAD",
+    "question10": "MACARONI AND CHEESE",
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                      FIREBASE GLOBAL VARIABLES                               --------//
@@ -237,9 +250,10 @@ function on_load(){
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
     if (page == PAGES.THANKS) amt_validation_code();
     if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
+    if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
 	window.speechSynthesis.onvoiceschanged = function() {
-    app_global.voices=window.speechSynthesis.getVoices();
-};
+        app_global.voices=window.speechSynthesis.getVoices();
+    };
 }
 
 
@@ -1009,22 +1023,49 @@ function create_questionnaire(){
 function create_pre_study_questionnaire(){
     for (var key in PRE_STUDY_QUESTIONNAIRE){
         // console.log(key,QUESTIONS[key]);
-        create_likert_scale(key,PRE_STUDY_QUESTIONNAIRE[key], "Novelty", "Similarity");
+        create_likert_scale(key,PRE_STUDY_QUESTIONNAIRE[key], true, "Novelty", "Similarity");
     }
 }
 
+function create_food_diagnosis_questionnaire(){
+    console.log("in create_food_diagnosis_questionnaire");
+    html = "";
+    for (var key in DIAGNOSIS_FOODS){
+        // console.log(key,QUESTIONS[key]);
+        q_text = "How frequently do you typically eat " + DIAGNOSIS_FOODS[key] + " for DINNER?";
+        html += create_likert_scale(key, q_text, text_labels=false, label_begin=null, label_end=null, n_points=11, class_style="likert11points", table_freq_legend=true, center_likert=true);
+        if (key=="question10") console.log(html);
+    }
+}
 
-function create_likert_scale(q_id, q_text, label_1="totally disagree", label_5="totally agree"){
+function create_likert_scale(q_id, q_text, text_labels=true, label_begin="totally disagree", label_end="totally agree", n_points=5, class_style="likert", table_freq_legend=false, center_likert=false){
+    console.log("in create_likert_scale");
+    if (!text_labels){
+        label_begin = "0";
+        label_end = (n_points-1).toString();
+    }
     questionnaire = document.getElementById("questionnaire");
-    html = "<label class=\"statement\">"+replace_agent_name(q_text)+"</label><ul class='likert'>";
-    for (i = 1; i <= app_global.points_likert_scale; i++) {
-        if (i == 1) html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_1+"</label></li>";
-        else if (i == app_global.points_likert_scale) {
-            html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_5+"</label></li></ul>";
-            // console.log(questionnaire.innerHTML);
+    html = "\n<label class=\"statement\">"+replace_agent_name(q_text)+"</label>";
+    if (center_likert) html += "<center>";
+    if (table_freq_legend){
+        html += "\n<table class=\"likert-freq-scale-table\" cellspacing=\"0\" cellpadding=\"0\"><tr><th class=\"tg-xwyw\">Never</th><th class=\"tg-wp8o\">A few<br>times a<br>year</th><th class=\"tg-wp8o\">About<br>once a<br>month</th><th class=\"tg-wp8o\">A few<br>times a<br>month</th><th class=\"tg-wp8o\">About<br>once a<br>week</th><th class=\"tg-wp8o\">A few<br>times a<br>week</th><th class=\"tg-xwyw\">Typically<br>daily</th></tr></table>";
+    }
+    html += "\n<ul class='"+class_style+"'>";
+    for (i = 0; i < n_points; i++) {
+        console.log(i, n_points);
+        if (i == 0) html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_begin+"</label>\n</li>";
+        else if (i == n_points-1) {
+            html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_end+"</label>\n</li>\n</ul>";
+            if (center_likert) html += "</center>";
             questionnaire.innerHTML += html;
+            return html;
         }
-        else html += "<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"></li>";
+        else {
+            // l = "lu";
+            if (text_labels) l = "";
+            else l = i.toString();
+            html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+l+"</label>\n</li>";
+        }
     }
 }
 
