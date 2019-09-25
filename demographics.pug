@@ -2,6 +2,7 @@ include page.pug
 include helper.pug
 
 +page(true)
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
     div(id="questionnaire_wrap")
         div(class="wrap")
             form(id="questionnaire")
@@ -40,17 +41,73 @@ include helper.pug
                 -var q_height_unit_dict = {"cm": "cm", "feet_in": "Feet and inches"}
                 +classic_radio(q_height_unit, "height_unit", q_height_unit_dict)
 
-                label(class="statement-demographics")
-                    | Please indicate your height as accurately as you can. Verify that the slider is at the correct possition by miving it until the correct cumber for your height appears temporarily above the scale.
-                center
-                    br
-                    div(id="height_cm_output" style="font-size:18px;font-weight:bold")
-                    br
-                    -var ticks=[100,110,120,130,140,150,160,170,180,190,200,210,220]
-                    +scale_table(ticks)
-                    input(type="range" min=100, max=220, value=100, step=1, class="slider" id="height_cm_input")
-                    script(src="height_val.js")
+                div(id="div_heignt_cm" style="display:none;")
+                    label(class="statement-demographics")
+                        | Please indicate your height as accurately as you can. Verify that the slider is at the correct possition by moving it until the correct number for your height appears above the scale.
+                    center
+                        br
+                        div(id="height_cm_output" style="font-size:18px;font-weight:bold")
+                        br
+                        -var ticks=[100,110,120,130,140,150,160,170,180,190,200,210,220]
+                        +scale_table(ticks)
+                        input(type="range" min=100, max=220, value=100, step=1, class="slider" id="height_cm_input")
 
+                div(id="div_height_feet_in" style="display:none;")
+                    label(class="statement-demographics")
+                        | Please indicate your height in feet and inches.
+                    center
+                        -var feet_options = [3,4,5,6,7]
+                        +dropdown_list("height_feet", feet_options)
+                        | &nbsp  
+                        span(style="font-size:18px;font-weight:bold")="feet"
+                        | &nbsp   &nbsp
+                        -var in_options = [0,1,2,3,4,5,6,7,8,9,10,10]
+                        +dropdown_list("height_in", in_options)
+                        | &nbsp  
+                        span(style="font-size:18px;font-weight:bold")="inches"
+
+                -var q_weight_unit = "To indicate your weight, which of the following units would you like to use?"
+                -var q_weight_unit_dict = {"kg": "kg", "pounds": "pounds", "stones": "stones and pounds"}
+                +classic_radio(q_weight_unit, "weight_unit", q_weight_unit_dict)
+
+                div(id="div_weight_kg" style="display:none;")
+                    label(class="statement-demographics")
+                        | Please indicate your weight as accurately as you can. 
+                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                    center
+                        br
+                        div(id="weight_kg_output" style="font-size:18px;font-weight:bold")
+                        br
+                        -var ticks=["40","60","80",100,120,140,160,180,200,220]
+                        +scale_table(ticks)
+                        input(type="range" min=40, max=220, value=40, step=1, class="slider" id="weight_kg_input")
+
+                div(id="div_weight_pounds" style="display:none;")
+                    label(class="statement-demographics")
+                        | Please indicate your weight as accurately as you can. 
+                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                    center
+                        br
+                        div(id="weight_pounds_output" style="font-size:18px;font-weight:bold")
+                        br
+                        -var ticks=[100,150,200,250,300,350,400,450,500]
+                        +scale_table(ticks)
+                        input(type="range" min=100, max=500, value=100, step=1, class="slider" id="weight_pounds_input")
+
+                div(id="div_weight_stones" style="display:none;")
+                    label(class="statement-demographics")
+                        | Please indicate your weight as accurately as you can. 
+                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                    center
+                        br
+                        div(id="weight_stones_output" style="font-size:18px;font-weight:bold")
+                        br
+                        -var ticks=[6,9,12,15,18,21,24,27,30,33,36]
+                        +scale_table(ticks)
+                        input(type="range" min=6, max=36, value=6, step=0.1, class="slider" id="weight_stones_input")
+
+
+                script(src="demographics.js")
         br
         br
         center

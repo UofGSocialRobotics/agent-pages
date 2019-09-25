@@ -13,7 +13,7 @@ mixin classic_radio(q_label, radio_name, radio_dict)
     div(class="control-group")
         each val, index in radio_dict
             label(class="control control-radio")=val
-                input(type="radio", name=radio_name, value=index)
+                input(type="radio", name=radio_name, id=radio_name+"_"+index, value=index)
                 div(class="control_indicator")
 
 mixin classic_checkbox(q_label, box_name, box_dict)
@@ -24,8 +24,16 @@ mixin classic_checkbox(q_label, box_name, box_dict)
                 input(type="checkbox", name=box_name, value=index)
                 div(class="control_indicator")
 
-mixin scale_table(labels)
-    table(class="likert-freq-scale-table", cellpadding="0", cellspacing="0")
-        tr
+mixin scale_table(labels, tr_width="")
+    table(class="likert-freq-scale-table", cellpadding="0", cellspacing="0", style="table-layout: fixed;")
+        tr(width=tr_width)
             each val in labels
                 th(class="tg-wp8o")=val
+
+mixin dropdown_list(select_id, options_list)
+    div(class="select")
+        select(id=select_id)
+            option(value="", selected disabled hidden)="--"
+            each val in options_list
+                option(value=val)=val
+        div(class="select_arrow")

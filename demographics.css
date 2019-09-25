@@ -1,0 +1,264 @@
+/* Likert 11 points */
+
+form .likert11points {
+    list-style: none;
+    width: 700px;
+    margin: 0;
+    padding: 0 0 35px;
+    display: block;
+  }
+  
+  form .likert11points:last-of-type {
+    border-bottom: 0;
+  }
+  
+  form .likert11points:before {
+    content: '';
+    position: relative;
+    top: 11px;
+    left: 0px;
+    display: block;
+    background-color: #C2C2C2;
+    height: 4px;
+    width: 625px;
+  }
+  
+  form .likert11points li {
+    display: inline-block;
+    width: 57px;
+    text-align: center;
+    vertical-align: top;
+  }
+  
+  form .likert11points li input[type=radio] {
+    display: block;
+    position: relative;
+    top: 0;
+    left: 50%;
+    margin-left: -6px;
+  
+  }
+  
+  .likert-freq-scale-table {
+    border: none;
+    width: 700px;
+  }
+  
+  .likert-freq-scale-table td {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    padding: 10px 5px;
+    overflow: hidden;
+    word-break: normal;
+  }
+  
+  .likert-freq-scale-table th {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 10px 5px;
+    overflow: hidden;
+    word-break: normal;
+  }
+  
+  .likert-freq-scale-table .tg-wp8o {
+    text-align: center;
+    vertical-align: top
+  }
+  
+  .likert-freq-scale-table .tg-xwyw {
+    text-align: center;
+    vertical-align: middle
+  }
+  /* END Likert 11 points */
+  
+  form .buttons button {
+    padding: 5px 10px;
+    background-color: #67ab49;
+    border: 0;
+    border-radius: 3px;
+  }
+  form .buttons .clear {background-color: #e9e9e9;}
+  form .buttons .submit {background-color: #67ab49;} 
+  form .buttons .clear:hover {background-color: #ccc;}
+  form .buttons .submit:hover {background-color: #14892c;} 
+  
+  /* Classic radio buttons */
+  form .statement-demographics {
+    display:block;
+    font-size: 16px;
+    padding: 3px 0 0 0;
+    margin-bottom:10px;
+    margin-top: 25px;
+  }
+  
+  .control {
+    font-family: arial;
+    display: block;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 5px;
+    padding-top: 3px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+    .control input {
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+    }
+  .control_indicator {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    background: #e6e6e6;
+    border: 0px solid #000000;
+  }
+  .control-radio .control_indicator {
+    border-radius: 50%;
+  }
+  
+  .control:hover input ~ .control_indicator,
+  .control input:focus ~ .control_indicator {
+    background: #cccccc;
+  }
+  
+  .control input:checked ~ .control_indicator {
+    background: #2aa1c0;
+  }
+  .control:hover input:not([disabled]):checked ~ .control_indicator,
+  .control input:checked:focus ~ .control_indicator {
+    background: #0e6647d;
+  }
+  .control input:disabled ~ .control_indicator {
+    background: #e6e6e6;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .control_indicator:after {
+    box-sizing: unset;
+    content: '';
+    position: absolute;
+    display: none;
+  }
+  .control input:checked ~ .control_indicator:after {
+    display: block;
+  }
+  .control-radio .control_indicator:after {
+    left: 7px;
+    top: 7px;
+    height: 6px;
+    width: 6px;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+  .control-radio input:disabled ~ .control_indicator:after {
+    background: #7b7b7b;
+  }
+  
+  .control-checkbox .control_indicator:after {
+    left: 8px;
+    top: 4px;
+    width: 3px;
+    height: 8px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .control-checkbox input:disabled ~ .control_indicator:after {
+    border-color: #7b7b7b;
+  }
+  
+  .input-demographics{
+    padding: 5px 5px;
+    font-size: 14px;
+  }
+  
+  .slider {
+    -webkit-appearance: none;
+    width: 660px;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    margin-top: 10px;
+  }
+  
+  .slider:hover {
+    opacity: 1;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  .select {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 60px;
+    font-size: 16px;
+    font-weight: bold;
+  }    
+  .select select {
+    display: inline-block;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    padding: 10px 15px;
+    outline: 0;
+    border: 0px solid #000000;
+    border-radius: 0px;
+    background: #e6e6e6;
+    color: #3d3d3d;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+    .select select::-ms-expand {
+        display: none;
+    }
+    .select select:hover,
+    .select select:focus {
+        color: #000000;
+        background: #cccccc;
+    }
+    .select select:disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+  .select_arrow {
+    position: absolute;
+    top: 16px;
+    right: 5px;
+    pointer-events: none;
+    border-style: solid;
+    border-width: 8px 5px 0px 5px;
+    border-color: #7b7b7b transparent transparent transparent;
+  }
+  .select select:hover ~ .select_arrow,
+  .select select:focus ~ .select_arrow {
+    border-top-color: #000000;
+  }
+  .select select:disabled ~ .select_arrow {
+    border-top-color: #cccccc;
+  }
