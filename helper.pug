@@ -1,10 +1,31 @@
 mixin navigation_button(text, onclick_function, style_display="display:block;")    
-        div(class="page_buttons", onclick=onclick_function, style=style_display)
-            div(class="icon")
-            div(class="text")=text
+    div(class="page_buttons", onclick=onclick_function, style=style_display)
+        div(class="icon")
+        div(class="text")=text
 
 mixin next_page(next_function) 
     center
         + navigation_button("Next",next_function)
 
 
+mixin classic_radio(q_label, radio_name, radio_dict)
+    label(class="statement-demographics")= q_label
+    div(class="control-group")
+        each val, index in radio_dict
+            label(class="control control-radio")=val
+                input(type="radio", name=radio_name, value=index)
+                div(class="control_indicator")
+
+mixin classic_checkbox(q_label, box_name, box_dict)
+    label(class="statement-demographics")= q_label
+    div(class="control-group")
+        each val, index in box_dict
+            label(class="control control-checkbox")=val
+                input(type="checkbox", name=box_name, value=index)
+                div(class="control_indicator")
+
+mixin scale_table(labels)
+    table(class="likert-freq-scale-table", cellpadding="0", cellspacing="0")
+        tr
+            each val in labels
+                th(class="tg-wp8o")=val

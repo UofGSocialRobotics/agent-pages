@@ -1,0 +1,57 @@
+include page.pug
+include helper.pug
+
++page(true)
+    div(id="questionnaire_wrap")
+        div(class="wrap")
+            form(id="questionnaire")
+                -var q_age = "From the range below, please select your age."
+                -var q_age_dict = {"18-29": "18-29", "30-49": "30-49", "50-69": "50-69", ">70": "70 and above"}
+                +classic_radio(q_age,"age",q_age_dict)
+
+                -var q_employment = "What best describes your employment status? (multiple answers allowed)"
+                -var q_employment_dict = {"full-time": "Employed full-time", "part-time": "Employed, part-time", "student": "Student", "unemployed": "Umemployed"}
+                +classic_checkbox(q_employment, "employment", q_employment_dict)
+
+                -var q_ethnicity = "What best describes your ethnicity?"
+                -var q_ethnicity_dict = {"white": "White", "hisp_latino": "Hispanic or Latino", "black": "Black or African American", "asian": "Asian", "other": "Other"}
+                +classic_radio(q_ethnicity, "ethnicity", q_ethnicity_dict)
+
+                -var q_gender = "What best describes your gender identity?"
+                -var q_gender_dict = {"male": "Male", "female": "Female", "other": "Non-Binary"}
+                +classic_radio(q_gender, "gender", q_gender_dict)
+
+                - var q_living_in_UK_dict = {"born_here": "I was born here","more_10y": "More than 10 years","5_to_10y": "Between 5 and 10 years","less_5y": "Less than 5 years","1st_y": "This is my first year in the UK","not_in_UK": "I don't currently live in the UK"}
+                +classic_radio("How long have you been living in the UK?", "living_in_UK", q_living_in_UK_dict)
+
+                -var q_living_situation_dict = {"home": "I live at home with my parents", "by_myself": "I live by myself (e.g., in a shared flat, in a studio flat, in student accommodations, etc.)"}
+                -var q_living_situation = "Do you live at home (with parents) or alone (including flat sharing, student accommodations, etc.)?"
+                +classic_radio(q_living_situation, "living_situation", q_living_situation_dict)
+
+                label(class="statement-demographics")
+                    | Where are you from originally? Please type below.
+                input(type="text", name="from", class="input-demographics")
+
+                -var q_education = "What is your highest education level?"
+                -var q_education_dict = {"no_education": "No formal education", "secondary": "Secondary school / GCSE", "college": "College / A levels", "udergrad": "Undergraduate degree (BA/BSc/other)", "graduate": "Graduate degree (MA/MSc/MPhil/other)", "PhD": "Doctorate degree (PhD/MD/other"}
+                +classic_radio(q_education, "education", q_education_dict)
+
+                -var q_height_unit = "To indicate your height, which of the following units would you like to use?"
+                -var q_height_unit_dict = {"cm": "cm", "feet_in": "Feet and inches"}
+                +classic_radio(q_height_unit, "height_unit", q_height_unit_dict)
+
+                label(class="statement-demographics")
+                    | Please indicate your height as accurately as you can. Verify that the slider is at the correct possition by miving it until the correct cumber for your height appears temporarily above the scale.
+                center
+                    br
+                    div(id="height_cm_output" style="font-size:18px;font-weight:bold")
+                    br
+                    -var ticks=[100,110,120,130,140,150,160,170,180,190,200,210,220]
+                    +scale_table(ticks)
+                    input(type="range" min=100, max=220, value=100, step=1, class="slider" id="height_cm_input")
+                    script(src="height_val.js")
+
+        br
+        br
+        center
+            +navigation_button("Submit","get_questionnaire_answers();")

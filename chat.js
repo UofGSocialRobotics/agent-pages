@@ -176,7 +176,8 @@ FIREBASE_KEYS = {
     POSTSTUDYANSWERS : "questionnaire_answers",
     PRESTUDYANSWERS : "pre_study_questionnaire_answers",
     SOURCE : "source",
-    TEXT : "text"
+    TEXT : "text",
+    FOODDIAGNOSISANSWERS : "food_diagnosis_answers"
 };
 
 FIREBASE_VALUES = {
@@ -198,6 +199,7 @@ data_col[FIREBASE_KEYS.AMTID] = false;
 data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
 data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
+data_col[FIREBASE_KEYS.FOODDIAGNOSISANSWERS] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -651,7 +653,8 @@ function go_to_next_page(param){
 function get_questionnaire_answers(){
     var page = get_page();
     if (page==PAGES.QUESTIONNAIRE) var q_dict = QUESTIONS[app_global.q_id];
-    else var q_dict = PRE_STUDY_QUESTIONNAIRE;
+    else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) var q_dict = PRE_STUDY_QUESTIONNAIRE;
+    else if (page == PAGES.FOOD_DIAGNOSIS) var q_dict = DIAGNOSIS_FOODS;
     var answers = {};
     var n_question = Object.keys(q_dict).length;
     var count_questions = 0;
@@ -672,7 +675,8 @@ function get_questionnaire_answers(){
             if (Object.keys(answers).length == n_question){
                 console.log(answers);
                 if (page==PAGES.QUESTIONNAIRE) send_data_collection(answers, FIREBASE_KEYS.POSTSTUDYANSWERS);
-                else send_data_collection(answers, FIREBASE_KEYS.PRESTUDYANSWERS);
+                else if (page==PAGES.PRE_STUDY_QUESTIONNAIRE) send_data_collection(answers, FIREBASE_KEYS.PRESTUDYANSWERS);
+                else if (page==PAGES.FOOD_DIAGNOSIS) send_data_collection(answers, FIREBASE_KEYS.FOODDIAGNOSISANSWERS);
             }
             else{
                 alert("You must answer all questions.")
