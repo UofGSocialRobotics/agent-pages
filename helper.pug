@@ -9,7 +9,7 @@ mixin next_page(next_function)
 
 
 mixin classic_radio(q_label, radio_name, radio_dict)
-    label(class="statement-demographics")= q_label
+    label(class="statement-demographics", id="label_"+radio_name)= q_label
     div(class="control-group")
         each val, index in radio_dict
             label(class="control control-radio")=val
@@ -17,7 +17,7 @@ mixin classic_radio(q_label, radio_name, radio_dict)
                 div(class="control_indicator")
 
 mixin classic_checkbox(q_label, box_name, box_dict)
-    label(class="statement-demographics")= q_label
+    label(class="statement-demographics", id="label_"+box_name)= q_label
     div(class="control-group")
         each val, index in box_dict
             label(class="control control-checkbox")=val

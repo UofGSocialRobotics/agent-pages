@@ -126,11 +126,11 @@ form .likert11points {
   }
   
   .control input:checked ~ .control_indicator {
-    background: #2aa1c0;
+    background: #a3d063;
   }
   .control:hover input:not([disabled]):checked ~ .control_indicator,
   .control input:checked:focus ~ .control_indicator {
-    background: #0e6647d;
+    background: #0E6647D;
   }
   .control input:disabled ~ .control_indicator {
     background: #e6e6e6;
