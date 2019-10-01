@@ -110,7 +110,7 @@ var PAGES = {
     THANKS : "thanks.html",
     DEMOGRPAHICS : "demographics.html"
 }
-var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.INSTRUCTIONS, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.CHAT_SETUP, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.CHAT_SETUP, PAGES.INSTRUCTIONS, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -254,14 +254,17 @@ function on_load(){
     keyboard_functions();
     set_agent_name();
     app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
-    get_tts_asr(accessChatWindow);
     page = get_page();
+    if (page == PAGES.CHAT) get_tts_asr(accessChatWindow);
+    else get_tts_asr();
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
     else if (page == PAGES.THANKS) amt_validation_code();
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
-    else if (page == PAGES.CHAT) alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
+    else if (page == PAGES.CHAT) {
+        alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
+    }
 	window.speechSynthesis.onvoiceschanged = function() {
         app_global.voices=window.speechSynthesis.getVoices();
     };
@@ -360,17 +363,21 @@ function get_client_id(){
 }
 
 function get_tts_asr(callback){
-    page = get_page();
-    if (page==PAGES.CHAT){
-        var splited_url = app_global.current_url.split("tts_asr="); //window.location.href
-        if (splited_url.length > 1) {
-            var asrtts_bool= (remove_other_var(splited_url[1]) == "true");
-            config.tts_activated = asrtts_bool;
-            config.asr_activated = asrtts_bool;
-        }
-        console.log("tts_ars activated = "+config.asr_activated.toString());
-        callback();
+    // page = get_page();
+    // if (page==PAGES.CHAT){
+    var splited_url = app_global.current_url.split("tts_asr="); //window.location.href
+    if (splited_url.length > 1) {
+        var asrtts_bool= (remove_other_var(splited_url[1]) == "true");
+        config.tts_activated = asrtts_bool;
+        config.asr_activated = asrtts_bool;
     }
+    else{
+        console.log("WARNING: can't find tts_asr var in url.")
+    }
+    console.log("tts_ars activated = "+config.asr_activated.toString());
+    if (callback) callback();
+    else return asrtts_bool;
+    // }
 }
 
 function get_q_id(callback){
@@ -599,29 +606,33 @@ function get_page_name(){
     return get_page().split(".")[0];
 }
 
+function url_vars_to_string(){
+    return "?clientid="+app_global.clientID+"?tts_asr="+config.tts_activated.toString();
+}
+
 function go_to_intro(){
-    location.replace(PAGES.INTRO+"?clientid="+app_global.clientID);
+    location.replace(PAGES.INTRO+url_vars_to_string());
 }
 function go_to_instructions(){
-    location.replace(PAGES.INSTRUCTIONS+"?clientid="+app_global.clientID);
+    location.replace(PAGES.INSTRUCTIONS+url_vars_to_string());
 }
 function go_to_demographics(){
-    location.replace(PAGES.DEMOGRPAHICS+"?clientid="+app_global.clientID);
+    location.replace(PAGES.DEMOGRPAHICS+url_vars_to_string());
 }
 function go_to_food_diagnosis(){
-    location.replace(PAGES.FOOD_DIAGNOSIS+"?clientid="+app_global.clientID);
+    location.replace(PAGES.FOOD_DIAGNOSIS+url_vars_to_string());
 }
 function go_to_pre_study_questionnaire(){
-    location.replace(PAGES.PRE_STUDY_QUESTIONNAIRE+"?clientid="+app_global.clientID);
+    location.replace(PAGES.PRE_STUDY_QUESTIONNAIRE+url_vars_to_string());
 }
 function go_to_chat_setup(){
-    location.replace(PAGES.CHAT_SETUP+"?clientid="+app_global.clientID);
+    location.replace(PAGES.CHAT_SETUP+url_vars_to_string());
 }
-function go_to_chat(tts_asr){
-    location.replace(PAGES.CHAT+"?clientid="+app_global.clientID+"?tts_asr="+tts_asr.toString());
+function go_to_chat(){
+    location.replace(PAGES.CHAT+url_vars_to_string());
 }
 function go_to_questionnaire(x){
-    location.replace(PAGES.QUESTIONNAIRE+"?clientid="+app_global.clientID+"?q_id="+x);
+    location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x);
 }
 function go_to_page_after_questionnaire(){
     if (get_page() == PAGES.PRE_STUDY_QUESTIONNAIRE) go_to_chat_setup();
@@ -659,6 +670,8 @@ function go_to_next_page(param){
                 case PAGES.FOOD_DIAGNOSIS:
                     go_to_food_diagnosis();
                     break;
+                case PAGES.CHAT:
+                    go_to_chat();
                 default:
                     console.log("ERROR: not implemented for "+next_page);
                     break;                
@@ -795,9 +808,12 @@ function handle_chat_message(message){
                 u.onend = function (event) {
                     change_microphone_image("wait");
                 };
-		u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
-                u.rate = 1.5;
-		window.speechSynthesis.speak(u);
+                // u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
+                var voices = window.speechSynthesis.getVoices();
+                u.voice = voices[48]; // Good voices: 48 - 49 - 10 - 17 - 28 - 32 - 36
+                // console.log(voices.length);
+                u.rate = 1;
+		        window.speechSynthesis.speak(u);
             }
             printMessage(json_message.sentence,'left');  
             if (json_message.recipe_card){
@@ -1141,6 +1157,13 @@ function startDictation() {
     }
 }
 
+function set_up_asr_tts(asrtts_bool, callback){
+    config.tts_activated = asrtts_bool;
+    config.asr_activated = asrtts_bool;
+    callback();
+}
+
+
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                       AMT VALIDATION CODE                                    --------//
 //--------------------------------------------------------------------------------------------------------------//
@@ -1362,7 +1385,7 @@ function check_answers_demographics(){
 
 function alert_speak_listen() {
     if (confirm("I have authorized this website to access my microphone and I am ready to continue.")){
-        go_to_chat(true);
+        set_up_asr_tts(true, go_to_next_page);
     }
     else {
         var div_explain_msg = document.getElementById("cant_allow_access_for_microphone");

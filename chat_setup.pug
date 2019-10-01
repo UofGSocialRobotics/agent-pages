@@ -30,7 +30,7 @@ include helper.pug
             div(style="color:red;")
                 | If you cannot find how to allow this website to access your microphone: 
             br
-            | You can still choose to "Speak and Listen" (click "OK" and asked if you are ready to continue), but your browser will ask you to confirm that you authorize this website to access your microphone
+            | You can still choose to "Speak and Listen" (click "OK" when asked if you are ready to continue), but your browser will require you to confirm that you authorize this website to access your microphone
             i  each time you will click on the microphone button.
             br
             br
@@ -40,7 +40,7 @@ include helper.pug
     br
     br
     center
-        +navigation_button("Write and read","go_to_chat(false);")
+        +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
         br
         br
         br
