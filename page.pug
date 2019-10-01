@@ -6,7 +6,7 @@ mixin page(connect=false, chat_window=false)
             link(href="chat.css", rel="stylesheet", id="bootstrap-css")
             link(href="avatar.css", rel="stylesheet", id="error_css")
 
-        body(onload=connect ? "on_load();" : "on_load();")
+        body(onload="on_load();")
             div(class="site-wrapper")
                 //- script
                 //-     | var b = !{JSON.stringify(title_bool)};

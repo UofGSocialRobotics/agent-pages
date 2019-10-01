@@ -257,10 +257,11 @@ function on_load(){
     get_tts_asr(accessChatWindow);
     page = get_page();
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
-    if (page == PAGES.THANKS) amt_validation_code();
-    if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
-    if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
-    if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
+    else if (page == PAGES.THANKS) amt_validation_code();
+    else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
+    else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
+    else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
+    else if (page == PAGES.CHAT) alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
 	window.speechSynthesis.onvoiceschanged = function() {
         app_global.voices=window.speechSynthesis.getVoices();
     };
