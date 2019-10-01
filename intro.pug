@@ -2,27 +2,31 @@ include page.pug
 include helper.pug
 
 +page()
-    | In this task, you will discuss with AGENTNAME using your microphone (we suggest you to use a headset for better experience). 
+    | To discuss with AGENTNAME, you can "Read and Write" or to "Speak and Listen".
     br
     br
-    | If you do not have a microphone, you will still be able to type down your answers using the box at the bottom left of the screen.
+    | If you want to "Speak and Listen", here is how to allow the website to access your microphone:
     br
     br
-    i
-        | To allow the website to access your microphone:
-        ol
-            li Go to the website.
-            li Click "green lock" icon or "i in circle" icon beside the URL in address bar.
-            li In the menu, choose "Always allow on this site" for Microphone.
-            li Reload.
-    | You can leave the conversation by telling AGENTNAME that you do not need more recommendations from her when she asks you. 
-    | A button "Next" will appear at the bottom of the chat window, leading to a short survey about your experience.
+    ol
+        //- li Go to the website.
+        li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
+        li In the menu, choose "Always allow on this site" for Microphone.
+        li Reload.
+    br
+    br
+    b
+        | Please set up the microphone-access authorization 
+        i   NOW
+        | &nbsp if you want to "Speak and Listen".
+        //- You can leave the conversation by telling AGENTNAME that you do not need more recommendations from her when she asks you. 
+        //- | A button "Next" will appear at the bottom of the chat window, leading to a short survey about your experience.
     //- br
     //- br
     //- | You'll then see a new button appearing at the bottom of your screen leading to a short survey about your experience. 
-    br
-    br
-    | Once you have completed the survey, we will provide you with your AMT validation code. 
+    //- br
+    //- br
+    //- | Once you have completed the survey, we will provide you with your AMT validation code. 
     br
     br
     br

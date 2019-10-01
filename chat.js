@@ -1354,3 +1354,17 @@ function check_answers_demographics(){
     }
     else send_data_collection(app_global.answers_demographics, FIREBASE_KEYS.DEMOGRPAHICS);
 }
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                    ALERT FOR SPEAK AND LISTEN                                --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function alert_speak_listen() {
+    if (confirm("I have authorized this website to access my microphone and I am ready to continue.")){
+        go_to_chat(true);
+    }
+    else {
+        var div_explain_msg = document.getElementById("cant_allow_access_for_microphone");
+        div_explain_msg.style = "display:block;";
+    }
+}

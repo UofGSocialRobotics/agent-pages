@@ -2,10 +2,48 @@ include page.pug
 include helper.pug
 
 +page()
-    +navigation_button("Write and read","go_to_chat(false);")
+    div(id="microphone_instructions")
+        | To discuss with AGENTNAME, you can "Write and Read" or "Speak and Listen".
+        br
+        br
+        | If you do not have a mircrophone, please select "Write and Read". 
+        br
+        br
+        | If you want to "Speak and Listen", here is how to allow the website to access your microphone:
+        br
+        br
+        ol
+            //- li Go to the website.
+            li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
+            li In the menu, choose "Always allow on this site" for Microphone.
+            li Reload.
+        br
+        br
+        b
+            | Please set up the microphone-access authorization 
+            i   NOW
+            |   if you want to "Speak and Listen".
+
+        div(id="cant_allow_access_for_microphone", style="display:none;")
+            br
+            br
+            div(style="color:red;")
+                | If you cannot find how to allow this website to access your microphone: 
+            br
+            | You can still choose to "Speak and Listen" (click "OK" and asked if you are ready to continue), but your browser will ask you to confirm that you authorize this website to access your microphone
+            i  each time you will click on the microphone button.
+            br
+            br
+            |  If you would rather avoid that, chose "Write and Read" instead.
     br
     br
     br
-    +navigation_button("Speak and listen","go_to_chat(true);")
+    br
+    center
+        +navigation_button("Write and read","go_to_chat(false);")
+        br
+        br
+        br
+        +navigation_button("Speak and listen","alert_speak_listen();")
     
     
