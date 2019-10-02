@@ -25,9 +25,9 @@ include helper.pug
                 - var q_living_in_UK_dict = {"born_here": "I was born here","more_10y": "More than 10 years","5_to_10y": "Between 5 and 10 years","less_5y": "Less than 5 years","1st_y": "This is my first year in the UK","not_in_UK": "I don't currently live in the UK"}
                 +classic_radio("How long have you been living in the UK?", "living_in_UK", q_living_in_UK_dict)
 
-                -var q_living_situation_dict = {"home": "I live at home with my parents", "by_myself": "I live by myself (e.g., in a shared flat, in a studio flat, in student accommodations, etc.)"}
-                -var q_living_situation = "Do you live at home (with parents) or alone (including flat sharing, student accommodations, etc.)?"
-                +classic_radio(q_living_situation, "living_situation", q_living_situation_dict)
+                //- -var q_living_situation_dict = {"home": "I live at home with my parents", "by_myself": "I live by myself (e.g., in a shared flat, in a studio flat, in student accommodations, etc.)"}
+                //- -var q_living_situation = "Do you live at home (with parents) or alone (including flat sharing, student accommodations, etc.)?"
+                //- +classic_radio(q_living_situation, "living_situation", q_living_situation_dict)
 
                 label(class="statement-demographics", id="label_from")
                     | Where are you from originally? Please type below.
