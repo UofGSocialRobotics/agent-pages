@@ -1,0 +1,38 @@
+include page.pug
+include helper.pug
+
++page()
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
+    | As specified on Prolific, 
+    u
+        b
+            |  you need speakers or headphones to take part in this study
+    | , so let's check your speakers!
+    br
+    br
+    br
+    div(id="play_audio_instructions")
+        | Play the recording and tell us what your hear.
+    div(id="play_audio_instructions_alert" style="color:red;font-weight:bold;display:none;")
+        | You did not hear correctly the audio. You can try again.
+        br
+        | Listen to the audio and  type what you hear in the text box.
+    br
+    center
+        table
+            tr
+                td
+                    audio(controls)
+                        source(src="audio_test.m4a" type="audio/mp4")
+                td
+                    input(type="text", id="audio_test", class="input-demographics", placeholder="What did you hear?" size="45" style="margin-left:10px")
+    br
+    br
+    br
+    br
+    center
+        //- +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
+        //- br
+        //- br
+        //- br
+        +navigation_button("Next","check_test_audio(go_to_next_page);")

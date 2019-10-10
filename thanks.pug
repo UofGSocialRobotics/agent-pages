@@ -2,15 +2,22 @@ include page.pug
 include helper.pug
 
 +page()
+    | Thank you for your participation.
+    br
+    br
+    | Feel free to contact us at 
+    a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com
+    |  if your want more details about this study.
+    br
+    br
+    | Your Prolific completion code is 
+    span(style="color:red;")="6536D5CC"
+    | . You can also just click on "Finish" to validate your participation on Prolific.
+    br
+    br
+    //- | Your AMT validation code is
+    br
+    br
+    //- div(id="AMT_validation_code")
     center
-        | Thank you for your participation.
-        br
-        br
-        br
-        br
-        br
-        br
-        | Your AMT validation code is
-        br
-        br
-        div(id="AMT_validation_code")
+        +navigation_button("Finish","go_to_prolific_validation_page();")

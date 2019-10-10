@@ -1,0 +1,50 @@
+include page.pug
+include helper.pug
+
++page()
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
+    //- | To chat with Cora, you need a microphone and speakers.
+    br
+    br
+    br
+    //- div(style="font-weight:bold;font-size:16px;font-style:italic")
+    //-     | Let's set up your microphone
+    //- br
+    | To chat with Cora, you should allow this website to access your microphone:
+    br
+    br
+    ol
+        //- li Go to the website.
+        li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
+        li In the menu, choose "Always allow on this site" for Microphone.
+        li Reload.
+        //- b
+        //-     | Please set up the microphone-access authorization 
+        //-     i   NOW.
+    div(id="cant_allow_access_for_microphone", style="display:none;")
+        br
+        div(style="color:red;")
+            i
+                | If you cannot find how to allow this website to access your microphone: 
+        br
+        | You can still proceed (click "OK" when asked if you are ready to continue), but your browser will require you to confirm that you authorize this website to access your microphone
+        i  each time you will click on the microphone button.
+        br
+        br
+        div(style="color:red;")
+            i
+                | If you don't have a microphone: 
+        br
+        | You can still proceed (click "OK" when asked if you are ready to continue) and type what you want to say to Cora.
+    br
+    br
+    br
+    br
+    center
+        //- +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
+        //- br
+        //- br
+        //- br
+        +navigation_button("Next","alert_speak_listen();")
+    
+    

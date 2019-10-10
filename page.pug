@@ -19,6 +19,9 @@ mixin page(connect=false, chat_window=false)
                     div(id="server_error", style="display:none;")
                         | It looks like our server is not connected.
                         | We apologize for the inconvenience.
+                        br
+                        | Feel free to contact us at 
+                        a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com.
                     if chat_window
                         block
                     else
@@ -39,7 +42,8 @@ mixin page(connect=false, chat_window=false)
                                     | &nbsp at the &nbsp
                                     a(href="https://www.gla.ac.uk/", title="University of Glasgow") University of Gloasgow
                                     br
-                                    | Contact us at <a href = "mailto: uofg.virtualagents@gmail.com">uofg.virtualagents@gmail.com</a>
+                                    | Contact us at 
+                                    a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com.
                             th(style="text-align:right;vertical-align:bottom;")
                                 div(class="credits")
                                     br

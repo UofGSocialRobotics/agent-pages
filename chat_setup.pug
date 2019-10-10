@@ -2,48 +2,65 @@ include page.pug
 include helper.pug
 
 +page()
-    div(id="microphone_instructions")
-        | To discuss with AGENTNAME, you can "Write and Read" or "Speak and Listen".
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
+    | To chat with Cora, you need a microphone and speakers.
+    br
+    br
+    br
+    div(style="font-weight:bold;font-size:16px;font-style:italic")
+        | Let's check your speakers
+    br
+    br
+    div(id="play_audio_instructions")
+        | Play the recording and tell us what your hear.
+    div(id="play_audio_instructions_alert" style="color:red;font-weight:bold;display:none;")
+        | You did not hear correctly the audio. You can try again.
         br
-        br
-        | If you do not have a mircrophone, please select "Write and Read". 
-        br
-        br
-        | If you want to "Speak and Listen", here is how to allow the website to access your microphone:
-        br
-        br
-        ol
-            //- li Go to the website.
-            li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
-            li In the menu, choose "Always allow on this site" for Microphone.
-            li Reload.
-        br
-        br
-        b
-            | Please set up the microphone-access authorization 
-            i   NOW
-            |   if you want to "Speak and Listen".
+        | Listen to the audio and  type what you hear in the text box.
+    br
+    center
+        table
+            tr
+                td
+                    audio(controls)
+                        source(src="audio_test.m4a" type="audio/mp4")
+                td
+                    input(type="text", id="audio_test", class="input-demographics", placeholder="What did you hear?" size="45" style="margin-left:10px")
 
-        div(id="cant_allow_access_for_microphone", style="display:none;")
-            br
-            br
-            div(style="color:red;")
-                | If you cannot find how to allow this website to access your microphone: 
-            br
-            | You can still choose to "Speak and Listen" (click "OK" when asked if you are ready to continue), but your browser will require you to confirm that you authorize this website to access your microphone
-            i  each time you will click on the microphone button.
-            br
-            br
-            |  If you would rather avoid that, chose "Write and Read" instead.
+    br
+    br
+    br
+    div(style="font-weight:bold;font-size:16px;font-style:italic")
+        | Let's set up your microphone
+    br
+    | To chat with Cora, you should allow this website to access your microphone:
+    br
+    br
+    ol
+        //- li Go to the website.
+        li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
+        li In the menu, choose "Always allow on this site" for Microphone.
+        li Reload.
+        //- b
+        //-     | Please set up the microphone-access authorization 
+        //-     i   NOW.
+    div(id="cant_allow_access_for_microphone", style="display:none;")
+        br
+        br
+        div(style="color:red;")
+            | If you cannot find how to allow this website to access your microphone: 
+        br
+        | You can still proceed (click "OK" when asked if you are ready to continue), but your browser will require you to confirm that you authorize this website to access your microphone
+        i  each time you will click on the microphone button.
     br
     br
     br
     br
     center
-        +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
-        br
-        br
-        br
-        +navigation_button("Speak and listen","alert_speak_listen();")
+        //- +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
+        //- br
+        //- br
+        //- br
+        +navigation_button("Next","check_test_audio();")
     
     

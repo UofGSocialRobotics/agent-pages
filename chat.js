@@ -108,9 +108,13 @@ var PAGES = {
     CHAT : "chat.html",
     QUESTIONNAIRE : "questionnaire.html",
     THANKS : "thanks.html",
-    DEMOGRPAHICS : "demographics.html"
+    DEMOGRPAHICS : "demographics.html",
+    INFORMATION_FORM : "information_form.html",
+    CONSENT_FORM : "consent_form.html",
+    CHECK_SPEAKERS : "check_speakers.html",
+    CHECK_MICROPHONE : "check_microphone.html"
 }
-var PAGES_SEQUENCE = [PAGES.AMTID, PAGES.INTRO, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.CHAT_SETUP, PAGES.INSTRUCTIONS, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.CHECK_SPEAKERS, PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.INTRO, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHECK_MICROPHONE, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -133,14 +137,24 @@ var QUESTIONS = {
         "question7" : "7) AGENTNAME and I established rapport.",
         "question8" : "8) I felt I had no connection with AGENTNAME",
     },
+    // "q2" : {
+    //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
+    //     "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
+    //     "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
+    //     "question12" : "12) I easily found the movies I was looking for.",
+    //     "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
+    //     "question14" : "14) I was satisfied with the movies recommended to me.",
+    //     "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
+    //     "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+    // }
     "q2" : {
-        "question9" : "9) The movies recommended to me during this interaction matched my interests.",
+        "question9" : "9) The recipe recommended to me during this interaction matched my interests.",
         "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-        "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
-        "question12" : "12) I easily found the movies I was looking for.",
-        "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
-        "question14" : "14) I was satisfied with the movies recommended to me.",
-        "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
+        "question11" : "11) I would use AGENTNAME to get recipe recommendations in the future.",
+        "question12" : "12) I easily found the recipe I was looking for.",
+        "question13" : "13) I would ccok the recipe recommended to me, given the opportunity.",
+        "question14" : "14) I was satisfied with the recipe recommended to me.",
+        "question15" : "15) AGENTNAME provided sufficient details about the recipe recommended.",
         "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
     }
 };
@@ -258,7 +272,7 @@ function on_load(){
     if (page == PAGES.CHAT) get_tts_asr(accessChatWindow);
     else get_tts_asr();
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
-    else if (page == PAGES.THANKS) amt_validation_code();
+    // else if (page == PAGES.THANKS) amt_validation_code();
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
@@ -609,7 +623,9 @@ function get_page_name(){
 function url_vars_to_string(){
     return "?clientid="+app_global.clientID+"?tts_asr="+config.tts_activated.toString();
 }
-
+function go_to_amtid(){
+    location.replace(PAGES.AMTID+url_vars_to_string());
+}
 function go_to_intro(){
     location.replace(PAGES.INTRO+url_vars_to_string());
 }
@@ -641,7 +657,16 @@ function go_to_page_after_questionnaire(){
     else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
 }
 function go_to_thanks(){
-    location.replace(PAGES.THANKS+"?clientid="+app_global.clientID)
+    location.replace(PAGES.THANKS+"?clientid="+app_global.clientID);
+}
+function go_to_prolific_validation_page(){
+    location.replace("https://app.prolific.co/submissions/complete?cc=6536D5CC");
+}
+function go_to_information_form(){
+    location.replace(PAGES.INFORMATION_FORM+url_vars_to_string());
+}
+function go_to_consent_form(){
+    location.replace(PAGES.CONSENT_FORM+url_vars_to_string());
 }
 function go_to_next_page(param){
     var current_page = get_page();
@@ -672,6 +697,16 @@ function go_to_next_page(param){
                     break;
                 case PAGES.CHAT:
                     go_to_chat();
+                    break;
+                case PAGES.INFORMATION_FORM:
+                    go_to_information_form();
+                    break;
+                case PAGES.CONSENT_FORM:
+                    go_to_consent_form();
+                    break;
+                case PAGES.AMTID:
+                    go_to_amtid();
+                    break;
                 default:
                     console.log("ERROR: not implemented for "+next_page);
                     break;                
@@ -702,7 +737,8 @@ function get_questionnaire_answers(){
         for (var i = 0, length = radios.length; i < length; i++){
             if (radios[i].checked){
                 // do whatever you want with the checked radio
-                a = radios[i].value.slice(-1);
+                var splited_text = radios[i].value.split("_")
+                var a = splited_text[splited_text.length-1]
                 answers[key] = a;
                 // console.log(a);
                 // only one radio can be logically checked, don't check the rest
@@ -804,14 +840,15 @@ function handle_chat_message(message){
             app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
             json_message = message;
             if (config.tts_activated) {
-                var u = new SpeechSynthesisUtterance(json_message.sentence);
+                // var u = new SpeechSynthesisUtterance(json_message.sentence);
+                var u = new SpeechSynthesisUtterance("Hi, this is a test to check you can hear me.");
                 u.onend = function (event) {
                     change_microphone_image("wait");
                 };
                 // u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
                 var voices = window.speechSynthesis.getVoices();
-                u.voice = voices[48]; // Good voices: 48 - 49 - 10 - 17 - 28 - 32 - 36
-                // console.log(voices.length);
+                u.voice = voices[49]; // Good voices: 48 - 49 - 10 - 17 - 28 - 32 - 36
+                // console.log(voies.length);
                 u.rate = 1;
 		        window.speechSynthesis.speak(u);
             }
@@ -1391,4 +1428,28 @@ function alert_speak_listen() {
         var div_explain_msg = document.getElementById("cant_allow_access_for_microphone");
         div_explain_msg.style = "display:block;";
     }
+}
+
+function check_test_audio(callback){
+    var user_input = document.getElementById("audio_test");
+    user_input = user_input.value.toLowerCase();
+    var index_test = user_input.indexOf("test");
+    var play_audio_instructions = document.getElementById("play_audio_instructions");
+    var play_audio_instructions_alert = document.getElementById("play_audio_instructions_alert");
+    if (index_test >= 0){
+        play_audio_instructions.style = "display:block;";
+        play_audio_instructions_alert.style = "display:none;";
+        callback();
+    }
+    else {
+        if (user_input.length == 0){
+            play_audio_instructions.style = "color:red;font-weight:bold;display:block;";
+            play_audio_instructions_alert.style = "color:red;font-weight:bold;display:none;";
+        }
+        else{
+            play_audio_instructions.style = "display:none;";
+            play_audio_instructions_alert.style = "color:red;font-weight:bold;display:block;";
+        }
+    }
+
 }

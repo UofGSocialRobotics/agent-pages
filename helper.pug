@@ -37,3 +37,9 @@ mixin dropdown_list(select_id, options_list)
             each val in options_list
                 option(value=val)=val
         div(class="select_arrow")
+
+mixin paragraph(title, text)
+    div(style="font-weight:bold;")=title
+    block
+    br
+    br

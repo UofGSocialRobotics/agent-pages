@@ -10,3 +10,7 @@ pug thanks.pug
 # pug contact.pug
 pug amtid.pug
 pug cora_project.pug
+pug consent_form.pug
+pug information_form.pug
+pug check_speakers.pug
+pug check_microphone.pug
