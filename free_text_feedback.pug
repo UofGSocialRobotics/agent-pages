@@ -1,0 +1,26 @@
+include page.pug
+include helper.pug
+
++page()
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
+    | Anything you want to share with us about your experience chatting with Cora? 
+    br
+    br
+    textarea(cols="100", rows="5", id="free_text_about_cora", placeholder="Give us your feeedback!")
+    br
+    br
+    br
+    | Anything you want to share with us about your experience taking participating in this study? 
+    br
+    br
+    textarea(cols="100", rows="5", id="free_text_about_study", placeholder="Give us your feeedback!")
+    br
+    br
+    br
+    br
+    center
+        //- +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
+        //- br
+        //- br
+        //- br
+        +navigation_button("Next","get_free_text_feedback();")
