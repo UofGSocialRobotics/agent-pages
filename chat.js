@@ -148,15 +148,15 @@ var QUESTIONS = {
     //     "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
     // }
     "q2" : {
-        "quetion9": "How likely is it that you will make this recipe?"
-        // "question9" : "9) The recipe recommended to me during this interaction matched my interests.",
-        // "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-        // "question11" : "11) I would use AGENTNAME to get recipe recommendations in the future.",
-        // "question12" : "12) I easily found the recipe I was looking for.",
-        // "question13" : "13) I would ccok the recipe recommended to me, given the opportunity.",
-        // "question14" : "14) I was satisfied with the recipe recommended to me.",
-        // "question15" : "15) AGENTNAME provided sufficient details about the recipe recommended.",
-        // "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+        // "quetion9": "How likely is it that you will make this recipe?"
+        "question9" : "9) The recipe recommended to me during this interaction matched my preferences.",
+        "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
+        "question11" : "11) I would use AGENTNAME to get recipe recommendations in the future.",
+        "question12" : "12) I easily found the recipe I was looking for.",
+        "question13" : "13) I would cook the recipe recommended to me, given the opportunity.",
+        "question14" : "14) I was satisfied with the recipe recommended to me.",
+        "question15" : "15) AGENTNAME provided sufficient details about the recipe recommended.",
+        "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
     }
 };
 
