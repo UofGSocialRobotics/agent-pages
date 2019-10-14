@@ -112,9 +112,10 @@ var PAGES = {
     INFORMATION_FORM : "information_form.html",
     CONSENT_FORM : "consent_form.html",
     CHECK_SPEAKERS : "check_speakers.html",
-    CHECK_MICROPHONE : "check_microphone.html"
+    CHECK_MICROPHONE : "check_microphone.html",
+    FREE_TEXT_FEEDBACK : "free_text_feedback.html"
 }
-var PAGES_SEQUENCE = [PAGES.CHECK_SPEAKERS, PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.INTRO, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHECK_MICROPHONE, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.CHECK_SPEAKERS, PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.DEMOGRPAHICS, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHECK_MICROPHONE, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -198,7 +199,8 @@ FIREBASE_KEYS = {
     SOURCE : "source",
     TEXT : "text",
     FOODDIAGNOSISANSWERS : "food_diagnosis_answers",
-    DEMOGRPAHICS : "demographics"
+    DEMOGRPAHICS : "demographics",
+    FREECOMMENTS : "free_comments"
 };
 
 FIREBASE_VALUES = {
@@ -222,6 +224,7 @@ data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
 data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
 data_col[FIREBASE_KEYS.FOODDIAGNOSISANSWERS] = false;
 data_col[FIREBASE_KEYS.DEMOGRPAHICS] = false;
+data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -624,94 +627,67 @@ function get_page_name(){
 function url_vars_to_string(){
     return "?clientid="+app_global.clientID+"?tts_asr="+config.tts_activated.toString();
 }
-function go_to_amtid(){
-    location.replace(PAGES.AMTID+url_vars_to_string());
-}
-function go_to_intro(){
-    location.replace(PAGES.INTRO+url_vars_to_string());
-}
-function go_to_instructions(){
-    location.replace(PAGES.INSTRUCTIONS+url_vars_to_string());
-}
-function go_to_demographics(){
-    location.replace(PAGES.DEMOGRPAHICS+url_vars_to_string());
-}
-function go_to_food_diagnosis(){
-    location.replace(PAGES.FOOD_DIAGNOSIS+url_vars_to_string());
-}
-function go_to_pre_study_questionnaire(){
-    location.replace(PAGES.PRE_STUDY_QUESTIONNAIRE+url_vars_to_string());
-}
-function go_to_chat_setup(){
-    location.replace(PAGES.CHAT_SETUP+url_vars_to_string());
-}
-function go_to_chat(){
-    location.replace(PAGES.CHAT+url_vars_to_string());
-}
+// function go_to_amtid(){
+//     location.replace(PAGES.AMTID+url_vars_to_string());
+// }
+// function go_to_intro(){
+//     location.replace(PAGES.INTRO+url_vars_to_string());
+// }
+// function go_to_instructions(){
+//     location.replace(PAGES.INSTRUCTIONS+url_vars_to_string());
+// }
+// function go_to_demographics(){
+//     location.replace(PAGES.DEMOGRPAHICS+url_vars_to_string());
+// }
+// function go_to_food_diagnosis(){
+//     location.replace(PAGES.FOOD_DIAGNOSIS+url_vars_to_string());
+// }
+// function go_to_pre_study_questionnaire(){
+//     location.replace(PAGES.PRE_STUDY_QUESTIONNAIRE+url_vars_to_string());
+// }
+// function go_to_chat_setup(){
+//     location.replace(PAGES.CHAT_SETUP+url_vars_to_string());
+// }
+// function go_to_chat(){
+//     location.replace(PAGES.CHAT+url_vars_to_string());
+// }
 function go_to_questionnaire(x){
     location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x);
 }
 function go_to_page_after_questionnaire(){
     if (get_page() == PAGES.PRE_STUDY_QUESTIONNAIRE) go_to_chat_setup();
     else if (app_global.q_id == "q1") go_to_questionnaire("q2");
-    else if (app_global.q_id == "q2") go_to_thanks();
+    else if (app_global.q_id == "q2") go_to_next_page_general_case();
     else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
 }
-function go_to_thanks(){
-    location.replace(PAGES.THANKS+"?clientid="+app_global.clientID);
-}
-function go_to_prolific_validation_page(){
-    location.replace("https://app.prolific.co/submissions/complete?cc=6536D5CC");
-}
-function go_to_information_form(){
-    location.replace(PAGES.INFORMATION_FORM+url_vars_to_string());
-}
-function go_to_consent_form(){
-    location.replace(PAGES.CONSENT_FORM+url_vars_to_string());
-}
+// function go_to_thanks(){
+//     location.replace(PAGES.THANKS+"?clientid="+app_global.clientID);
+// }
+// function go_to_prolific_validation_page(){
+//     location.replace("https://app.prolific.co/submissions/complete?cc=6536D5CC");
+// }
+// function go_to_information_form(){
+//     location.replace(PAGES.INFORMATION_FORM+url_vars_to_string());
+// }
+// function go_to_consent_form(){
+//     location.replace(PAGES.CONSENT_FORM+url_vars_to_string());
+// }
+// function go_to_check_microphone(){
+//     location.replace(PAGES.CHECK_MICROPHONE+url_vars_to_string());
+// }
 function go_to_next_page(param){
     var current_page = get_page();
     if (current_page == PAGES.QUESTIONNAIRE) go_to_page_after_questionnaire();
+    else go_to_next_page_general_case();
+}
+
+function go_to_next_page_general_case(){
+    var current_page = get_page();
     var index_page = PAGES_SEQUENCE.indexOf(current_page);
     if (index_page >= 0){
         if (index_page < PAGES_SEQUENCE.length){
             var next_page = PAGES_SEQUENCE[index_page+1];
-            switch(next_page){
-                case PAGES.INTRO:
-                    go_to_intro();
-                    break;
-                case PAGES.INSTRUCTIONS:
-                    go_to_instructions();
-                    break;
-                case PAGES.PRE_STUDY_QUESTIONNAIRE:
-                    // console.log("go_to_pre_study_questionnaire");
-                    go_to_pre_study_questionnaire();
-                    break;
-                case PAGES.CHAT_SETUP:
-                    go_to_chat_setup();
-                    break;
-                case PAGES.DEMOGRPAHICS:
-                    go_to_demographics();
-                    break;
-                case PAGES.FOOD_DIAGNOSIS:
-                    go_to_food_diagnosis();
-                    break;
-                case PAGES.CHAT:
-                    go_to_chat();
-                    break;
-                case PAGES.INFORMATION_FORM:
-                    go_to_information_form();
-                    break;
-                case PAGES.CONSENT_FORM:
-                    go_to_consent_form();
-                    break;
-                case PAGES.AMTID:
-                    go_to_amtid();
-                    break;
-                default:
-                    console.log("ERROR: not implemented for "+next_page);
-                    break;                
-            }
+            location.replace(next_page+url_vars_to_string());
         }
     }
     else{
@@ -760,6 +736,14 @@ function get_questionnaire_answers(){
     }
 }
 
+function get_free_text_feedback(){
+    var div_free_text_about_cora = document.getElementById("free_text_about_cora");
+    var div_free_text_about_study = document.getElementById("free_text_about_study");
+    var data = {};
+    data["free_text_about_study"] = div_free_text_about_study.value;
+    data["free_text_about_cora"] = div_free_text_about_cora.value;
+    send_data_collection(data, FIREBASE_KEYS.FREECOMMENTS);
+}
 
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -841,8 +825,8 @@ function handle_chat_message(message){
             app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
             json_message = message;
             if (config.tts_activated) {
-                // var u = new SpeechSynthesisUtterance(json_message.sentence);
-                var u = new SpeechSynthesisUtterance("Hi, this is a test to check you can hear me.");
+                var u = new SpeechSynthesisUtterance(json_message.sentence);
+                // var u = new SpeechSynthesisUtterance("Hi, this is a test to check you can hear me.");
                 u.onend = function (event) {
                     change_microphone_image("wait");
                 };
