@@ -1,0 +1,46 @@
+include page.pug
+include helper.pug
+
++page()
+    center
+        div(style="font-size:20px;font-style:italic")
+            | What should you cook for dinner? 
+            br
+            | A study about chatbots and recommendation systems
+    br
+    br
+    br
+ 
+    +paragraph("Who should I contact if I have questions or comments?")
+        | You may contact us with any question or comment at 
+        a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com
+
+    +paragraph("Should I participate?")
+        | You are invited to take part in a scientific research study. It is important for you to understand why the research is being conducted and what participating in the study involves. Please take your time to familiarise yourself with this information.
+
+    +paragraph("What is the purpose of the study?")
+        | This study is interested in evaluating a recipe recommendation system.
+
+    +paragraph("Do I have to take part?")
+        | Your participation in this study is completely voluntary and you may withdraw at any time without any specific reason as well as without any repercussions.
+
+    +paragraph("What will the study involve if I take part?")
+        | The study consists of three parts. In the first part, you will have to answer some questionnaires about yourself and about your food preferences. 
+        | Then you will be asked to interact with our system to get recipe recommendations. In the last part, you will be asked a set of questions about this system. 
+        | Should you wish to withdraw from the study this is possible at any point without any further repercussions. The study should take no more than 15 minutes.
+
+    +paragraph("Will my taking part in this study be kept confidential?")
+        | All the data collected in this study will be kept in strict confidentiality. 
+        | The information provided by you will be used only in research and will not be tied to any identifiable information. 
+        | The data will also be stored in a password-protected file at the University of Glasgow, 
+        | will be archived and may be uploaded to digital data repositories such as the Open Science Framework in an anonymised form, 
+        | according to current data sharing practices.
+
+    +paragraph("What will happen to the results of this study?")
+        | The results of this study will be analysed and interpreted by the principal investigator for an research project at the University of Glasgow 
+        |  and possibly for a scientific paper. 
+        | All participants have an opportunity to access a summary of the anonymised data should they wish to do so.
+    br
+    br
+    center
+        +navigation_button("Next","go_to_next_page();")
