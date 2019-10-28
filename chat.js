@@ -1172,7 +1172,7 @@ function startDictation() {
         recognition.onerror = function(e) {
             recognition.stop();
             console.log("dictation error.");
-            alert("There was a problem with dictation, we could not hear you.\n1 - Check that your green_microphone is on.\n2 - Go to a quiet place / speak louder.");
+            alert("There was a problem with dictation, we could not hear you.\n1 - Check that your green_microphone is on.\n2 - Go to a quiet place / speak louder.\nAlternatively, you can type what you want to say to Cora.");
             change_microphone_image("wait");
         };
 
