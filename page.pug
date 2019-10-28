@@ -1,4 +1,4 @@
-mixin page(connect=false, chat_window=false) 
+mixin page(page_title, connect=false, chat_window=false) 
     doctype html
     html
         head
@@ -14,7 +14,9 @@ mixin page(connect=false, chat_window=false)
                 //-     | console.log(b);
                 if chat_window == false
                     header
-                        div(id="page_title")
+                        div(id="page_title")=page_title
+                            br
+                            br
                 main
                     div(id="server_error", style="display:none;")
                         | It looks like our server is not connected.

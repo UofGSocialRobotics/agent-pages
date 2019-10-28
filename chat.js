@@ -309,7 +309,7 @@ function keyboard_functions() {
 }
 
 function set_agent_name(){
-    // console.log("set_agent_name");
+    console.log("set_agent_name");
     var title = "Chat with " + app_global.agent_name;
     var tab_title =  document.getElementById("tab_title");
     tab_title.innerHTML = title;
@@ -317,10 +317,10 @@ function set_agent_name(){
         var chat_title =  document.getElementById("chat_title");
         chat_title.innerHTML = title;
     }
-    else{
-        var page_title =  document.getElementById("page_title");
-        page_title.innerHTML = title + "<br><br>";
-    }
+    // else{
+    //     var page_title =  document.getElementById("page_title");
+    //     page_title.innerHTML = title + "<br><br>";
+    // }
     app_global.user_input_placeholder_val.wait_for_agent_answer = app_global.user_input_placeholder_val.wait_for_agent_answer.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.server_down = app_global.user_input_placeholder_val.server_down.replace("AGENTNAME",app_global.agent_name);
     app_global.user_input_placeholder_val.client_disconnected = app_global.user_input_placeholder_val.client_disconnected.replace("AGENTNAME",app_global.agent_name);

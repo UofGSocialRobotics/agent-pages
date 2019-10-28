@@ -1,7 +1,7 @@
 include page.pug
 include helper.pug
 
-+page(true)
++page("Demographics questionnaire", true)
     link(href="demographics.css", rel="stylesheet", id="demographics-css")
     div(id="questionnaire_wrap")
         div(class="wrap")
@@ -106,6 +106,13 @@ include helper.pug
                         +scale_table(ticks)
                         input(type="range" min=6, max=36, value=6, step=0.1, class="slider", name="weight_unit_stones", id="weight_stones_input")
 
+                - var q_main_cook_dict = {'yes': "I am mainly responsible for the household cooking", "shared": "I share this responsibility with another person (partner/roommate/other)", "no": "I am not responsible for my household cooking, somebody else is cooking for me / for my family"}
+                - var q_main_cook = "Are you responsible for your household cooking?"
+                +classic_radio(q_main_cook, "main_cook", q_main_cook_dict)
+
+                - var q_freq_cook_dict = {"twice_d": "About twice a day (for lunch and diner)", "once_d": "About once a day (for lunch or diner)", "several_times_w": "Several times a week", "once_w": "About once a week", "occasionnaly": "Occasionally", "never": "Never"}
+                - var q_freq_cook = "How frequently do you cook at home?"
+                +classic_radio(q_freq_cook, "freq_cook", q_freq_cook_dict)
 
                 //- script(src="demographics.js")
         br
