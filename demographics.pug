@@ -14,9 +14,9 @@ include helper.pug
                 -var q_employment_dict = {"full-time": "Employed full-time", "part-time": "Employed, part-time", "student": "Student", "unemployed": "Umemployed"}
                 +classic_checkbox(q_employment, "employment", q_employment_dict)
 
-                -var q_ethnicity = "What best describes your ethnicity?"
-                -var q_ethnicity_dict = {"white": "White", "hisp_latino": "Hispanic or Latino", "black": "Black or African American", "asian": "Asian", "other": "Other"}
-                +classic_radio(q_ethnicity, "ethnicity", q_ethnicity_dict)
+                //- -var q_ethnicity = "What best describes your ethnicity?"
+                //- -var q_ethnicity_dict = {"white": "White", "hisp_latino": "Hispanic or Latino", "black": "Black or African American", "asian": "Asian", "other": "Other"}
+                //- +classic_radio(q_ethnicity, "ethnicity", q_ethnicity_dict)
 
                 -var q_gender = "What best describes your gender identity?"
                 -var q_gender_dict = {"male": "Male", "female": "Female", "other": "Non-Binary"}
