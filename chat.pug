@@ -18,7 +18,7 @@ include helper.pug
                     div(class="text") Send
             div(id="message_speech", style="display:none;")
                 div(class="ASR_input_wrapper")
-                    input(class="message_input", placeholder="Click on the microhpone and speak", id="transcript")
+                    input(class="message_input", placeholder="Click on the microphone and speak", id="transcript")
                 div(id="send_message_button", class="microphone")
                     img(id="green_microphone", onclick="on_click_microphone()", src="img/green_microphone.png", onmouseover="on_microphone_hover();", onmouseout="off_microphone_hover();")
                     img(id="red_microphone", src="img/red_microphone.png", style="display:none;cursor:not-allowed")      

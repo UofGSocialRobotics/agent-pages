@@ -1,26 +1,43 @@
 include page.pug
 include helper.pug
 
-+page("Set up your mirophone")
++page("Set up your microphone")
     link(href="demographics.css", rel="stylesheet", id="demographics-css")
-    //- | To chat with Cora, you need a microphone and speakers.
     br
     br
     br
-    //- div(style="font-weight:bold;font-size:16px;font-style:italic")
-    //-     | Let's set up your microphone
-    //- br
-    | To chat with Cora, you should allow this website to access your microphone:
+    | To chat with Cora, you should allow this website to access your microphone. 
     br
     br
-    ol
-        //- li Go to the website.
-        li Click "green lock" icon or "i in circle" icon beside the URL in the address bar.
-        li In the menu, choose "Always allow on this site" for Microphone.
-        li Reload.
-        //- b
-        //-     | Please set up the microphone-access authorization 
-        //-     i   NOW.
+    -var q_browser = "What browser are you currently using?"
+    -var q_browser_dict = {"chrome": "I use Chrome", "not_chrome": "I use something else than Chrome"}
+    +classic_radio(q_browser, "browser", q_browser_dict)
+    br
+    br
+    div(id="instructions_chrome", style="display:none")
+        | With the Chrome browser:
+        br
+        ol
+            li Click the "green lock" icon or the "i in circle" icon beside the URL in the address bar.
+            li In the menu, choose "Always allow on this site" for Microphone.
+            li Refresh the page.
+        br
+        center
+            img(src="screenshot_tuto_microphone_setup.png" alt="Authorize microphone with Chrome" width="600px")
+    div(id="instructions_not_chrome", style="display:none")
+        | We strongly recommend that you use Chrome for this study. 
+        br
+        | If you have Chrome installed, you can switch browsers now by opening Chrome and copying this address 
+        span(id="current_address" style="color:#0000EE;text-decoration: underline;" onclick="copyTextToClipboard()")
+            | address_here
+        |  in the address bar.
+        br
+        br
+        | If for any reason you cannot or do not wish to use Chrome, 
+        span(style="font-weight:bold;text-decoration: underline;")
+                | we cannot guarantee the quality of your experience.
+        br
+        | You can search for instructions on the web to authorize the microphone or alternatively continue without the microphone.
     div(id="cant_allow_access_for_microphone", style="display:none;")
         br
         div(style="color:red;")
@@ -46,5 +63,6 @@ include helper.pug
         //- br
         //- br
         +navigation_button("Next","alert_speak_listen();")
+    script(src="check_microphone.js" )
     
     
