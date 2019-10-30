@@ -15,3 +15,4 @@ pug information_form.pug
 pug check_speakers.pug
 pug check_microphone.pug
 pug free_text_feedback.pug
+pug tuto.pug

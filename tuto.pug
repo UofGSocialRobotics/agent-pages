@@ -1,0 +1,17 @@
+include page.pug
+include helper.pug
+
++page("Watch this quick tutorial")
+    video(width=400, controls)
+        source(src="full_tuto.mp4", type="video/mp4")
+        Your browser does not support HTML 5 video.
+    br
+    br
+    br
+    br
+    center
+        //- +navigation_button("Write and read","set_up_asr_tts(false, go_to_next_page);")
+        //- br
+        //- br
+        //- br
+        +navigation_button("Next","go_to_next_page();")
