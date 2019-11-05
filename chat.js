@@ -130,14 +130,17 @@ app_global.current_url = window.location.href;
 
 var QUESTIONS = {
     "q1": {
-        "question1" : "1) I felt I was in sync with AGENTNAME.",
-        "question2" : "2) I was able to say everything I wanted to say during the interaction.",
-        "question3" : "3) AGENTNAME was interested in what I was saying.",
-        "question4" : "4) AGENTNAME was respectful to me and considered to my concerns.",
-        "question5" : "5) AGENTNAME was warm and caring.",
-        "question6" : "6) AGENTNAME was friendly to me.",
-        "question7" : "7) AGENTNAME and I established rapport.",
-        "question8" : "8) I felt I had no connection with AGENTNAME",
+        "question1" : "I felt I was in sync with AGENTNAME.",
+        "question2" : "I was able to say everything I wanted to say during the interaction.",
+        "question17" : "I intent to make the recipe recommended to me.",
+        "question3" : "AGENTNAME was interested in what I was saying.",
+        "question4" : "AGENTNAME was respectful to me and considered to my concerns.",
+        "question18" : "I will try to make the recipe recommended to me.",
+        "question5" : "AGENTNAME was warm and caring.",
+        "question6" : "AGENTNAME was friendly to me.",
+        "question19" : "I want to make the recipe recommended to me.",
+        "question7" : "AGENTNAME and I established rapport.",
+        "question8" : "I felt I had no connection with AGENTNAME",
     },
     // "q2" : {
     //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
@@ -151,14 +154,17 @@ var QUESTIONS = {
     // }
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
-        "question9" : "9) The recipe recommended to me during this interaction matched my preferences.",
-        "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-        "question11" : "11) I would use AGENTNAME to get recipe recommendations in the future.",
-        "question12" : "12) I easily found the recipe I was looking for.",
-        "question13" : "13) I would cook the recipe recommended to me, given the opportunity.",
-        "question14" : "14) I was satisfied with the recipe recommended to me.",
-        "question15" : "15) AGENTNAME provided sufficient details about the recipe recommended.",
-        "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
+        "question9" : "The recipe recommended to me during this interaction matched my preferences.",
+        "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction",
+        "question19" : "I expect to make the recipe recommended to me.",
+        "question11" : "I would use AGENTNAME to get recipe recommendations in the future.",
+        "question12" : "I easily found the recipe I was looking for.",
+        "question20" : "It is likely I will make the recipe recommended to me.",
+        "question13" : "I would cook the recipe recommended to me, given the opportunity.",
+        "question14" : "I was satisfied with the recipe recommended to me.",
+        "question15" : "AGENTNAME provided sufficient details about the recipe recommended.",
+        "question16" : "AGENTNAME explained her reasoning behind the recommendations.",
+        "question21" : "Answer \"Totally agree\" to this question please.",
     }
 };
 
