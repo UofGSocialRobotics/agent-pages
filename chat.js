@@ -167,16 +167,23 @@ var PRE_STUDY_QUESTIONNAIRE = {
 }
 
 var DIAGNOSIS_FOODS = {
-    "question1": "SUPER FOOD SALAD",
-    "question2": "VEGETABLE STIR FRY",
-    "question3": "BAKED FISH WITH VEGETABLES",
-    "question4": "TURKEY AND ROAST VEGETABLES",
-    "question5": "CHICKEN BREAST SALAD",
-    "question6": "PIZZA",
-    "question7": "BURGER AND CHIPS",
-    "question8": "FISH AND CHIPS",
-    "question9": "DONER KEBAD",
-    "question10": "MACARONI AND CHEESE",
+    // "question1": "SUPER FOOD SALAD",
+    // "question2": "VEGETABLE STIR FRY",
+    // "question3": "BAKED FISH WITH VEGETABLES",
+    // "question4": "TURKEY AND ROAST VEGETABLES",
+    // "question5": "CHICKEN BREAST SALAD",
+    // "question6": "PIZZA",
+    // "question7": "BURGER AND CHIPS",
+    // "question8": "FISH AND CHIPS",
+    // "question9": "DONER KEBAD",
+    // "question10": "MACARONI AND CHEESE",
+    "question1": "BROCCOLI",
+    "question2": "CHIPS / FRIES",
+    "question3": "CARROTS",
+    "question4": "PIZZA",
+    "question5": "TOMATOES",
+    "question6": "PASTA",
+    "question7": "LETTUCE",
 }
 
 //--------------------------------------------------------------------------------------------------------------//
@@ -222,7 +229,8 @@ var data_col = {};
 data_col[FIREBASE_KEYS.AMTID] = false;
 data_col[FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 data_col[FIREBASE_KEYS.PRESTUDYANSWERS] = false;
-data_col[FIREBASE_KEYS.POSTSTUDYANSWERS] = false;
+data_col[FIREBASE_KEYS.POSTSTUDYANSWERS+"_q1"] = false;
+data_col[FIREBASE_KEYS.POSTSTUDYANSWERS+"_q2"] = false;
 data_col[FIREBASE_KEYS.FOODDIAGNOSISANSWERS] = false;
 data_col[FIREBASE_KEYS.DEMOGRPAHICS] = false;
 data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
@@ -363,6 +371,11 @@ function get_client_id_from_url(splited_url, callback){
     app_global.clientID = remove_other_var(splited_url);
     console.log(app_global.clientID);
     callback();
+}
+
+function get_value_from_url_var(var_name){
+    var splited_url = app_global.current_url.split(var_name+"=");
+    return remove_other_var(splited_url[1]);
 }
 
 function get_client_id(){
@@ -545,9 +558,15 @@ function send_data_collection_callback(){
 }
 
 function send_data_collection(piece_of_data, datacol_key){
-    console.log("in send_data_collection");
     app_global.data_to_send.datacol_key = datacol_key;
+    if (datacol_key == FIREBASE_KEYS.POSTSTUDYANSWERS) {
+        console.log("get_value_from_url_var(q_id);");
+        console.log(get_value_from_url_var("q_id"));
+        app_global.data_to_send.datacol_key += "_" + get_value_from_url_var("q_id");
+    }
     app_global.data_to_send.piece_of_data = piece_of_data;
+    console.log("app_global.data_to_send.datacol_key");
+    console.log(app_global.data_to_send.datacol_key);
     check_ack(send_data_collection_callback);
 }
 
