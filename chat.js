@@ -131,6 +131,7 @@ app_global.current_url = window.location.href;
 var QUESTIONS = {
     "q1": {
         "question1" : "I felt I was in sync with AGENTNAME.",
+        "question21" : "I felt like AGENTNAME was a human",
         "question2" : "I was able to say everything I wanted to say during the interaction.",
         "question17" : "I intent to make the recipe recommended to me.",
         "question3" : "AGENTNAME was interested in what I was saying.",
@@ -155,6 +156,7 @@ var QUESTIONS = {
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
         "question9" : "The recipe recommended to me during this interaction matched my preferences.",
+        "question22" : "I felt like AGENTNAME was a robot",
         "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction",
         "question19" : "I expect to make the recipe recommended to me.",
         "question11" : "I would use AGENTNAME to get recipe recommendations in the future.",
@@ -164,7 +166,7 @@ var QUESTIONS = {
         "question14" : "I was satisfied with the recipe recommended to me.",
         "question15" : "AGENTNAME provided sufficient details about the recipe recommended.",
         "question16" : "AGENTNAME explained her reasoning behind the recommendations.",
-        "question21" : "Answer \"Totally agree\" to this question please.",
+        "question23" : "Answer \"Totally agree\" to this question please.",
     }
 };
 
