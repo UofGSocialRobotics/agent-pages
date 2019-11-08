@@ -477,6 +477,14 @@ form .likert7points li {
   text-align: center;
   vertical-align: top;
 }
+form .likert7points li input[type=radio] {
+  display:block;
+  position:relative;
+  top:0;
+  left:50%;
+  margin-left:-6px;
+  
+}
 
 form .likert7points li input[type=radio] {
   display: block;
