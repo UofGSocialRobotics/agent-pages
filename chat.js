@@ -130,18 +130,20 @@ app_global.current_url = window.location.href;
 
 var QUESTIONS = {
     "q1": {
-        "question1" : "I felt I was in sync with AGENTNAME.",
-        "question21" : "I felt like AGENTNAME was a human.",
-        "question2" : "I was able to say everything I wanted to say during the interaction.",
-        "question17" : "I intent to make the recipe recommended to me.",
-        "question3" : "AGENTNAME was interested in what I was saying.",
-        "question4" : "AGENTNAME was respectful to me and considered to my concerns.",
-        "question18" : "I will try to make the recipe recommended to me.",
-        "question5" : "AGENTNAME was warm and caring.",
-        "question6" : "AGENTNAME was friendly to me.",
-        "question19" : "I want to make the recipe recommended to me.",
-        "question7" : "AGENTNAME and I established rapport.",
-        "question8" : "I felt I had no connection with AGENTNAME",
+        "question1" : "I felt I was in sync with AGENTNAME.", 
+        "question22" : "I felt like AGENTNAME was a human.", 
+        "question2" : "I was able to say everything I wanted to say during the interaction.", 
+        "question17" : "I intent to make the recipe recommended to me.", 
+        "question3" : "AGENTNAME was interested in what I was saying.", 
+        "question4" : "AGENTNAME was respectful to me and considered to my concerns.", 
+        "question18" : "I will try to make the recipe recommended to me.", 
+        "question5" : "AGENTNAME was warm and caring.", 
+        "question24" : "AGENTNAME disclosed information about herself.", 
+        "question6" : "AGENTNAME was friendly to me.", 
+        "question19" : "I want to make the recipe recommended to me.", 
+        "question7" : "AGENTNAME and I established rapport.", 
+        "question8" : "I felt I had no connection with AGENTNAME", 
+        "question23" : "AGENTNAME pretended to be an artificial agent." 
     },
     // "q2" : {
     //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
@@ -155,18 +157,19 @@ var QUESTIONS = {
     // }
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
-        "question9" : "The recipe recommended to me during this interaction matched my preferences.",
-        "question22" : "I felt like AGENTNAME was a robot.",
-        "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction.",
-        "question19" : "I expect to make the recipe recommended to me.",
-        "question11" : "I would use AGENTNAME to get recipe recommendations in the future.",
-        "question12" : "I easily found the recipe I was looking for.",
-        "question20" : "It is likely I will make the recipe recommended to me.",
-        "question13" : "I would cook the recipe recommended to me, given the opportunity.",
-        "question14" : "I was satisfied with the recipe recommended to me.",
+        "question9" : "The recipe recommended to me during this interaction matched my preferences.", 
+        "question25" : "I felt like AGENTNAME was an artificial agent.", 
+        "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction.", 
+        "question20" : "I expect to make the recipe recommended to me.", 
+        "question11" : "I would use AGENTNAME to get recipe recommendations in the future.", 
+        "question12" : "I easily found the recipe I was looking for.", 
+        "question21" : "It is likely I will make the recipe recommended to me.", 
+        "question13" : "I would cook the recipe recommended to me, given the opportunity.", 
+        "question14" : "I was satisfied with the recipe recommended to me.", 
         "question15" : "AGENTNAME provided sufficient details about the recipe recommended.",
-        "question16" : "AGENTNAME explained her reasoning behind the recommendations.",
-        "question23" : "Answer \"Totally agree\" to this question please.",
+        "question16" : "AGENTNAME explained her reasoning behind the recommendations.", 
+        "question26" : "AGENTNAME pretended to be a human.", 
+        "question27" : "Answer \"Totally agree\" to this question please.",
     }
 };
 
