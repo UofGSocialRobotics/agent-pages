@@ -511,16 +511,16 @@ function check_ack(callback){
     var cond = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
         console.log(snapshot.val());
         // console.log("we are here");
-        if (snapshot.val() == true) {
-            var data = {};
-            data[FIREBASE_KEYS.ACK] = false;
-            FIREBASE_REFS.CURRENT_SESSION.update(data);
-            callback();
-        }
-        else{
-            app_global.error = true;
-            server_not_connected_message();
-        }
+        // if (snapshot.val() == true) {
+        var data = {};
+        data[FIREBASE_KEYS.ACK] = false;
+        FIREBASE_REFS.CURRENT_SESSION.update(data);
+        callback();
+        // }
+        // else{
+        //     app_global.error = true;
+        //     server_not_connected_message();
+        // }
     });
 }
 
@@ -827,19 +827,19 @@ function send_chat() {
     // console.log("debug: in send chat");
     msg = getMessageText();
     // console.log(app_global.user_wait,msg,app_global.error);
-    if (app_global.user_wait == false && msg!="" && app_global.error == false){
-        printMessage(msg,'right');
-        // res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
-        send_dialog(msg);
-        // Disable user input
-        if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
-            disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
-        }
-        else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
-            change_microphone_image("off");
-        }
-        // return res;
+    // if (app_global.user_wait == false && msg!="" && app_global.error == false){
+    printMessage(msg,'right');
+    // res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
+    send_dialog(msg);
+    // Disable user input
+    if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
+        disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
     }
+    else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
+        change_microphone_image("off");
+    }
+        // return res;
+    // }
 };
 
 
