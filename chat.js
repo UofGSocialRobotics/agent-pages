@@ -164,7 +164,7 @@ var QUESTIONS = {
         "question11" : "I would use AGENTNAME to get recipe recommendations in the future.", 
         "question12" : "I easily found the recipe I was looking for.", 
         "question21" : "It is likely I will make the recipe recommended to me.", 
-        "question13" : "I would cook the recipe recommended to me, given the opportunity.", 
+        "question13" : "The recipes recommended by AGENTNAME were healthy.", 
         "question14" : "I was satisfied with the recipe recommended to me.", 
         "question15" : "AGENTNAME provided sufficient details about the recipe recommended.",
         "question16" : "AGENTNAME explained her reasoning behind the recommendations.", 
