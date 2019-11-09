@@ -868,7 +868,6 @@ function handle_chat_message(message){
                 u.rate = 1;
 		        window.speechSynthesis.speak(u);
             }
-            printMessage(json_message.sentence,'left');  
             if (json_message.recipe_card){
                 console.log(json_message.recipe_card);
 				console.log(json_message.food_recipe);
@@ -878,6 +877,7 @@ function handle_chat_message(message){
                 console.log(json_message.movie_poster);
                 printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
             }
+            printMessage(json_message.sentence,'left');  
 			
             if (agent_says_bye(json_message)){
                             terminate_conversation();
