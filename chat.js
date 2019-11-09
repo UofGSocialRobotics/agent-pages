@@ -1112,7 +1112,7 @@ function create_questionnaire(){
     if (app_global.q_id in QUESTIONS){
         for (var key in QUESTIONS[app_global.q_id]){
             // console.log(key,QUESTIONS[key]);
-            create_likert_scale(key,QUESTIONS[app_global.q_id][key], label_begin="totally disagree", label_end="totally agree", n_points=7, class_style="likert7points", table_freq_legend=false, center_likert=true);
+            create_likert_scale(key,QUESTIONS[app_global.q_id][key], label_begin="totally disagree", label_end="totally agree", n_points=7, table_freq_legend=false, center_likert=true);
         }
     }
     else q_id_error();
@@ -1131,19 +1131,16 @@ function create_food_diagnosis_questionnaire(){
     for (var key in DIAGNOSIS_FOODS){
         // console.log(key,QUESTIONS[key]);
         q_text = "How frequently do you typically eat " + DIAGNOSIS_FOODS[key] + " for DINNER?";
-        html += create_likert_scale(key, q_text, label_begin=null, label_end=null, n_points=7, class_style="likert7points", table_freq_legend=true, center_likert=true);
+        html += create_likert_scale(key, q_text, label_begin=null, label_end=null, n_points=7, table_freq_legend=true, center_likert=true);
         if (key=="question10") console.log(html);
     }
 }
 
-function create_likert_scale(q_id, q_text, label_begin="totally disagree", label_end="totally agree", n_points=5, class_style="likert", table_freq_legend=false, center_likert=false){
+function create_likert_scale(q_id, q_text, label_begin="totally disagree", label_end="totally agree", n_points=5, table_freq_legend=false, center_likert=false){
     console.log("in create_likert_scale");
-    // if (!text_labels){
-    //     label_begin = "0";
-    //     label_end = (n_points-1).toString();
-    // }
+    console.log(table_freq_legend);
     questionnaire = document.getElementById("questionnaire");
-    html = "\n<label class=\"statement\">"+replace_agent_name(q_text)+"</label>";
+    html = "\n<label class=\"statement-demographics\">"+replace_agent_name(q_text)+"</label>";
     if (center_likert) html += "<center>";
     // if (table_freq_legend){
     //     html += "\n<table class=\"likert-freq-scale-table\" cellspacing=\"0\" cellpadding=\"0\"><tr><th class=\"tg-xwyw\">Never</th><th class=\"tg-wp8o\">A few<br>times a<br>year</th><th class=\"tg-wp8o\">About<br>once a<br>month</th><th class=\"tg-wp8o\">A few<br>times a<br>month</th><th class=\"tg-wp8o\">About<br>once a<br>week</th><th class=\"tg-wp8o\">A few<br>times a<br>week</th><th class=\"tg-xwyw\">Typically<br>daily</th></tr></table>";
@@ -1151,26 +1148,102 @@ function create_likert_scale(q_id, q_text, label_begin="totally disagree", label
     if (table_freq_legend){
         var freq_labels = ["Never", "A few<br>times a<br>year", "About<br>once a<br>month", "A few<br>times a<br>month", "About<br>once a<br>week", "A few<br>times a<br>week", "Typically<br>daily"];
     }
-    html += "\n<ul class='"+class_style+"'>";
+    // html += "\n<table>";
     // n_points = 7;
     for (i = 0; i < n_points; i++) {
         // console.log(i, n_points);
-        if (i == 0 && !table_freq_legend) html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_begin+"</label>\n</li>";
-        else if (i == n_points-1) {
-            if (table_freq_legend) label_end = freq_labels[i];
-            html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_end+"</label>\n</li>\n</ul>";
-            if (center_likert) html += "</center>";
+        if (i == 0) {
+            var div_open = "<div class =\"control-group\">";
+            var div_close = "";
+            var table_open = "<table width=\"750px\">";
+            var tr_open = "\n<tr>" ;
+            var table_close = "";
+            var tr_close = "";
+            if (label_begin == null) {
+                var td_label_begin = "";
+            }
+            else {
+                var td_label_begin = "<td width=\"170px\"><br><label class = \"control control-radio\">" + label_begin + "</label></td>\n";
+            }
+            var td_label_end = "";
+        }
+        else if (i == n_points -1){
+            var div_open = "";
+            var div_close = "</div>";
+            var table_close = "</table>";
+            var tr_close = "\n</tr>";
+            var table_open = "";
+            var tr_open = "";
+            if (label_end == null) {
+                var td_label_end = "";
+            }
+            else {
+                var td_label_end = "<td width=\"170px\"><br><label class = \"control control-radio\">" + label_end + "</label></td>\n";
+            }
+            var td_label_begin = "";
+        }
+        else {
+            var div_open = "";
+            var div_close = "";
+            var table_open = "";
+            var table_close = "";
+            var tr_open = "";
+            var tr_close = "";
+            var td_label_begin = "";
+            var td_label_end = "";
+            
+        }
+        if (table_freq_legend == false) {
+            var td_width = " width=\"50px\"";
+            var tr_legend = "";
+        }
+        else if (i == 0) {
+            var td_width = " width=\"150px\"  style=\"padding-left: 40px\"";
+            var tr_legend = "<tr>";
+            freq_labels.forEach(add_table_label);
+            function add_table_label(item, index) {
+                tr_legend += "<td style=\"text-align: center;\">" + item + "</td>";
+            }
+            tr_legend += "</tr>";
+        }
+        else {
+            var td_width = " width=\"150px\"  style=\"padding-left: 40px\"";
+            var tr_legend = "";
+        }
+        var td_open = "<td " + td_width + ">" ;
+        var label_open = "<label class=\"control control-radio\">";
+        var input_var = "<input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\">";
+        var div_control_indicator = "<div class=\"control_indicator\"></div>";
+        var label_close = "</label>";
+        var td_close = "</td>";
+
+        if (i == n_points-1) {
+            html += div_open + table_open + tr_legend + tr_open + td_label_begin + td_open + label_open + input_var + div_control_indicator + label_close + td_close + td_label_end + tr_close + table_close + div_close;
             questionnaire.innerHTML += html;
+            console.log(html);
             return html;
         }
         else {
-            // l = "lu";
-            // if (text_labels) l = "";
-            // else l = i.toString();
-            if (table_freq_legend) l = freq_labels[i];
-            else l = "";
-            html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+l+"</label>\n</li>";
+            html += div_open + table_open + tr_legend + tr_open + td_label_begin + td_open + label_open + input_var + div_control_indicator + label_close + td_close + td_label_end + tr_close + table_close + div_close;
         }
+
+        // html += "<input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_begin+"</label>\n</li>";
+    
+        // else if (i == n_points-1) {
+        //     if (table_freq_legend) label_end = freq_labels[i];
+        //     html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+label_end+"</label>\n</li>\n</ul>";
+        //     if (center_likert) html += "</center>";
+        //     questionnaire.innerHTML += html;
+        //     return html;
+        // }
+        // else {
+        //     // l = "lu";
+        //     // if (text_labels) l = "";
+        //     // else l = i.toString();
+        //     if (table_freq_legend) l = freq_labels[i];
+        //     else l = "";
+        //     html += "\n<li><input type=\"radio\" name=\"likert_"+q_id+"\" value=\""+q_id+"_"+i+"\"><label>"+l+"</label>\n</li>";
+        // }
     }
 }
 

@@ -2,10 +2,13 @@ include page.pug
 include helper.pug
 
 +page("How did it go?", true)
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
     div(id="questionnaire_wrap")
         div(class="wrap")
             form(id="questionnaire")
-
+        br
+        br
+        br
         center
             +navigation_button("Submit","get_q_id(get_questionnaire_answers);")
         
