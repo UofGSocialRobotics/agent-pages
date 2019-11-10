@@ -506,22 +506,23 @@ function initialize_firebase(){
 
 function check_ack(callback){
     console.log("in check_ack");
-    console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
-    // return check_ack_listner(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
-    var cond = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
-        console.log(snapshot.val());
-        // console.log("we are here");
-        // if (snapshot.val() == true) {
-        var data = {};
-        data[FIREBASE_KEYS.ACK] = false;
-        FIREBASE_REFS.CURRENT_SESSION.update(data);
-        callback();
-        // }
-        // else{
-        //     app_global.error = true;
-        //     server_not_connected_message();
-        // }
-    });
+    callback();
+    // console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
+    // // return check_ack_listner(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK));
+    // var cond = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.ACK).once('value').then(function(snapshot){
+    //     console.log(snapshot.val());
+    //     // console.log("we are here");
+    //     // if (snapshot.val() == true) {
+    //     var data = {};
+    //     data[FIREBASE_KEYS.ACK] = false;
+    //     FIREBASE_REFS.CURRENT_SESSION.update(data);
+    //     callback();
+    //     // }
+    //     // else{
+    //     //     app_global.error = true;
+    //     //     server_not_connected_message();
+    //     // }
+    // });
 }
 
 //--------                                       Update firebase functions                              --------//
@@ -620,13 +621,13 @@ function send_dialog_callback(){
 function send_dialog(text){
     console.log("in send_dialog");
     app_global.data_to_send.text = text;
-    if (app_global.data_to_send.dialog_stated){
-        send_dialog_callback();
-    }
-    else {
-        app_global.data_to_send.dialog_stated = true;
-        check_ack(send_dialog_callback);
-    }
+    // if (app_global.data_to_send.dialog_stated){
+    send_dialog_callback();
+    // }
+    // else {
+    //     app_global.data_to_send.dialog_stated = true;
+    //     check_ack(send_dialog_callback);
+    // }
 }
 
 function send_amtid(){
