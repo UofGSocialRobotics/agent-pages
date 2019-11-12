@@ -696,7 +696,7 @@ function go_to_page_after_questionnaire(){
 //     location.replace(PAGES.THANKS+"?clientid="+app_global.clientID);
 // }
 function go_to_prolific_validation_page(){
-    location.replace("https://app.prolific.co/submissions/complete?cc=8D0C8F8D");
+    location.replace("https://app.prolific.co/submissions/complete?cc=469E3D2A");
 }
 // function go_to_information_form(){
 //     location.replace(PAGES.INFORMATION_FORM+url_vars_to_string());
