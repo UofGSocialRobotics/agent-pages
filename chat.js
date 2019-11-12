@@ -143,7 +143,7 @@ var QUESTIONS = {
         "question19" : "I want to make the recipe recommended to me.", 
         "question7" : "AGENTNAME and I established rapport.", 
         "question8" : "I felt I had no connection with AGENTNAME", 
-        "question23" : "AGENTNAME pretended to be an artificial agent." 
+        "question23" : "AGENTNAME pretended to be a computer program." 
     },
     // "q2" : {
     //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
@@ -158,7 +158,7 @@ var QUESTIONS = {
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
         "question9" : "The recipe recommended to me during this interaction matched my preferences.", 
-        "question25" : "I felt like AGENTNAME was an artificial agent.", 
+        "question25" : "I felt like AGENTNAME was a computer program.", 
         "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction.", 
         "question20" : "I expect to make the recipe recommended to me.", 
         "question11" : "I would use AGENTNAME to get recipe recommendations in the future.", 
