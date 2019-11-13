@@ -131,7 +131,7 @@ app_global.current_url = window.location.href;
 var QUESTIONS = {
     "q1": {
         "question1" : "I felt I was in sync with AGENTNAME.", 
-        "question22" : "I felt like AGENTNAME was a human.", 
+        // "question22" : "I felt like AGENTNAME was a human.", 
         "question2" : "I was able to say everything I wanted to say during the interaction.", 
         "question17" : "I intent to make the recipe recommended to me.", 
         "question3" : "AGENTNAME was interested in what I was saying.", 
@@ -143,7 +143,7 @@ var QUESTIONS = {
         "question19" : "I want to make the recipe recommended to me.", 
         "question7" : "AGENTNAME and I established rapport.", 
         "question8" : "I felt I had no connection with AGENTNAME", 
-        "question23" : "AGENTNAME pretended to be a computer program." 
+        // "question23" : "AGENTNAME pretended to be a computer program." 
     },
     // "q2" : {
     //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
@@ -158,7 +158,7 @@ var QUESTIONS = {
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
         "question9" : "The recipe recommended to me during this interaction matched my preferences.", 
-        "question25" : "I felt like AGENTNAME was a computer program.", 
+        // "question25" : "I felt like AGENTNAME was a computer program.", 
         "question10" : " AGENTNAME allowed me to specify and change my preferences during the interaction.", 
         "question20" : "I expect to make the recipe recommended to me.", 
         "question11" : "I would use AGENTNAME to get recipe recommendations in the future.", 
@@ -168,7 +168,7 @@ var QUESTIONS = {
         "question14" : "I was satisfied with the recipe recommended to me.", 
         "question15" : "AGENTNAME provided sufficient details about the recipe recommended.",
         "question16" : "AGENTNAME explained her reasoning behind the recommendations.", 
-        "question26" : "AGENTNAME pretended to be a human.", 
+        // "question26" : "AGENTNAME pretended to be a human.", 
         "question27" : "Answer \"Totally agree\" to this question please.",
     }
 };
