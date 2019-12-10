@@ -60,28 +60,44 @@ mixin paragraph(title, text)
 
 mixin likert_chat_guided(div_id, options_dict, style_display, button_width="default")
     div(id=div_id, style=style_display)
-        -var not_first_option = false
-        each val, index in options_dict
-            if not_first_option == true
-                div(class="spacing_div")
-            if val == "Unlimited"
-                button(class="likert_button", id=index)
-                    for elt in val
-                        span=elt
-                        br
-            else if button_width == "narrow" 
-                button(class="likert_button", id=index, style="width:70px;")
-                    for elt in val
-                        span=elt
-                        br
-            else if button_width == "wide" 
-                button(class="likert_button", id=index, style="width:180px;")
-                    for elt in val
-                        span=elt
-                        br
-            else
-                button(class="likert_button", id=index)
-                    for elt in val
-                        span=elt
-                        br
-            -var not_first_option = true
+        center
+            -var not_first_option = false
+            each val, index in options_dict
+                if not_first_option == true
+                    div(class="spacing_div")
+                if val == "Unlimited"
+                    button(class="likert_button", id=index)
+                        for elt in val
+                            span=elt
+                            br
+                else if button_width == "narrow" 
+                    button(class="likert_button", id=index, style="width:70px;")
+                        for elt in val
+                            span=elt
+                            br
+                else if button_width == "wide" 
+                    button(class="likert_button", id=index, style="width:180px;")
+                        for elt in val
+                            span=elt
+                            br
+                else
+                    button(class="likert_button", id=index)
+                        for elt in val
+                            span=elt
+                            br
+                -var not_first_option = true
+
+
+mixin food_dropup_menu(div_id, options_dict, style_display)
+    div(id=div_id)
+        center
+            -var not_first_option = false
+            each val, index in options_dict
+                div(class="dropup")
+                    if not_first_option == true
+                        div(class="spacing_div")
+                    button(class="dropbtn")=index
+                    div(class="dropup-content")
+                        each elt in val
+                            a(href="#")=elt
+                    -var not_first_option = true

@@ -13,17 +13,50 @@ include helper.pug
             div(id="Wait_answer", style="display:none;")
             
             -var healthiness_options = {"no_pref": ["No preference"], "extr_unh": ["Extremely unhealthy"], "not_h": ["Not very healthy"], "slightly_h": ["Slightly healthy"], "moderately_h": ["Moderately healthy"], "very_h": ["Very healthy"], "extr_h": ["Extremely healthy"]}
-            +likert_chat_guided("healthiness", healthiness_options, "display:block;")
+            +likert_chat_guided("healthiness", healthiness_options, "display:none;")
 
             -var hungriness_options = {"no_pref": ["No preference"], "not_at_all_hungry": ["Not hungry at all"], "not_hungry": ["Not very hungry"], "slightly_hungry": ["Slightly hungry"], "moderately_h": ["Moderately hungry"], "very_h": ["Very hungry"], "extr_h": ["Extremely hungry"]}
-            +likert_chat_guided("hungriness", hungriness_options, "display:block;")
+            +likert_chat_guided("hungriness", hungriness_options, "display:none;")
 
             -var time_options = {"10min": ["10 min"], "20 min": ["20 min"], "30min": ["30 min"], "40min": ["40 min"], "50min": ["50 min"], "1h": ["1 h"], "1h30": ["1 h 30"], "2 h": ["2 h"], "no_pref": ["Unlimited"]}
-            +likert_chat_guided("time", time_options, "display:block;", "narrow")
+            +likert_chat_guided("time", time_options, "display:none;", "narrow")
 
             -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"], "no_ingredient": ["No, I don't like one of the ingredients"], "no_other": ["No,", "other reason"]}
-            //- "no_opinion": "I have no opinion on this recipe"
-            +likert_chat_guided("r_feedback", recipe_feedback_options, "display:block;", "wide")
+            +likert_chat_guided("r_feedback", recipe_feedback_options, "display:none;", "wide")
+
+            -var request_more = {"yes": ["Yes please"], "no": ["No thanks"]}
+            +likert_chat_guided("request_more", request_more, "display:none;", "wide")
+
+            | Ingredient selection: salad, tomato
+            br
+            br
+            div(id="ingredients_input", style="display:none;")
+                center
+                    button(class="likert_button", id=index, style="width:180px;")
+                            span="Add" 
+                            br
+                            span="ingredient"
+                    div(class="spacing_div")
+                    button(class="likert_button", id=index, style="width:180px;")
+                            span="Remove" 
+                            br
+                            span="ingredient"
+                    div(class="spacing_div")
+                    button(class="likert_button", id=index, style="width:180px;background-color: #FFA500;border: 2px solid #FFA500;")
+                            span
+                                | Validate ingredients selection
+
+                            
+            //- -var ingredient_category = {"meat": ["Meat"], "fish": ["Fish"], "veggies": ["Veggies"], "fruits": ["Fruits"], "others": ["Others"], "cancel": ["Cancel"]}
+            //- +likert_chat_guided("ingredient_category", ingredient_category, "display:block;", "narrow")
+
+            -var meats = ["Beef", "Chicken", "Duck", "Eggs", "Lamb", "Pork", "Turkey", "Veal"]
+            -var fish = ["Alaska pollock", "Clams", "Cod", "Crab", "Haddock", "Halibut", "Prawns", "Salmon", "Seabass", "Shrimp", "Tilapia", "Tuna"]
+            -var veggies = ["Aspargus", "Avocado", "Beetroots", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Cucumbers", "Eggplant", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Red cabbage", "Spinach", "Spring onions", "Sweetcorn", "Sweet potato", "Tomatoes", "Turnips", "Zucchini"]
+            -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
+            -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
+            -var ingredient_categories = {"Meat / Eggs": meats, "Fish / Seafood": fish, "Veggies": veggies, "Others": others}
+            +food_dropup_menu("ingredients_options", ingredient_categories, "display:block")
 
     div(class="message_template")
         li(class="message")

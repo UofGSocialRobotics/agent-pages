@@ -562,3 +562,47 @@ form .buttons {
   display: inline-block;
   line-height: 48px;
 }
+
+/* Dropup menu foods */
+
+.dropbtn {
+  background-color: #a3d063;
+  color: #fff;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 20px;
+}
+
+.dropup {
+  position: relative;
+  display: inline-block;
+}
+
+.dropup-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  bottom: 50px;
+  z-index: 1;
+}
+
+.dropup-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropup-content a:hover {background-color: #ccc}
+
+.dropup:hover .dropup-content {
+  display: block;
+}
+
+.dropup:hover .dropbtn {
+  color: #a3d063;
+  background-color: #fff;
+  border: 2px solid #a3d063;
+}
