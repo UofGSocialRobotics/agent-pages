@@ -331,6 +331,26 @@ body {
   background-color: #fff;
 }
 
+.page_buttons_notclickable {
+  max-width: 500px;
+  width: 250px;
+  height: 50px;
+  display: block;
+  border-radius: 50px;
+  background-color: #E4E2E1;
+  border: 2px solid #E4E2E1;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  text-align: center;
+}
+.page_buttons_notclickable .text {
+  font-size: 18px;
+  font-weight: 300;
+  display: inline-block;
+  line-height: 48px;
+}
+
+
 #page_title {
   text-align: center;
   color: #626160;
@@ -492,3 +512,53 @@ form .buttons {
   padding:0 4.25%;
   text-align:right
 } 
+
+/* guided chat */
+
+.bottom_wrapper .likert_button {
+  width: 100px;
+  height: 60px;
+  font-size: 16px;
+  font-weight: 400;
+  /* display: inline-block; */
+  /* line-height: 48px; */
+  border-radius: 20px;
+  background-color: #a3d063;
+  border: 2px solid #a3d063;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  text-align: center;
+  /* padding-left:5px; */
+  /* float: right; */
+}
+
+.spacing_div{
+  width: 10px;
+  height: auto;
+  display: inline-block;
+}
+
+.bottom_wrapper .likert_button:hover {
+  color: #a3d063;
+  background-color: #fff;
+}
+.bottom_wrapper .disable_likert_buttons {
+  width: 70px;
+  height: 50px;
+  display: inline-block;
+  border-radius: 20px;
+  background-color: #E4E2E1;
+  border: 2px solid #E4E2E1;
+  color: #fff;
+  transition: all 0.2s linear;
+  text-align: center;
+  float: right;
+}
+
+.bottom_wrapper .disable_likert_buttons .text {
+  font-size: 12px;
+  font-weight: 300;
+  display: inline-block;
+  line-height: 48px;
+}

@@ -93,6 +93,7 @@ var app_global = {
         dialog_stated: false,
     },
     answers_demographics : {},
+    answers_nochat : {},
     answer_demographics_weight_kg : undefined,
     answer_demographics_height_cm : undefined
 };
@@ -114,7 +115,8 @@ var PAGES = {
     CHECK_SPEAKERS : "check_speakers.html",
     CHECK_MICROPHONE : "check_microphone.html",
     FREE_TEXT_FEEDBACK : "free_text_feedback.html",
-    TUTO : "tuto.html"
+    TUTO : "tuto.html",
+    NOCHAT: "no_chat.html"
 }
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
@@ -219,7 +221,8 @@ FIREBASE_KEYS = {
     TEXT : "text",
     FOODDIAGNOSISANSWERS : "food_diagnosis_answers",
     DEMOGRPAHICS : "demographics",
-    FREECOMMENTS : "free_comments"
+    FREECOMMENTS : "free_comments",
+    NOCHAT : "no_chat"
 };
 
 FIREBASE_VALUES = {
@@ -245,6 +248,7 @@ data_col[FIREBASE_KEYS.POSTSTUDYANSWERS+"_q2"] = false;
 data_col[FIREBASE_KEYS.FOODDIAGNOSISANSWERS] = false;
 data_col[FIREBASE_KEYS.DEMOGRPAHICS] = false;
 data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
+data_col[FIREBASE_KEYS.NOCHAT] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -293,6 +297,7 @@ function on_load(){
     set_agent_name();
     app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
     page = get_page();
+    console.log(page);
     if (page == PAGES.CHAT) get_tts_asr(accessChatWindow);
     else get_tts_asr();
     if (page == PAGES.QUESTIONNAIRE) get_q_id(create_questionnaire);
@@ -300,6 +305,7 @@ function on_load(){
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
+    else if (page == PAGES.NOCHAT) init_nochat();
     else if (page == PAGES.CHAT) {
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
     }
@@ -564,7 +570,12 @@ function send_data_collection_callback(){
         console.log("witting data in firebase");
         console.log(FIREBASE_REFS.CURRENT_SESSION.path);
         FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DATACOLLECTION).update(data).then(function(snapshot){
-            go_to_next_page();
+            if (get_page() == PAGES.NOCHAT){
+                console.log("Waiting for recommendation");
+            }
+            else {
+                go_to_next_page();
+            }
         });
     }
 }
@@ -646,7 +657,7 @@ function send_amtid(){
 
 function is_chat(){
     // console.log(app_global.current_url);
-    return app_global.current_url.includes(PAGES.CHAT);
+    return (app_global.current_url.includes(PAGES.CHAT) && !app_global.current_url.includes(PAGES.NOCHAT));
 }
 
 function get_page(){
@@ -799,6 +810,15 @@ function handle_server_message(message) {
                 console.log(error);
             }
         }
+        if (get_page() == PAGES.NOCHAT) {
+            try{
+                handle_nochat_message(message);
+            }
+            catch(error) {
+                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_NOchat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                console.log(error);
+            }
+        }
         if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
     }
     else {
@@ -889,6 +909,48 @@ function handle_chat_message(message){
             }           
         }
     }
+}
+
+function handle_nochat_message(message){
+    console.log("handle_nochat_message");
+
+    if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
+        // var json_message = JSON.parse(message); 
+        app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
+        json_message = message;
+        var div_reco = document.getElementById("recommendations");
+        if (json_message.recipe_card){
+            console.log(json_message.recipe_card);
+            console.log(json_message.food_recipe);
+            var recipe_car_html = "<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>";      
+            div_reco.innerHTML += recipe_car_html + "<br><br>";
+        }
+        div_reco.innerHTML +=  "What do you think about " + json_message.recipe_title + "?<br><br>";
+
+        div_reco.innerHTML += "<center><table><tr><td><label class=\"control control-radio\">I like it<input type=\"radio\" name=\"reco_feedback" + app_global.n_reco + "\" id=\"reco_feedback" + app_global.n_reco + "_like\" value=\"like\"><div class=\"control_indicator\"></div></label></td>";
+        div_reco.innerHTML += "<td><label class=\"control control-radio\">I don't like it<input type=\"radio\" name=\"reco_feedback" + app_global.n_reco + "\" id=\"reco_feedback" + app_global.n_reco + "_dislike\" value=\"dislke\"><div class=\"control_indicator\"></div></label></td></tr></table>";
+        div_reco.innerHTML += "<br><br>";
+        div_reco.innerHTML += "<label class=\"statement-demographics\" id=\"label_comments\">Comments: </label><input class=\"input-demographics\" type=\"text\" name=\"comments" + app_global.n_reco + "\">";
+        div_reco.innerHTML += "<br><br>";
+
+        var get_reco_button = document.getElementById("get_reco_button");
+        get_reco_button.className = "page_buttons";
+        
+        if (agent_says_bye(json_message)){
+            show_next_page_button();
+        }
+        // else if (config.turn_by_turn && config.asr_activated == false){
+        //     activate_user_input();
+        //     setFocusToTextBox();
+        // }           
+    }
+}
+
+function show_next_page_button(){
+    var get_reco_button = document.getElementById("get_reco_button");
+    var next_page_button = document.getElementById("next_page_button");
+    get_reco_button.style = "display:none;"
+    next_page_button.style = "display:block;"
 }
 
 function agent_says_bye(json_message){
@@ -1511,6 +1573,77 @@ function check_answers_demographics(){
         alert("You must answer all the questions");
     }
     else send_data_collection(app_global.answers_demographics, FIREBASE_KEYS.DEMOGRPAHICS);
+}
+
+function init_nochat(){
+    console.log("in init_nochat");
+    var slider_hungry = document.getElementById("hungry_input");
+    app_global.answers_nochat["hungry"] = undefined;
+    slider_hungry.oninput = function() {
+        app_global.answers_nochat["hungry"] = this.value;
+    }
+    var slider_healthy = document.getElementById("healthy_input");
+    app_global.answers_nochat["healthy"] = undefined;
+    slider_healthy.oninput = function() {
+        app_global.answers_nochat["healthy"] = this.value;
+    }
+    var slider_time = document.getElementById("time_input");
+    app_global.answers_nochat["time"] = undefined;
+    slider_time.oninput = function() {
+        app_global.answers_nochat["time"] = this.value;
+    }
+}
+function get_nochat_answers(){
+    
+    var inputs = document.getElementsByTagName("input");
+    console.log(inputs);
+    console.log(app_global);
+    for (var i=0; i < inputs.length; i++){
+        var input = inputs[i];
+        var key = input.name;
+        console.log(key);
+        if (input.type == "radio"){
+            if (!(key in app_global.answers_nochat)) app_global.answers_nochat[key] = undefined;
+            if (input.checked) {
+                app_global.answers_nochat[key] = input.value;
+            }
+        }
+        else if (input.type != "range"){
+            app_global.answers_demographics[key] = input.value;
+        }
+        // check answers
+        if (i == (inputs.length - 1)) {
+            check_answers_no_chat();
+        }
+    }
+    console.log(app_global.answers_nochat);
+}
+
+function check_answers_no_chat(){
+    console.log(app_global.answers_nochat);
+    var alert_bool = false;
+    for (var j in app_global.answers_nochat){
+        var label = document.getElementById("label_"+j);
+        if (app_global.answers_nochat[j] == undefined || app_global.answers_nochat[j]=="") {
+            alert_bool = true;
+            label.style = "color:red;font-weight:bold;"
+        }
+        else {
+            if (label == null) console.log("Cannot cahge style of "+ j+" as it does not exist!");
+            else label.style = "";
+        }
+    }
+    if (alert_bool == true) {
+        console.log("alert");
+        window.scrollTo(0,0);
+        alert("You must answer all the questions");
+    }
+    else {
+
+        var get_reco_button = document.getElementById("get_reco_button");
+        get_reco_button.className = "page_buttons_notclickable";
+        send_data_collection(app_global.answers_nochat, FIREBASE_KEYS.NOCHAT);
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------------//

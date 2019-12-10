@@ -1,5 +1,5 @@
-mixin navigation_button(text, onclick_function, style_display="display:block;")    
-    div(class="page_buttons", onclick=onclick_function, style=style_display)
+mixin navigation_button(text, onclick_function, style_display="display:block;", my_id="")    
+    div(class="page_buttons", onclick=onclick_function, style=style_display, id=my_id)
         div(class="icon")
         div(class="text")=text
 
@@ -15,6 +15,20 @@ mixin classic_radio(q_label, radio_name, radio_dict)
             label(class="control control-radio")=val
                 input(type="radio", name=radio_name, id=radio_name+"_"+index, value=index)
                 div(class="control_indicator")
+
+mixin radio_in_table(q_label, radio_name, radio_list_of_dicts)
+    label(class="statement-demographics", id="label_"+radio_name)= q_label
+    div(class="control-group")
+        center
+            table
+                each radio_dict in radio_list_of_dicts
+                    tr
+                        each val, index in radio_dict
+                            td
+                                label(class="control control-radio")=val
+                                    input(type="radio", name=radio_name, id=radio_name+"_"+index, value=index)
+                                    div(class="control_indicator")
+
 
 mixin classic_checkbox(q_label, box_name, box_dict)
     label(class="statement-demographics", id="label_"+box_name)= q_label
@@ -43,3 +57,31 @@ mixin paragraph(title, text)
     block
     br
     br
+
+mixin likert_chat_guided(div_id, options_dict, style_display, button_width="default")
+    div(id=div_id, style=style_display)
+        -var not_first_option = false
+        each val, index in options_dict
+            if not_first_option == true
+                div(class="spacing_div")
+            if val == "Unlimited"
+                button(class="likert_button", id=index)
+                    for elt in val
+                        span=elt
+                        br
+            else if button_width == "narrow" 
+                button(class="likert_button", id=index, style="width:70px;")
+                    for elt in val
+                        span=elt
+                        br
+            else if button_width == "wide" 
+                button(class="likert_button", id=index, style="width:180px;")
+                    for elt in val
+                        span=elt
+                        br
+            else
+                button(class="likert_button", id=index)
+                    for elt in val
+                        span=elt
+                        br
+            -var not_first_option = true

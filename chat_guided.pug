@@ -1,0 +1,32 @@
+include page.pug
+include helper.pug
+
++page("Chat with Cora", true, true)
+    div(class="chat_window")
+        div(class="top_menu")
+            div(id="chat_title", class="chat_window_title")
+        ul(class="messages")
+        div(class="bottom_wrapper clearfix")
+            div(id="go_to_questionnaire", style="display:none;")
+                center
+                    +navigation_button("Next", "go_to_questionnaire(\"q1\");")
+            div(id="Wait_answer", style="display:none;")
+            
+            -var healthiness_options = {"no_pref": ["No preference"], "extr_unh": ["Extremely unhealthy"], "not_h": ["Not very healthy"], "slightly_h": ["Slightly healthy"], "moderately_h": ["Moderately healthy"], "very_h": ["Very healthy"], "extr_h": ["Extremely healthy"]}
+            +likert_chat_guided("healthiness", healthiness_options, "display:block;")
+
+            -var hungriness_options = {"no_pref": ["No preference"], "not_at_all_hungry": ["Not hungry at all"], "not_hungry": ["Not very hungry"], "slightly_hungry": ["Slightly hungry"], "moderately_h": ["Moderately hungry"], "very_h": ["Very hungry"], "extr_h": ["Extremely hungry"]}
+            +likert_chat_guided("hungriness", hungriness_options, "display:block;")
+
+            -var time_options = {"10min": ["10 min"], "20 min": ["20 min"], "30min": ["30 min"], "40min": ["40 min"], "50min": ["50 min"], "1h": ["1 h"], "1h30": ["1 h 30"], "2 h": ["2 h"], "no_pref": ["Unlimited"]}
+            +likert_chat_guided("time", time_options, "display:block;", "narrow")
+
+            -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"], "no_ingredient": ["No, I don't like one of the ingredients"], "no_other": ["No,", "other reason"]}
+            //- "no_opinion": "I have no opinion on this recipe"
+            +likert_chat_guided("r_feedback", recipe_feedback_options, "display:block;", "wide")
+
+    div(class="message_template")
+        li(class="message")
+            div(class="avatar")
+            div(class="text_wrapper")
+                div(class="text")
