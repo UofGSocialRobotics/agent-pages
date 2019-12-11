@@ -10,13 +10,26 @@ include helper.pug
             div(id="go_to_questionnaire", style="display:none;")
                 center
                     +navigation_button("Next", "go_to_questionnaire(\"q1\");")
-            div(id="Wait_answer", style="display:none;")
+
+            div(id="wait_answer", style="display:none;")
+                center
+                    i Wait for Cora's answer
+
+            div(id="hello_cora_div", style="display:none;")
+                center
+                    button(class="likert_button", id="hello", style="width:180px;")
+                            span="Hello Cora!" 
             
             -var healthiness_options = {"no_pref": ["No preference"], "extr_unh": ["Extremely unhealthy"], "not_h": ["Not very healthy"], "slightly_h": ["Slightly healthy"], "moderately_h": ["Moderately healthy"], "very_h": ["Very healthy"], "extr_h": ["Extremely healthy"]}
             +likert_chat_guided("healthiness", healthiness_options, "display:none;")
 
             -var hungriness_options = {"no_pref": ["No preference"], "not_at_all_hungry": ["Not hungry at all"], "not_hungry": ["Not very hungry"], "slightly_hungry": ["Slightly hungry"], "moderately_h": ["Moderately hungry"], "very_h": ["Very hungry"], "extr_h": ["Extremely hungry"]}
             +likert_chat_guided("hungriness", hungriness_options, "display:none;")
+
+            -var intolerances = ["Dairy", "Egg", "Gluten", "Grain", "Peanut", "Seafood", "Sesame", "Shellfish", "Soy", "Sulfite", "Wheat"]
+            -var diets = ["Gluten Free", "Ketonic", "Vegetarian", "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan", "Pescetarian", "Paleo", "Primal", "Whole30"]
+            -var diets_intolerances_dict = {"I have a specific diet...": diets, "I am intolerant to...": intolerances}
+            +food_dropup_menu("diets_intolerances", diets_intolerances_dict, "display:none")
 
             -var time_options = {"10min": ["10 min"], "20 min": ["20 min"], "30min": ["30 min"], "40min": ["40 min"], "50min": ["50 min"], "1h": ["1 h"], "1h30": ["1 h 30"], "2 h": ["2 h"], "no_pref": ["Unlimited"]}
             +likert_chat_guided("time", time_options, "display:none;", "narrow")
@@ -27,22 +40,21 @@ include helper.pug
             -var request_more = {"yes": ["Yes please"], "no": ["No thanks"]}
             +likert_chat_guided("request_more", request_more, "display:none;", "wide")
 
-            | Ingredient selection: salad, tomato
-            br
-            br
+            div(id="selected_ingredients_text")
+            
             div(id="ingredients_input", style="display:none;")
                 center
-                    button(class="likert_button", id=index, style="width:180px;")
+                    button(class="likert_button", id="add_ingredient", style="width:180px;")
                             span="Add" 
                             br
-                            span="ingredient"
+                            span="ingredients"
                     div(class="spacing_div")
-                    button(class="likert_button", id=index, style="width:180px;")
+                    button(class="likert_button", id="remove_ingredient", style="width:180px;")
                             span="Remove" 
                             br
-                            span="ingredient"
+                            span="ingredients"
                     div(class="spacing_div")
-                    button(class="likert_button", id=index, style="width:180px;background-color: #FFA500;border: 2px solid #FFA500;")
+                    button(class="likert_button", id="validate_selection", style="width:180px;background-color: #FFA500;border: 2px solid #FFA500;")
                             span
                                 | Validate ingredients selection
 
@@ -56,7 +68,7 @@ include helper.pug
             -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
             -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
             -var ingredient_categories = {"Meat / Eggs": meats, "Fish / Seafood": fish, "Veggies": veggies, "Others": others}
-            +food_dropup_menu("ingredients_options", ingredient_categories, "display:block")
+            +food_dropup_menu("ingredients_options", ingredient_categories, "display:block;")
 
     div(class="message_template")
         li(class="message")

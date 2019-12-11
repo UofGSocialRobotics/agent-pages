@@ -520,8 +520,6 @@ form .buttons {
   height: 60px;
   font-size: 16px;
   font-weight: 400;
-  /* display: inline-block; */
-  /* line-height: 48px; */
   border-radius: 20px;
   background-color: #a3d063;
   border: 2px solid #a3d063;
@@ -529,8 +527,20 @@ form .buttons {
   cursor: pointer;
   transition: all 0.2s linear;
   text-align: center;
-  /* padding-left:5px; */
-  /* float: right; */
+}
+
+.bottom_wrapper .likert_button_orange {
+  width: 100px;
+  height: 60px;
+  font-size: 16px;
+  font-weight: 400;
+  border-radius: 20px;
+  background-color: #FFA500;
+  border: 2px solid #FFA500;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  text-align: center;
 }
 
 .spacing_div{
@@ -541,6 +551,10 @@ form .buttons {
 
 .bottom_wrapper .likert_button:hover {
   color: #a3d063;
+  background-color: #fff;
+}
+.bottom_wrapper .likert_button_orange:hover {
+  color: #FFA500;
   background-color: #fff;
 }
 .bottom_wrapper .disable_likert_buttons {
@@ -572,6 +586,7 @@ form .buttons {
   font-size: 16px;
   border: none;
   border-radius: 20px;
+  height: 60px;
 }
 
 .dropup {
@@ -586,6 +601,9 @@ form .buttons {
   min-width: 160px;
   bottom: 50px;
   z-index: 1;
+  height: auto;
+  max-height: 300px;
+  overflow-x: hidden;
 }
 
 .dropup-content a {

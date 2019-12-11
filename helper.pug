@@ -66,22 +66,22 @@ mixin likert_chat_guided(div_id, options_dict, style_display, button_width="defa
                 if not_first_option == true
                     div(class="spacing_div")
                 if val == "Unlimited"
-                    button(class="likert_button", id=index)
+                    button(class="likert_button", id=div_id+"_"+index)
                         for elt in val
                             span=elt
                             br
                 else if button_width == "narrow" 
-                    button(class="likert_button", id=index, style="width:70px;")
+                    button(class="likert_button", id=div_id+"_"+index, style="width:70px;")
                         for elt in val
                             span=elt
                             br
                 else if button_width == "wide" 
-                    button(class="likert_button", id=index, style="width:180px;")
+                    button(class="likert_button", id=div_id+"_"+index, style="width:180px;")
                         for elt in val
                             span=elt
                             br
                 else
-                    button(class="likert_button", id=index)
+                    button(class="likert_button", id=div_id+"_"+index)
                         for elt in val
                             span=elt
                             br
@@ -89,15 +89,19 @@ mixin likert_chat_guided(div_id, options_dict, style_display, button_width="defa
 
 
 mixin food_dropup_menu(div_id, options_dict, style_display)
-    div(id=div_id)
+    div(id=div_id, style=style_display)
         center
             -var not_first_option = false
             each val, index in options_dict
                 div(class="dropup")
                     if not_first_option == true
                         div(class="spacing_div")
-                    button(class="dropbtn")=index
+                    button(class="dropbtn" id=div_id+"_"+index)=index
                     div(class="dropup-content")
                         each elt in val
-                            a(href="#")=elt
+                            a(href="#" id=div_id+"_"+elt)=elt
                     -var not_first_option = true
+            div(class="spacing_div")
+            button(class="likert_button_orange", id=div_id+"_validate_selection")
+                    span
+                        | Validate

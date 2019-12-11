@@ -107,6 +107,7 @@ var PAGES = {
     FOOD_DIAGNOSIS : "food_diagnosis.html",
     CHAT_SETUP : "chat_setup.html",
     CHAT : "chat.html",
+    CHAT_GUIDED: "chat_guided.html",
     QUESTIONNAIRE : "questionnaire.html",
     THANKS : "thanks.html",
     DEMOGRPAHICS : "demographics.html",
@@ -305,6 +306,7 @@ function on_load(){
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
+    else if (page == PAGES.CHAT_GUIDED) chat_guided_setup_onclick_event();
     else if (page == PAGES.NOCHAT) init_nochat();
     else if (page == PAGES.CHAT) {
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
@@ -810,7 +812,16 @@ function handle_server_message(message) {
                 console.log(error);
             }
         }
-        if (get_page() == PAGES.NOCHAT) {
+        else if (get_page() == PAGES.CHAT_GUIDED) {
+            try{
+                handle_guided_chat_message(message);
+            }
+            catch(error) {
+                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_guided_hat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                console.log(error);
+            }
+        }
+        else if (get_page() == PAGES.NOCHAT) {
             try{
                 handle_nochat_message(message);
             }
@@ -844,16 +855,16 @@ function Message(arg) {
     return this;
 };
 
-function send_chat() {
+function send_chat(msg) {
     // console.log("debug: in send chat");
-    msg = getMessageText();
+    if (!msg) msg = getMessageText();
     // console.log(app_global.user_wait,msg,app_global.error);
     // if (app_global.user_wait == false && msg!="" && app_global.error == false){
     printMessage(msg,'right');
     // res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
     send_dialog(msg);
     // Disable user input
-    if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false){
+    if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false && is_chat()){
         disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
     }
     else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
@@ -901,14 +912,32 @@ function handle_chat_message(message){
             printMessage(json_message.sentence,'left');  
 			
             if (agent_says_bye(json_message)){
-                            terminate_conversation();
+                terminate_conversation();
             }
-            else if (config.turn_by_turn && config.asr_activated == false){
+            else if (config.turn_by_turn && config.asr_activated == false && is_chat()){
                 activate_user_input();
                 setFocusToTextBox();
             }           
         }
     }
+}
+
+function handle_guided_chat_message(message){
+    handle_chat_message(message);
+    var intent = message["intent"];
+    if (intent == "request(filling)") chat_guided_hide_and_show_divs("wait_answer", "hungriness");
+    else if (intent == "request(healthy)") chat_guided_hide_and_show_divs("wait_answer", "healthiness");
+    else if (intent == "request(diet)") chat_guided_hide_and_show_divs("wait_answer", "diets_intolerances");
+    else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_input");
+    else if (intent == "inform(food)") chat_guided_hide_and_show_divs("wait_answer", "f_feedback");
+    else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
+}
+
+function chat_guided_hide_and_show_divs(to_hide, to_show){
+    var div_to_hide = document.getElementById(to_hide);
+    div_to_hide.style = "display:none;"
+    var div_to_show = document.getElementById(to_show);
+    div_to_show.style = "display:block;"
 }
 
 function handle_nochat_message(message){
@@ -1682,4 +1711,64 @@ function check_test_audio(callback){
         }
     }
 
+}
+
+function click_button_event(){
+    console.log("button clicked");
+}
+
+function chat_guided_setup_onclick_event(){
+    var buttons = document.getElementsByTagName('button');
+    directly_send_message_buttons_types = ['healthiness', 'hungriness', 'time', "hello"];
+    directly_send_message_buttons_types.forEach(function(elt){
+        for (var i = 0; i < buttons.length; i++){
+            let b_elt = buttons[i];
+            if (b_elt.id.includes(elt)){
+                b_elt.addEventListener("click", function(){
+                    var chat_msg = b_elt.innerText || b_elt.textContent;
+                    send_chat(chat_msg);
+                    chat_guided_wait_for_coras_answer();
+                });
+            }
+        };
+    });
+    var dropup_elements = document.getElementsByTagName('a');
+    dropup_elements_ids = ["ingredients_options"];
+    dropup_elements_ids.forEach(function(elt){
+        for (var i = 0; i < dropup_elements.length; i++){
+            let b_elt = dropup_elements[i];
+            if (b_elt.id.includes(elt)){
+                b_elt.addEventListener("click", function(){
+                    // console.log(b_elt);
+                    var val = b_elt.innerHTML;
+                    var ingredients_text_div = document.getElementById("selected_ingredients_text");
+                    var inner_text = (ingredients_text_div.innerText || ingredients_text_div.textContent);
+                    console.log(inner_text);
+                    if (ingredients_text_div.innerHTML == ""){
+                        ingredients_text_div.innerHTML = "I would like " + val + "<br><br>";
+                    }
+                    else ingredients_text_div.innerHTML =  inner_text.trim() + ", " + val + "<br><br>";
+                    console.log(val);
+                });
+            }
+        };
+    });
+    var button_validate_ingredients_selection = document.getElementById("ingredients_options_validate_selection");
+    button_validate_ingredients_selection.onclick = function (){
+        var text_div = document.getElementById("selected_ingredients_text");
+        var msg = text_div.innerText || text_div.textContent;
+        text_div.style = "display:none;"
+        send_chat(msg);
+        chat_guided_wait_for_coras_answer();
+    };
+}
+
+function chat_guided_wait_for_coras_answer(){
+    var divs_to_hide_ids = ["healthiness", "hungriness", "time", "r_feedback", "request_more", "ingredients_input", "ingredients_options", "hello_cora_div"];
+        divs_to_hide_ids.forEach(function(div_elt_id){
+            var div_elt = document.getElementById(div_elt_id);
+            div_elt.style = "display:none";
+    });
+    var div_wait_for_answer = document.getElementById("wait_answer");
+    div_wait_for_answer.style = "display:block;"
 }
