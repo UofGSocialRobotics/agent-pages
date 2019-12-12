@@ -938,6 +938,7 @@ function handle_guided_chat_message(message){
         chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
     }
     else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
+    else if (intent == "bye") chat_guided_hide_and_show_divs("wait_answer", "go_to_questionnaire");
 }
 
 function chat_guided_hide_and_show_divs(to_hide, to_show){
@@ -1853,6 +1854,7 @@ function chat_guided_wait_for_coras_answer(){
 function set_up_ingredients_list(ingredients_list, callback){
     dropup_disliked_ingredients_btn = document.getElementById("r_feedback_no_ingredient");
     var div_dropup_content_disliked_ingredients = document.getElementById("no_ingredient_dropup-content");
+    div_dropup_content_disliked_ingredients.innerHTML = "";
     var i = 0;
     ingredients_list.forEach(function(elt){
         console.log(elt);
@@ -1878,7 +1880,7 @@ function set_up_onclick_ingredients_list(){
 function onclick_disliked_ingredient(b_elt){
     b_elt.addEventListener("click", function(){
         var val = b_elt.innerHTML;
-        var msg = "I don't like " + val;
+        var msg = "No, I don't like " + val;
         send_chat(msg);
         chat_guided_wait_for_coras_answer();
     });
