@@ -58,6 +58,24 @@ mixin paragraph(title, text)
     br
     br
 
+mixin single_dropup_btn_with_dict(div_id, btn_text, btn_dict)
+    div(class="dropup")
+        div(class="spacing_div")
+        button(class="dropbtn" id=div_id+"_"+btn_text)=btn_text
+        div(class="dropup-content" id=div_id+"_dropup-content")
+            each btn_values_list, btn_id in btn_dict
+                each elt in btn_values_list
+                    a(href="#" id=btn_id+"_"+elt)=elt
+
+
+mixin single_dropup_btn_with_list(div_id, btn_text, btn_list)
+    div(class="dropup")
+        div(class="spacing_div")
+        button(class="dropbtn" id=div_id+"_"+btn_text)=btn_text
+        div(class="dropup-content" id=div_id+"_dropup-content")
+            each elt in btn_list
+                a(href="#" id=btn_id+"_"+elt)=elt
+
 mixin likert_chat_guided(div_id, options_dict, style_display, button_width="default")
     div(id=div_id, style=style_display)
         center
@@ -70,6 +88,14 @@ mixin likert_chat_guided(div_id, options_dict, style_display, button_width="defa
                         for elt in val
                             span=elt
                             br
+                if index == "no_ingredient"
+                    div(class="dropup")
+                        div(class="spacing_div")
+                        button(class="likert_button" id=index+"_btn" style="width:180px;")
+                            for elt in val
+                                span=elt
+                                br
+                        div(class="dropup-content" id=index+"_dropup-content")
                 else if button_width == "narrow" 
                     button(class="likert_button", id=div_id+"_"+index, style="width:70px;")
                         for elt in val
@@ -116,13 +142,7 @@ mixin diet_intolereance_dropup_menu(div_id, options_dict, style_display)
                 span
                     | None
         each btn_dict, btn_text in options_dict
-            div(class="dropup")
-                div(class="spacing_div")
-                button(class="dropbtn" id=div_id+"_"+btn_text)=btn_text
-                div(class="dropup-content")
-                    each btn_values_list, btn_id in btn_dict
-                        each elt in btn_values_list
-                            a(href="#" id=btn_id+"_"+elt)=elt
+            +single_dropup_btn_with_dict(div_id, btn_text, btn_dict)
         div(class="spacing_div")
         button(class="likert_button_orange", id=div_id+"_validate_selection")
                 span

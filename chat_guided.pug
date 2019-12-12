@@ -41,7 +41,7 @@ include helper.pug
             -var time_options = {"10min": ["10 min"], "20 min": ["20 min"], "30min": ["30 min"], "40min": ["40 min"], "50min": ["50 min"], "1h": ["1 h"], "1h30": ["1 h 30"], "2 h": ["2 h"], "no_pref": ["Unlimited"]}
             +likert_chat_guided("time", time_options, "display:none;", "narrow")
 
-            -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"], "no_ingredient": ["No, I don't like one of the ingredients"], "no_other": ["No,", "other reason"]}
+            -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"], "no_ingredient": ["No, I don't like one", "of the ingredients"], "no_other": ["No,", "other reason"]}
             +likert_chat_guided("r_feedback", recipe_feedback_options, "display:none;", "wide")
 
             -var request_more = {"yes": ["Yes please"], "no": ["No thanks"]}
@@ -76,7 +76,7 @@ include helper.pug
                 -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
                 -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
                 -var ingredient_categories = {"Meat / Eggs": meats, "Fish / Seafood": fish, "Veggies": veggies, "Others": others}
-                +food_dropup_menu("ingredients_options", ingredient_categories, "display:none;")
+                +food_dropup_menu("ingredients_options", ingredient_categories, "display:block;")
 
     div(class="message_template")
         li(class="message")
