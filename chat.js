@@ -297,7 +297,7 @@ function on_load(){
     keyboard_functions();
     set_agent_name();
     app_global.css_elm.setAttribute("href",app_global.css_val.no_error);
-    page = get_page();
+    var page = get_page();
     console.log(page);
     if (page == PAGES.CHAT) get_tts_asr(accessChatWindow);
     else get_tts_asr();
@@ -306,7 +306,10 @@ function on_load(){
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
-    else if (page == PAGES.CHAT_GUIDED) chat_guided_setup_onclick_event();
+    else if (page == PAGES.CHAT_GUIDED) {
+        console.log("Chat guided page!");
+        chat_guided_setup_onclick_event();
+    }
     else if (page == PAGES.NOCHAT) init_nochat();
     else if (page == PAGES.CHAT) {
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
@@ -928,8 +931,9 @@ function handle_guided_chat_message(message){
     if (intent == "request(filling)") chat_guided_hide_and_show_divs("wait_answer", "hungriness");
     else if (intent == "request(healthy)") chat_guided_hide_and_show_divs("wait_answer", "healthiness");
     else if (intent == "request(diet)") chat_guided_hide_and_show_divs("wait_answer", "diets_intolerances");
+    else if (intent == "request(time)") chat_guided_hide_and_show_divs("wait_answer", "time");
     else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_input");
-    else if (intent == "inform(food)") chat_guided_hide_and_show_divs("wait_answer", "f_feedback");
+    else if (intent == "inform(food)") chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
     else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
 }
 
@@ -1719,7 +1723,7 @@ function click_button_event(){
 
 function chat_guided_setup_onclick_event(){
     var buttons = document.getElementsByTagName('button');
-    directly_send_message_buttons_types = ['healthiness', 'hungriness', 'time', "hello"];
+    directly_send_message_buttons_types = ['healthiness', 'hungriness', 'time', "hello", "none"];
     directly_send_message_buttons_types.forEach(function(elt){
         for (var i = 0; i < buttons.length; i++){
             let b_elt = buttons[i];
@@ -1732,6 +1736,11 @@ function chat_guided_setup_onclick_event(){
             }
         };
     });
+    set_up_ingredients_selection();
+    set_up_diet_intolerances_selection();
+}
+
+function set_up_ingredients_selection(){
     var dropup_elements = document.getElementsByTagName('a');
     dropup_elements_ids = ["ingredients_options"];
     dropup_elements_ids.forEach(function(elt){
@@ -1763,8 +1772,73 @@ function chat_guided_setup_onclick_event(){
     };
 }
 
+function set_up_diet_intolerances_selection(){
+    console.log("set_up_diet_intolerances_selection");
+    var dropup_elements = document.getElementsByTagName('a');
+    dropup_elements_ids = ["diets_intolerances"];
+    dropup_elements_ids.forEach(function(elt){
+        for (var i = 0; i < dropup_elements.length; i++){
+            let b_elt = dropup_elements[i];
+            // console.log(b_elt.id);
+            if (b_elt.id.includes("diet")){
+                console.log("seting up diet");
+                onclick_diet(b_elt);
+            }
+            else if(b_elt.id.includes("intolerance")){
+                console.log("seting up intolerances");
+                onclick_intolerance(b_elt);
+            }
+        };
+    });
+    var button_validate_ingredients_selection = document.getElementById("diets_intolerances_validate_selection");
+    button_validate_ingredients_selection.onclick = function (){
+        var diet_text_div = document.getElementById("diet_text");
+        var intolerance_text_div = document.getElementById("intolerances_text");
+        // var msg = text_div.innerText || text_div.textContent;
+        var msg = (diet_text_div.innerText || diet_text_div.textContent);
+        if (msg != "") msg += "<br>" + (intolerance_text_div.innerText || intolerance_text_div.textContent);
+        else msg = (intolerance_text_div.innerText || intolerance_text_div.textContent);
+        diet_text_div.style = "display:none;"
+        intolerance_text_div.style = "display:none;"
+        send_chat(msg);
+        chat_guided_wait_for_coras_answer();
+    };
+}
+
+function onclick_diet(b_elt){
+    b_elt.addEventListener("click", function(){
+        var val = b_elt.innerHTML;
+        var diet_text_div = document.getElementById("diet_text");
+        var br_div = document.getElementById("br_div");
+        var inner_text = (diet_text_div.innerText || diet_text_div.textContent);
+        console.log(inner_text);
+        if (diet_text_div.innerHTML != ""){
+            alert("You can only have one specific diet.")
+        }
+        diet_text_div.innerHTML = "I have a " + val + " diet";
+        br_div.innerHTML = "<br><br>";
+        console.log(val);
+    });
+}
+
+function onclick_intolerance(b_elt){
+    b_elt.addEventListener("click", function(){
+        var val = b_elt.innerHTML;
+        var intolerance_text_div = document.getElementById("intolerances_text");
+        var br_div = document.getElementById("br_div");
+        var inner_text = (intolerance_text_div.innerText || intolerance_text_div.textContent);
+        console.log(inner_text);
+        if (intolerance_text_div.innerHTML == ""){
+            intolerance_text_div.innerHTML = "I am intolerant to " + val;
+        }
+        else intolerance_text_div.innerHTML =  inner_text.trim() + ", " + val;
+        br_div.innerHTML = "<br>";
+        console.log(val);
+    });
+}
+
 function chat_guided_wait_for_coras_answer(){
-    var divs_to_hide_ids = ["healthiness", "hungriness", "time", "r_feedback", "request_more", "ingredients_input", "ingredients_options", "hello_cora_div"];
+    var divs_to_hide_ids = ["healthiness", "hungriness", "time", "r_feedback", "request_more", "ingredients_options", "hello_cora_div", "diets_intolerances"];
         divs_to_hide_ids.forEach(function(div_elt_id){
             var div_elt = document.getElementById(div_elt_id);
             div_elt.style = "display:none";
