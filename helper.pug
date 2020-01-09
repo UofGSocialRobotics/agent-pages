@@ -88,7 +88,7 @@ mixin likert_chat_guided(div_id, options_dict, style_display, button_width="defa
                         for elt in val
                             span=elt
                             br
-                if index == "no_ingredient"
+                else if index == "no_ingredient"
                     div(class="dropup")
                         div(class="spacing_div")
                         button(class="likert_button" id=index+"_btn" style="width:180px;")
@@ -120,6 +120,7 @@ mixin food_dropup_menu(div_id, options_dict, style_display)
         button(class="likert_button", id=div_id+"_none")
                 span
                     | None
+        div(class="spacing_div")
         -var not_first_option = false
         each foods_list, btn_text in options_dict
             div(class="dropup")

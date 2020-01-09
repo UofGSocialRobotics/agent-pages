@@ -119,7 +119,7 @@ var PAGES = {
     TUTO : "tuto.html",
     NOCHAT: "no_chat.html"
 }
-var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -932,8 +932,9 @@ function handle_guided_chat_message(message){
     else if (intent == "request(healthy)") chat_guided_hide_and_show_divs("wait_answer", "healthiness");
     else if (intent == "request(diet)") chat_guided_hide_and_show_divs("wait_answer", "diets_intolerances");
     else if (intent == "request(time)") chat_guided_hide_and_show_divs("wait_answer", "time");
-    else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_input");
+    else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_options");
     else if (intent == "inform(food)") {
+        console.log(message['ingredients']);
         set_up_ingredients_list(message['ingredients'], set_up_onclick_ingredients_list);
         chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
     }
@@ -1855,14 +1856,16 @@ function set_up_ingredients_list(ingredients_list, callback){
     dropup_disliked_ingredients_btn = document.getElementById("r_feedback_no_ingredient");
     var div_dropup_content_disliked_ingredients = document.getElementById("no_ingredient_dropup-content");
     div_dropup_content_disliked_ingredients.innerHTML = "";
-    var i = 0;
-    ingredients_list.forEach(function(elt){
-        console.log(elt);
-        div_dropup_content_disliked_ingredients.innerHTML += "<a href=\"#\" id=\"disliked_ingredient_"+i+"\">"+elt+"</a>";
-        // a(href="#" id=btn_id+"_"+elt)=elt
-        i += 1;
-    });
-    callback();
+    if (ingredients_list){
+        var i = 0;
+        ingredients_list.forEach(function(elt){
+            console.log(elt);
+            div_dropup_content_disliked_ingredients.innerHTML += "<a href=\"#\" id=\"disliked_ingredient_"+i+"\">"+elt+"</a>";
+            // a(href="#" id=btn_id+"_"+elt)=elt
+            i += 1;
+        });
+        callback();
+    }
 }
 
 function set_up_onclick_ingredients_list(){
