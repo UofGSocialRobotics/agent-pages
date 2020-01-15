@@ -145,7 +145,7 @@ var QUESTIONS = {
         "question6" : "AGENTNAME was friendly to me.", 
         "question19" : "I want to make the recipe recommended to me.", 
         "question7" : "AGENTNAME and I established rapport.", 
-        "question8" : "I felt I had no connection with AGENTNAME", 
+        "question8" : "I felt I had <b>no</b> connection with AGENTNAME", 
         // "question23" : "AGENTNAME pretended to be a computer program." 
     },
     // "q2" : {
