@@ -724,6 +724,10 @@ function go_to_prolific_validation_page(){
 //     location.replace(PAGES.CHECK_MICROPHONE+url_vars_to_string());
 // }
 function go_to_next_page(param){
+    setTimeout(function(){ go_to_next_page_after_timeout(param); }, 500);
+}
+
+function go_to_next_page_after_timeout(param){
     var current_page = get_page();
     if (current_page == PAGES.QUESTIONNAIRE) go_to_page_after_questionnaire();
     else go_to_next_page_general_case();
