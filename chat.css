@@ -632,3 +632,10 @@ form .buttons {
   background-color: #fff;
   border: 2px solid #a3d063;
 }
+
+.user_name_input{
+  padding: 10px;
+  border-radius: 15px;
+  font-size: 16px;
+  font-family: "Calibri", "Roboto", sans-serif;
+}

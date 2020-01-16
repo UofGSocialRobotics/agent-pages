@@ -167,6 +167,31 @@ mixin food_dropup_menu(div_id, options_dict, style_display)
                 span
                     | Validate
 
+mixin usual_dinner_dropup_menu(div_id, options_dict, style_display, validate=false)
+    //- div(id=div_id, style=style_display)
+    center
+        //- button(class="likert_button", id=div_id+"_none")
+        //-         span
+        //-             | Something light
+        //- div(class="spacing_div")
+        -var not_first_option = false
+        each foods_list, btn_text in options_dict
+            if btn_text == "Meat / Eggs"
+                br
+                br
+            div(class="dropup")
+                if not_first_option == true
+                    div(class="spacing_div")
+                button(class="dropbtn" id=div_id+"_"+btn_text)=btn_text
+                div(class="dropup-content")
+                    each elt in foods_list
+                        a(href="#" id=div_id+"_"+elt)=elt
+                -var not_first_option = true
+        div(class="spacing_div")
+        button(class="likert_button_orange", id=div_id+"_validate_selection")
+                span
+                    | Validate
+
 mixin diet_intolereance_dropup_menu(div_id, options_dict, style_display)
     //- div(id=div_id, style=style_display)
     center
