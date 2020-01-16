@@ -176,9 +176,9 @@ mixin usual_dinner_dropup_menu(div_id, options_dict, style_display, validate=fal
         //- div(class="spacing_div")
         -var not_first_option = false
         each foods_list, btn_text in options_dict
-            if btn_text == "Meat / Eggs"
-                br
-                br
+            //- if btn_text == "Meat / Eggs"
+            //-     br
+            //-     br
             div(class="dropup")
                 if not_first_option == true
                     div(class="spacing_div")

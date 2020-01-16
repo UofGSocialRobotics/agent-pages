@@ -44,9 +44,9 @@ include helper.pug
                 -var fish_usual_dinner = ["Some kind of fish", "Alaska pollock", "Clams", "Cod", "Crab", "Haddock", "Halibut", "Prawns", "Salmon", "Seabass", "Shrimp", "Tilapia", "Tuna"]
                 -var veggies_usual_dinner = ["Some kind of veggies", "Aspargus", "Avocado", "Beetroots", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Cucumbers", "Eggplant", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Red cabbage", "Spinach", "Spring onions", "Sweetcorn", "Sweet potato", "Tomatoes", "Turnips", "Zucchini"]
                 -var fruits_usual_dinner = ["Some kind of fruit", "Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
-                -var others_usual_dinner = ["Some kind of carbs", "Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
+                -var others_usual_dinner = ["Some kind of carbs", "Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu", "Other"]
                 -var cuisines_usual_dinner = ["African", "American", "British", "Cajun", "Caribbean", "Chinese", "Eastern european", "European", "French", "German", "Greek", "Indian", "Irish", "Italian", "Japanese", "Jewish", "Korean", "Latin american", "Mediterranean", "Mexican", "Middle eastern", "Nordic", "Southern", "Spanish", "Thai", "Vietnamese"]
-                -var categories_usual_dinner = {"My dinner is usually...": dinner_characteristics, "Cuisine type": cuisines_usual_dinner, "Meat / Eggs": meats_usual_dinner, "Fish / Seafood": fish_usual_dinner, "Veggies": veggies_usual_dinner, "Others": others_usual_dinner}
+                -var categories_usual_dinner = {"Usually...": dinner_characteristics, "Cuisine": cuisines_usual_dinner, "Meat / Eggs": meats_usual_dinner, "Fish": fish_usual_dinner, "Veggies": veggies_usual_dinner, "Others": others_usual_dinner}
                 +usual_dinner_dropup_menu("usual_dinner_options", categories_usual_dinner, "display:block;")
 
             div(id="why_usual_dinner_div", style="display:none;")
