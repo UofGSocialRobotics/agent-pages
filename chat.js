@@ -894,6 +894,7 @@ function handle_chat_message(message){
     }
     else {
         if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
+            console.log("We're here");
             // var json_message = JSON.parse(message); 
             app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
             json_message = message;
@@ -924,7 +925,7 @@ function handle_chat_message(message){
             if (agent_says_bye(json_message)){
                 terminate_conversation();
             }
-            else if (config.turn_by_turn && config.asr_activated == false && is_chat()){
+            else if (config.turn_by_turn && config.asr_activated == false && is_chat() && json_message.wait_for_more == false){
                 activate_user_input();
                 setFocusToTextBox();
             }           
@@ -935,22 +936,24 @@ function handle_chat_message(message){
 function handle_guided_chat_message(message){
     handle_chat_message(message);
     var intent = message["intent"];
-    if (intent == "greeting") chat_guided_hide_and_show_divs("wait_answer", "user_name_div");
-    else if (intent=="request(mood)") chat_guided_hide_and_show_divs("wait_answer", "mood_div");
-    else if (intent == "request(usual_dinner)") chat_guided_hide_and_show_divs("wait_answer", "usual_dinner_div");
-    else if (intent == "request(why_dinner)") chat_guided_hide_and_show_divs("wait_answer", "why_usual_dinner_div");
-    else if (intent == "request(filling)") chat_guided_hide_and_show_divs("wait_answer", "hungriness");
-    else if (intent == "request(healthy)") chat_guided_hide_and_show_divs("wait_answer", "healthiness");
-    else if (intent == "request(diet)") chat_guided_hide_and_show_divs("wait_answer", "diets_intolerances");
-    else if (intent == "request(time)") chat_guided_hide_and_show_divs("wait_answer", "time");
-    else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_options");
-    else if (intent == "inform(food)") {
-        console.log(message['ingredients']);
-        set_up_ingredients_list(message['ingredients'], set_up_onclick_ingredients_list);
-        chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
+    if (message['wait_for_more'] == false){
+        if (intent == "greeting") chat_guided_hide_and_show_divs("wait_answer", "user_name_div");
+        else if (intent=="request(mood)") chat_guided_hide_and_show_divs("wait_answer", "mood_div");
+        else if (intent == "request(usual_dinner)") chat_guided_hide_and_show_divs("wait_answer", "usual_dinner_div");
+        else if (intent == "request(why_dinner)") chat_guided_hide_and_show_divs("wait_answer", "why_usual_dinner_div");
+        else if (intent == "request(filling)") chat_guided_hide_and_show_divs("wait_answer", "hungriness");
+        else if (intent == "request(healthy)") chat_guided_hide_and_show_divs("wait_answer", "healthiness");
+        else if (intent == "request(diet)") chat_guided_hide_and_show_divs("wait_answer", "diets_intolerances");
+        else if (intent == "request(time)") chat_guided_hide_and_show_divs("wait_answer", "time");
+        else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_options");
+        else if (intent == "inform(food)") {
+            console.log(message['ingredients']);
+            set_up_ingredients_list(message['ingredients'], set_up_onclick_ingredients_list);
+            chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
+        }
+        else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
+        else if (intent == "bye") chat_guided_hide_and_show_divs("wait_answer", "go_to_questionnaire");
     }
-    else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
-    else if (intent == "bye") chat_guided_hide_and_show_divs("wait_answer", "go_to_questionnaire");
 }
 
 function chat_guided_hide_and_show_divs(to_hide, to_show){
