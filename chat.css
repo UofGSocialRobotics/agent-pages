@@ -639,3 +639,83 @@ form .buttons {
   font-size: 16px;
   font-family: "Calibri", "Roboto", sans-serif;
 }
+
+
+.recipe_grid {
+  display: grid;
+  max-width: 1000px;
+  position: center;
+  grid-template-areas: 
+    'ga_recipe_img ga_recipe_img ga_recipe_title ga_recipe_title'
+    'ga_recipe_img ga_recipe_img ga_recipe_rating ga_recipe_rating'
+    'ga_recipe_img ga_recipe_img ga_recipe_time ga_recipe_servings'
+    'ga_recipe_img ga_recipe_img ga_recipe_description ga_recipe_description'
+    'ga_recipe_ingredients ga_recipe_ingredients ga_recipe_ingredients ga_recipe_ingredients'
+    'ga_recipe_instructions ga_recipe_instructions ga_recipe_instructions ga_recipe_instructions';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.recipe_grid > div {
+  text-align: left;
+}
+
+.recipe_img{
+  grid-area: ga_recipe_img;
+}
+
+.recipe_title{
+  grid-area: ga_recipe_title;
+  font-size: 32px;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.recipe_rating{
+  grid-area: ga_recipe_rating;
+}
+
+.recipe_time{
+  grid-area: ga_recipe_time;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.recipe_servings{
+  grid-area: ga_recipe_servings;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.recipe_description{
+  grid-area: ga_recipe_description;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.recipe_ingredients{
+  grid-area: ga_recipe_ingredients;
+}
+
+.recipe_instructions{
+  grid-area: ga_recipe_instructions;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 14px;
+}
+
+.grid_ingredients {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  grid-template-columns: auto auto auto;
+  /* background-color: #2196F3; */
+  grid-row-gap: 10px;
+  grid-column-gap: 20px;
+  padding: 10px;
+}
+.grid_ingredients_item {
+  /* background-color: rgba(255, 255, 255, 0.8); */
+  /* border: 1px solid rgba(0, 0, 0, 0.8); */
+  /* padding: 20px; */
+  /* font-size: 30px; */
+  text-align: left;
+  font-size: 14px;
+}

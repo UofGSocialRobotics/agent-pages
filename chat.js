@@ -117,7 +117,8 @@ var PAGES = {
     CHECK_MICROPHONE : "check_microphone.html",
     FREE_TEXT_FEEDBACK : "free_text_feedback.html",
     TUTO : "tuto.html",
-    NOCHAT: "no_chat.html"
+    NOCHAT: "no_chat.html",
+    RS_EVAL_RECIPES: "rs_eval.html"
 }
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
@@ -292,6 +293,7 @@ function callback_accessChatWindow(){
 //--------------------------------------------------------------------------------------------------------------//
 
 function on_load(){
+    cora_is_typing();
     if (decrypt_config() == true) {
         initialize_firebase();
         init_firebase_static_refs(get_client_id);
@@ -840,6 +842,15 @@ function handle_server_message(message) {
                 console.log(error);
             }
         }
+        else if (get_page() == PAGES.RS_EVAL_RECIPES){
+            try{
+                handle_rs_eval_message(message);
+            }
+            catch(error) {
+                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_rs_eval_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                console.log(error);
+            }
+        }
         if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
     }
     else {
@@ -954,6 +965,11 @@ function handle_guided_chat_message(message){
         else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
         else if (intent == "bye") chat_guided_hide_and_show_divs("wait_answer", "go_to_questionnaire");
     }
+}
+
+function handle_rs_eval_message(message){
+    var recipe_data = message["recipe"];
+    
 }
 
 function chat_guided_hide_and_show_divs(to_hide, to_show){
@@ -1206,6 +1222,49 @@ function on_click_send(){
     console.log("sending msg");
     send_chat();
 }
+
+
+//--------                                       Cora is typing...                                      --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+CORA_IS_TYPING_COLOR_CODES = ["#3DDD00", "#59E125", "#78E84D", "#8FEE6A", "#A7F389", "#BCF9A4", "#CCF5BB"]
+CORA_IS_TYPING_COLOR_CODES_R = ['61', '89', '120', '143', '167', '188', '204']
+
+function cora_is_typing(){
+    set_new_color_to_cora_is_typing(0.72, 0.2);
+}
+
+function set_new_color_to_cora_is_typing(C_cmyk_color_to_set, K_cmyk_color_to_set){
+    var title_div = document.getElementById('chat_title');
+    var RGB = convert_cmyk_to_rgb(C_cmyk_color_to_set, 0, 1, K_cmyk_color_to_set);
+    var R = RGB[0];
+    var G = RGB[1];
+    var B = RGB[2];
+    var rgb_color_string = 'rgb(' + R.toString() + "," + G.toString() + "," + B.toString() + ')';
+    var new_C = C_cmyk_color_to_set - 0.036;
+    var new_K = K_cmyk_color_to_set - 0.01;
+    if (new_C < 0) {
+        new_C = 0.72;
+        new_K = 0.2;
+    }
+    setTimeout(function(){ title_div.style.color = rgb_color_string; set_new_color_to_cora_is_typing(new_C, new_K);}, 250);
+}
+
+function convert_cmyk_to_rgb(C, M, Y, K){
+    var R = 255 * (1 - C) * (1 - K);
+    var G = 255 * (1 - M) * (1 - K);
+    var B = 255 * (1 - Y) * (1 - K);
+    return [R, G, B];
+}
+
+function convert_rgb_to_cmyk(R, G, B){
+    var K = 1 - Math.max(R, G, B);
+    var C = (1 - R + K) + (1 - K);
+    var M = (1 - G + K) + (1 - K);
+    var Y = (1 - B + K) + (1 - K);
+    return C, M, Y, K;
+}
+
 
 //--------                                           Terminate chat                                     --------//
 //--------------------------------------------------------------------------------------------------------------//
