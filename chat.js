@@ -293,7 +293,7 @@ function callback_accessChatWindow(){
 //--------------------------------------------------------------------------------------------------------------//
 
 function on_load(){
-    cora_is_typing();
+    // cora_is_typing();
     if (decrypt_config() == true) {
         initialize_firebase();
         init_firebase_static_refs(get_client_id);
@@ -606,6 +606,7 @@ function send_data_collection(piece_of_data, datacol_key){
 function send_dialog_callback(){
     console.log("in send_dialog_callback");
     var text = app_global.data_to_send.text;
+    console.log(app_global.data_to_send.text);
     if (text == false){
         console.log("ERROR: text not set!!!");
     }
@@ -969,7 +970,7 @@ function handle_guided_chat_message(message){
 
 function handle_rs_eval_message(message){
     var recipe_data = message["recipe"];
-    
+    console.log("recipe page");
 }
 
 function chat_guided_hide_and_show_divs(to_hide, to_show){
@@ -2099,3 +2100,16 @@ function onclick_disliked_ingredient(b_elt){
         chat_guided_wait_for_coras_answer();
     });
 }
+
+//--------------------------------------------------------------------------------------------------------------//
+//--------                                           EVAL RECO SYSTEM                                   --------//
+//--------------------------------------------------------------------------------------------------------------//
+
+function rating_fct(rid, rating, callback){
+    console.log("testing onlick on span!", rating);
+    var text = "rating(" + rid + ") = " + rating;
+    send_dialog(text);
+    // console.log(app_global.data_to_send.text);
+    // setTimeout(function(){ callback(); }, 500); ;
+}
+

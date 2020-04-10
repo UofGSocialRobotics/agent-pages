@@ -10,50 +10,65 @@ include helper.pug
                         div(class="recipe_img")
                             img(src="https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe_images/recipe-image-legacy-id--7952_10.jpg?itok=hSqbcm4", i="recipe_img", height="250")
                         div(class="recipe_title", id="recipe_title") 
-                            | Potato & Savoy cabbage soup with bacon
+                            center
+                                | Potato & Savoy cabbage soup with bacon
+                                br
+                                br
                         div(class="recipe_rating")
                         div(class="recipe_time")
-                            | Prep time:
+                            b Prep:
+                            |
                             |
                             span(id="prep_time") 10 min
                             br
                             br
-                            | Cook time:
+                            b Cook:
+                            |
                             |
                             span(id="cook_time") 10 min
                             br
                             br
-                            | Total time:
+                            b Total:
+                            |
                             |
                             span(id="total_time") 20 min
                         div(class="recipe_servings")
-                            | Servings: 
+                            b Servings: 
+                            |
                             |
                             span(id="servings") 4
                         div(class="recipe_description")
                             | This delicious soup will be appreciated as much by children as by adults thanks to its crispy bacon bits!
-                        
-                        
+
                         div(class="recipe_ingredients")
 
+                            br
+
                             span(style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 26px;") Ingredients
+
+                            br
+                            br
 
                             //- -var ingredients = [["1 onion", "1 carrot", "1 celery"], ["2 garlic cloves", "1 tbsp olive oil", "550g floury potatoes"], ["1l chicken or vegetable stock", "8 rashers streaky bacon", "a quarter medium Savoy cabbage (about 200g/8oz)"]]
                             -var ingredients = [["1 onion bien bien mur et assez gros, de preference blanc qui s epluche facilement et qui pique pas les yeux, comme garnier ultra doux", "1 carrot", "1 celery"], ["2 garlic cloves", "1 tbsp olive oil", "550g floury potatoes"], ["1l chicken or vegetable stock", "8 rashers streaky bacon", "a quarter medium Savoy cabbage (about 200g/8oz)"]]
                             div(class="grid_ingredients")
                                 each col in ingredients
+                                    -var not_first=false
                                     div(class="grid_ingredients_item")
                                         each i in col
-                                            br
-                                            br
+                                            if not_first
+                                                br
+                                                br
                                             span=i
+                                            -var not_first = true
                         br
 
                         div(class="recipe_instructions")
-                        
-                            span(style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 26px;") Steps
 
                             br
+
+                            span(style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 26px;") Steps
+
                             br
                             br
 
@@ -65,4 +80,20 @@ include helper.pug
                                 br
 
         center
+            br
+            br
+            div(class="rating" sytle="font-size: 72px; color: #edeff2;")
+                span(onclick="rating_fct(\"rid\",5,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(onclick="rating_fct(\"rid\",4,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(onclick="rating_fct(\"rid\",3,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(onclick="rating_fct(\"rid\",2,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(onclick="rating_fct(\"rid\",1),send_data_collection_callback;" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                    //- | ☆ test test test
+                    //- span(style="color: #edeff2;") test test test
+                //- span ☆
+                //- span ☆
+                //- span ☆
+                //- span ☆
+            br
+            br
             +navigation_button("Next","eval_reco();")
