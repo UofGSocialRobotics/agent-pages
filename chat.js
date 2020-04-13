@@ -974,7 +974,7 @@ function handle_rs_eval_message(message){
     var recipe_img_html = document.getElementById("recipe_img");
     recipe_img_html.src = recipe_data['image_link'];
     var recipe_title_html = document.getElementById("recipe_title");
-    recipe_img_html.innerHTML = recipe_data["title"];
+    recipe_title_html.innerHTML = recipe_data["title"];
     var recipe_prep_time_html = document.getElementById("prep_time");
     recipe_prep_time_html.innerHTML = "--";
     var recipe_cook_time_html = document.getElementById("cook_time");
@@ -1046,6 +1046,7 @@ function handle_rs_eval_message(message){
     //             bacon</span><br><br><span>a quarter medium Savoy cabbage (about
     //             200g/8oz)</span></div>
     // </div>
+    window.scrollTo(0,0);
 }
 
 
