@@ -8,10 +8,10 @@ include helper.pug
                 center
                     div(class="recipe_grid")
                         div(class="recipe_img")
-                            img(src="https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe_images/recipe-image-legacy-id--7952_10.jpg?itok=hSqbcm4", i="recipe_img", height="250")
-                        div(class="recipe_title", id="recipe_title") 
+                            img(src="https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe_images/recipe-image-legacy-id--7952_10.jpg?itok=hSqbcm4", id="recipe_img", height="250")
+                        div(class="recipe_title") 
                             center
-                                | Potato & Savoy cabbage soup with bacon
+                                span(id="recipe_title") Potato & Savoy cabbage soup with bacon
                                 br
                                 br
                         div(class="recipe_rating")
@@ -37,7 +37,7 @@ include helper.pug
                             |
                             |
                             span(id="servings") 4
-                        div(class="recipe_description")
+                        div(class="recipe_description", id="recipe_description")
                             | This delicious soup will be appreciated as much by children as by adults thanks to its crispy bacon bits!
 
                         div(class="recipe_ingredients")
@@ -52,15 +52,9 @@ include helper.pug
                             //- -var ingredients = [["1 onion", "1 carrot", "1 celery"], ["2 garlic cloves", "1 tbsp olive oil", "550g floury potatoes"], ["1l chicken or vegetable stock", "8 rashers streaky bacon", "a quarter medium Savoy cabbage (about 200g/8oz)"]]
                             -var ingredients = [["1 onion bien bien mur et assez gros, de preference blanc qui s epluche facilement et qui pique pas les yeux, comme garnier ultra doux", "1 carrot", "1 celery"], ["2 garlic cloves", "1 tbsp olive oil", "550g floury potatoes"], ["1l chicken or vegetable stock", "8 rashers streaky bacon", "a quarter medium Savoy cabbage (about 200g/8oz)"]]
                             div(class="grid_ingredients")
-                                each col in ingredients
-                                    -var not_first=false
-                                    div(class="grid_ingredients_item")
-                                        each i in col
-                                            if not_first
-                                                br
-                                                br
-                                            span=i
-                                            -var not_first = true
+                                div(class="grid_ingredients_item", id="ingredients_col1")
+                                div(class="grid_ingredients_item", id="ingredients_col2")
+                                div(class="grid_ingredients_item", id="ingredients_col3")
                         br
 
                         div(class="recipe_instructions")
@@ -69,15 +63,13 @@ include helper.pug
 
                             span(style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 26px;") Steps
 
-                            br
-                            br
-
+                            div(id="instructions_list")
                             -var instructions = ["Chop the onion, carrot, celery and garlic in a food processor. Heat the oil over a medium heat in a large saucepan. Add the vegetables and potatoes, season well, then reduce the heat and cover the pan. Gently cook for about 5 mins until starting to soften, then add the stock, turn up the heat and bring to the boil. Simmer for 5 mins more, or until all the vegetables are tender.", "While the soup is cooking, grill or fry the bacon until crisp, then cut into strips. Shred the cabbage, discarding the core.", "Whizz the soup in the food processor until smooth, then return to the pan and add the cabbage. Simmer for a few mins until the cabbage is just tender, then season to taste and serve scattered with the bacon."]
 
-                            each i in instructions
-                                span=i
-                                br
-                                br
+                            //- each i in instructions
+                            //-     span=i
+                            //-     br
+                            //-     br
 
         center
             br

@@ -971,7 +971,84 @@ function handle_guided_chat_message(message){
 function handle_rs_eval_message(message){
     var recipe_data = message["recipe"];
     console.log("recipe page");
+    var recipe_img_html = document.getElementById("recipe_img");
+    recipe_img_html.src = recipe_data['image_link'];
+    var recipe_title_html = document.getElementById("recipe_title");
+    recipe_img_html.innerHTML = recipe_data["title"];
+    var recipe_prep_time_html = document.getElementById("prep_time");
+    recipe_prep_time_html.innerHTML = "--";
+    var recipe_cook_time_html = document.getElementById("cook_time");
+    recipe_cook_time_html.innerHTML = "--";
+    var recipe_total_time_html = document.getElementById("total_time");
+    recipe_total_time_html.innerHTML = recipe_data["total_time"];
+    var elt_html = document.getElementById("servings");
+    elt_html.innerHTML = "--";
+    var elt_html = document.getElementById("recipe_description");
+    elt_html.innerHTML = "--";
+    var elt_html = document.getElementById("recipe_description");
+    elt_html.innerHTML = "--";
+
+    var ingredients_col1 = recipe_data["ingredients"]["col1"];
+    var ingredients_col2 = recipe_data["ingredients"]["col2"];
+    var ingredients_col3 = recipe_data["ingredients"]["col3"];
+
+    console.log(ingredients_col1);
+
+    ingredients_col1.forEach(create_ingredients_column1);
+    ingredients_col2.forEach(create_ingredients_column2);
+    ingredients_col3.forEach(create_ingredients_column3);
+
+    var instructions_list = recipe_data["instructions"];
+    instructions_list.forEach(create_instructions);
+
+    function create_ingredients_column1(item, index){
+        var col1_html = document.getElementById("ingredients_col1");
+        if (index == 0){
+            col1_html.innerHTML = "<br><br><span>"+item+"</span>";
+        }
+        else col1_html.innerHTML += "<br><br><span>"+item+"</span>";
+    }
+    
+    function create_ingredients_column2(item, index){
+        var col2_html = document.getElementById("ingredients_col2");
+        if (index == 0){
+            col2_html.innerHTML = "<br><br><span>"+item+"</span>";
+        }
+        else col2_html.innerHTML += "<br><br><span>"+item+"</span>";
+    }
+    
+    function create_ingredients_column3(item, index){
+        var col3_html = document.getElementById("ingredients_col3");
+        if (index == 0){
+            col3_html.innerHTML = "<br><br><span>"+item+"</span>";
+        }
+        else col3_html.innerHTML += "<br><br><span>"+item+"</span>";
+    }
+    
+    function create_instructions(item, index){
+        var instructions_html = document.getElementById("instructions_list");
+        if (index == 0){
+            instructions_html.innerHTML = "<br><br><span>"+item+"</span>";
+        }
+        else instructions_html.innerHTML += "<br><br><span>"+item+"</span>";
+    }
+
+    // <div class="grid_ingredients">
+    //     <div class="grid_ingredients_item"><span>1 onion bien bien mur et assez
+    //             gros, de preference blanc qui s epluche facilement et qui pique pas
+    //             les yeux, comme garnier ultra doux</span><br><br><span>1
+    //             carrot</span><br><br><span>1 celery</span></div>
+    //     <div class="grid_ingredients_item"><span>2 garlic
+    //             cloves</span><br><br><span>1 tbsp olive oil</span><br><br><span>550g
+    //             floury potatoes</span></div>
+    //     <div class="grid_ingredients_item"><span>1l chicken or vegetable
+    //             stock</span><br><br><span>8 rashers streaky
+    //             bacon</span><br><br><span>a quarter medium Savoy cabbage (about
+    //             200g/8oz)</span></div>
+    // </div>
 }
+
+
 
 function chat_guided_hide_and_show_divs(to_hide, to_show){
     var div_to_hide = document.getElementById(to_hide);
