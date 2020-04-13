@@ -1028,9 +1028,9 @@ function handle_rs_eval_message(message){
     function create_instructions(item, index){
         var instructions_html = document.getElementById("instructions_list");
         if (index == 0){
-            instructions_html.innerHTML = "<br><br><span>"+item+"</span>";
+            instructions_html.innerHTML = "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
         }
-        else instructions_html.innerHTML += "<br><br><span>"+item+"</span>";
+        else instructions_html.innerHTML += "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
     }
 
     // <div class="grid_ingredients">
