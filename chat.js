@@ -970,6 +970,24 @@ function handle_guided_chat_message(message){
 
 function handle_rs_eval_message(message){
     var recipe_data = message["recipe"];
+
+    function set_onclick_fct_with_recipe_id(item){
+        // console.log(item);
+        // console.log(item.getAttribute('name'));
+        var i = parseInt(item.getAttribute('name'));
+        item.onclick = function(){
+            rating_fct(recipe_data['id'],i,send_data_collection_callback);
+            console.log(item);
+        }
+        // item.onclick = rating_fct(recipe_data['id'],5,send_data_collection_callback);
+    }
+
+    var rating_stars = document.getElementsByClassName("start_rating");
+    console.log(rating_stars);
+    for (const star_btn of rating_stars) {
+        set_onclick_fct_with_recipe_id(star_btn);
+    }
+
     console.log("recipe page");
     var recipe_img_html = document.getElementById("recipe_img");
     recipe_img_html.src = recipe_data['image_link'];

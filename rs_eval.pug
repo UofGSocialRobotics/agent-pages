@@ -75,11 +75,11 @@ include helper.pug
             br
             br
             div(class="rating" sytle="font-size: 72px; color: #edeff2;")
-                span(onclick="rating_fct(\"rid\",5,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(onclick="rating_fct(\"rid\",4,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(onclick="rating_fct(\"rid\",3,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(onclick="rating_fct(\"rid\",2,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(onclick="rating_fct(\"rid\",1),send_data_collection_callback;" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(class="start_rating", name="5", onclick="rating_fct(\"rid\",5,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(class="start_rating", name="4", onclick="rating_fct(\"rid\",4,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(class="start_rating", name="3", onclick="rating_fct(\"rid\",3,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(class="start_rating", name="2", onclick="rating_fct(\"rid\",2,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                span(class="start_rating", name="1", onclick="rating_fct(\"rid\",1),send_data_collection_callback;" style="font-size: 48px;width:60px; color: #F9C811;") ☆
                     //- | ☆ test test test
                     //- span(style="color: #edeff2;") test test test
                 //- span ☆
