@@ -118,9 +118,11 @@ var PAGES = {
     FREE_TEXT_FEEDBACK : "free_text_feedback.html",
     TUTO : "tuto.html",
     NOCHAT: "no_chat.html",
-    RS_EVAL_RECIPES: "rs_eval.html"
+    RS_EVAL_RECIPES: "rs_eval.html",
+    RS_EVAL_INTRO: "rs_eval_intro.html"
 }
-var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
+// var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -969,26 +971,33 @@ function handle_guided_chat_message(message){
 }
 
 function handle_rs_eval_message(message){
+    if (message["intent"] == "goto_eval_intro"){
+        go_to_next_page()
+    }
+    else{
+        display_new_recipe(message);
+    }
+}
+
+ function display_new_recipe(message){   
     var recipe_data = message["recipe"];
 
     function set_onclick_fct_with_recipe_id(item){
-        // console.log(item);
-        // console.log(item.getAttribute('name'));
         var i = parseInt(item.getAttribute('name'));
         item.onclick = function(){
-            rating_fct(recipe_data['id'],i,send_data_collection_callback);
-            console.log(item);
+            rating_fct(recipe_data['id'],i);
+            // console.log(item);
         }
         // item.onclick = rating_fct(recipe_data['id'],5,send_data_collection_callback);
     }
 
     var rating_stars = document.getElementsByClassName("start_rating");
-    console.log(rating_stars);
+    // console.log(rating_stars);
     for (const star_btn of rating_stars) {
         set_onclick_fct_with_recipe_id(star_btn);
     }
 
-    console.log("recipe page");
+    // console.log("recipe page");
     var recipe_img_html = document.getElementById("recipe_img");
     recipe_img_html.src = recipe_data['image_link'];
     var recipe_title_html = document.getElementById("recipe_title");
@@ -1010,7 +1019,7 @@ function handle_rs_eval_message(message){
     var ingredients_col2 = recipe_data["ingredients"]["col2"];
     var ingredients_col3 = recipe_data["ingredients"]["col3"];
 
-    console.log(ingredients_col1);
+    // console.log(ingredients_col1);
 
     ingredients_col1.forEach(create_ingredients_column1);
     ingredients_col2.forEach(create_ingredients_column2);
@@ -2201,8 +2210,8 @@ function onclick_disliked_ingredient(b_elt){
 //--------                                           EVAL RECO SYSTEM                                   --------//
 //--------------------------------------------------------------------------------------------------------------//
 
-function rating_fct(rid, rating, callback){
-    console.log("testing onlick on span!", rating);
+
+function rating_fct(rid, rating){
     var text = "rating(" + rid + ") = " + rating;
     send_dialog(text);
     // console.log(app_global.data_to_send.text);
