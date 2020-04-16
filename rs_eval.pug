@@ -4,14 +4,14 @@ include helper.pug
 +page("Evaluate recipes", true)
     div(id="questionnaire_wrap")
         div(class="wrap")
-            div(id="rs_eval")
+            div(id="rs_eval_div", style="display:none;")
                 center
                     div(class="recipe_grid")
                         div(class="recipe_img")
-                            img(src="https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe_images/recipe-image-legacy-id--7952_10.jpg?itok=hSqbcm4", id="recipe_img", height="250")
+                            img(src="NA", id="recipe_img", height="250")
                         div(class="recipe_title") 
                             center
-                                span(id="recipe_title") Potato & Savoy cabbage soup with bacon
+                                span(id="recipe_title") 
                                 br
                                 br
                         div(class="recipe_rating")
@@ -19,26 +19,26 @@ include helper.pug
                             b Prep:
                             |
                             |
-                            span(id="prep_time") 10 min
+                            span(id="prep_time") 
                             br
                             br
                             b Cook:
                             |
                             |
-                            span(id="cook_time") 10 min
+                            span(id="cook_time") 
                             br
                             br
                             b Total:
                             |
                             |
-                            span(id="total_time") 20 min
+                            span(id="total_time") 
                         div(class="recipe_servings")
                             b Servings: 
                             |
                             |
-                            span(id="servings") 4
+                            span(id="servings") 
                         div(class="recipe_description", id="recipe_description")
-                            | This delicious soup will be appreciated as much by children as by adults thanks to its crispy bacon bits!
+                            //- | This delicious soup will be appreciated as much by children as by adults thanks to its crispy bacon bits!
 
                         div(class="recipe_ingredients")
 
@@ -71,21 +71,21 @@ include helper.pug
                             //-     br
                             //-     br
 
-        center
-            br
-            br
-            div(class="rating" sytle="font-size: 72px; color: #edeff2;")
-                span(class="start_rating", name="5", onclick="rating_fct(\"rid\",5,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(class="start_rating", name="4", onclick="rating_fct(\"rid\",4,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(class="start_rating", name="3", onclick="rating_fct(\"rid\",3,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(class="start_rating", name="2", onclick="rating_fct(\"rid\",2,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
-                span(class="start_rating", name="1", onclick="rating_fct(\"rid\",1),send_data_collection_callback;" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                center
+                    br
+                    br
+                    div(class="rating" sytle="font-size: 72px; color: #edeff2;")
+                        span(class="start_rating", name="5", onclick="rating_fct(\"rid\",5,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                        span(class="start_rating", name="4", onclick="rating_fct(\"rid\",4,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                        span(class="start_rating", name="3", onclick="rating_fct(\"rid\",3,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                        span(class="start_rating", name="2", onclick="rating_fct(\"rid\",2,send_data_collection_callback);" style="font-size: 48px;width:60px; color: #F9C811;") ☆
+                        span(class="start_rating", name="1", onclick="rating_fct(\"rid\",1),send_data_collection_callback;" style="font-size: 48px;width:60px; color: #F9C811;") ☆
                     //- | ☆ test test test
                     //- span(style="color: #edeff2;") test test test
                 //- span ☆
                 //- span ☆
                 //- span ☆
                 //- span ☆
-            br
-            br
-            +navigation_button("Next","eval_reco();")
+            //- br
+            //- br
+            //- +navigation_button("Next","eval_reco();")

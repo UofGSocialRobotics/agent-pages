@@ -119,10 +119,13 @@ var PAGES = {
     TUTO : "tuto.html",
     NOCHAT: "no_chat.html",
     RS_EVAL_RECIPES: "rs_eval.html",
-    RS_EVAL_INTRO: "rs_eval_intro.html"
+    RS_EVAL_INTRO: "rs_eval_intro.html",
+    RS_INSTRUCTIONS: "rs_instructions.html"
 }
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
-var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.DEMOGRPAHICS, PAGES.THANKS];
+var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, 
+    PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -295,6 +298,7 @@ function callback_accessChatWindow(){
 //--------------------------------------------------------------------------------------------------------------//
 
 function on_load(){
+    console.log("in on_load");
     // cora_is_typing();
     if (decrypt_config() == true) {
         initialize_firebase();
@@ -320,6 +324,10 @@ function on_load(){
     else if (page == PAGES.NOCHAT) init_nochat();
     else if (page == PAGES.CHAT) {
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
+    }
+    else if (page == PAGES.RS_EVAL_RECIPES) {
+        console.log("asking to start_rs_eval -- sending dialog");
+        send_dialog("start_rs_eval");
     }
 	window.speechSynthesis.onvoiceschanged = function() {
         app_global.voices=window.speechSynthesis.getVoices();
@@ -755,6 +763,9 @@ function go_to_next_page_general_case(){
     }
 }
 
+function rs_go_to_post_study(){
+    location.replace(PAGES.DEMOGRPAHICS+url_vars_to_string());
+}
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                     QUESTIONNAIRE METHODS                                    --------//
@@ -972,14 +983,22 @@ function handle_guided_chat_message(message){
 
 function handle_rs_eval_message(message){
     if (message["intent"] == "goto_eval_intro"){
-        go_to_next_page()
+        go_to_next_page();
+    }
+    else if (message["intent"] == "go_to_post_study"){
+        rs_go_to_post_study();
     }
     else{
         display_new_recipe(message);
     }
 }
 
- function display_new_recipe(message){   
+function display_new_recipe(message){  
+    
+    var display_div = document.getElementById("rs_eval_div");
+    display_div.style = "display:block;"
+    
+
     var recipe_data = message["recipe"];
 
     function set_onclick_fct_with_recipe_id(item){
@@ -2217,4 +2236,3 @@ function rating_fct(rid, rating){
     // console.log(app_global.data_to_send.text);
     // setTimeout(function(){ callback(); }, 500); ;
 }
-
