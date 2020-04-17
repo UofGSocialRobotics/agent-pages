@@ -61,8 +61,11 @@ mixin radio_in_table(q_label, radio_name, radio_list_of_dicts)
                                     div(class="control_indicator")
 
 
-mixin classic_checkbox(q_label, box_name, box_dict)
+mixin classic_checkbox(q_label, box_name, box_dict, br_bool=false)
     label(class="statement-demographics", id="label_"+box_name)= q_label
+    if br_bool
+        br
+        br
     div(class="control-group")
         each val, index in box_dict
             label(class="control control-checkbox")=val

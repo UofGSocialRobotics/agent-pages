@@ -132,6 +132,7 @@ form .likert11points {
   .control input:checked:focus ~ .control_indicator {
     background: #0E6647D;
   }
+  
   .control input:disabled ~ .control_indicator {
     background: #e6e6e6;
     opacity: 0.6;
@@ -157,7 +158,7 @@ form .likert11points {
   .control-radio input:disabled ~ .control_indicator:after {
     background: #7b7b7b;
   }
-  
+
   .control-checkbox .control_indicator:after {
     left: 8px;
     top: 4px;
