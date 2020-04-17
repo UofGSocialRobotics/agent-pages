@@ -1,0 +1,20 @@
+include page.pug
+include helper.pug
+
++page("Learning about your preferences")
+    | The goal of a recipe recommender system is to present to you a list of recipes you would like.
+    br
+    br
+    | But before doing that, 
+    b
+        | the recommender system needs to learn a bit about your preferences 
+    | in order to make the best recommendation.
+    br
+    br
+    | Therefore in the first phase of this study, you will have to evaluate 10 recipes according to your tastes, which will allow the recommender system to learn about you.
+    br
+    br
+    br
+    br
+    center
+        +navigation_button("Next","go_to_next_page();")

@@ -1,0 +1,16 @@
+include page.pug
+include helper.pug
+
++page("Evaluation of recommender system")
+    | Now that it has learned about your preferences, 
+    b
+        | the recommender system will recommend 5 recipes chosen especially for you.
+    br
+    br
+    | Please evaluate those recipes according to your preferences.
+    br
+    br
+    br
+    br
+    center
+        +navigation_button("Next","go_to_next_page();")
