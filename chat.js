@@ -2237,3 +2237,15 @@ function rating_fct(rid, rating){
     // console.log(app_global.data_to_send.text);
     // setTimeout(function(){ callback(); }, 500); ;
 }
+
+function selectRecipe(rid, domID){
+    var grid_cell = document.getElementById(domID);
+    if (grid_cell.classList.contains('igc-border')) {
+        grid_cell.classList.remove('igc-border');
+        grid_cell.classList.add('igc-clicked-border');
+    }
+    else if (grid_cell.classList.contains('igc-clicked-border')) {
+        grid_cell.classList.remove('igc-clicked-border');
+        grid_cell.classList.add('igc-border');
+    }
+}

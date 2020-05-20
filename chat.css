@@ -731,13 +731,32 @@ form .buttons {
   unicode-bidi: bidi-override;
   direction: rtl;
 }
-.rating > span {
-  display: inline-block;
-  position: relative;
-  width: 20px;
+.fullstar {
+  font-size: 17px; 
+  color: #F9C811;
 }
-.rating > span:hover:before,
+.fullstar:before{
+  content: "\2605";
+  position: absolute;
+}
+
+.halfstar {
+  font-size: 17px; 
+  color: #F9C811;
+}
+.halfstar:before{
+  content: "\f089 "; /* half star no outline */
+  position: absolute;
+  padding-right: 0;
+}
+
+.emptystar {
+  font-size: 17px; 
+  color: #F9C811;
+}
+
+/* .rating > span:hover:before,
 .rating > span:hover ~ span:before {
    content: "\2605";
    position: absolute;
-}
+} */
