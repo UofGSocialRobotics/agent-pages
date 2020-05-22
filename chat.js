@@ -1090,6 +1090,63 @@ function rs_diplay_multiple_recipes(recipes_list){
     recipes_list.forEach(display_single_recipe_in_grid);
 }
 
+function generate_html_emptystar(){
+    return "<span class=\"emptystar\">☆</span>";
+}
+function generate_html_fullstar(){
+    return "<span class=\"fullstar\">☆</span>";
+}
+function generate_html_halfstar(){
+    return "<i class=\"fa fa-star-half-full\" style=\"font-size:15px;color:#F9C811\"></i>";
+}
+
+function reverseString(str) {
+    var splitString = str.split(""); 
+    var reverseArray = splitString.reverse(); 
+    var joinArray = reverseArray.join(""); 
+    return joinArray; // "olleh"
+}
+
+function generate_html_rating(rating, n_ratings){
+    var rating_int = Math.floor(rating);
+    var reminder = rating - rating_int;
+    if (reminder >= 0.25 && reminder < 0.75) {
+        var halfstar_bool = true;
+        var n_emptystars = 5 - rating_int - 1;
+    }
+    else {
+        var halfstar_bool = false;
+        var n_emptystars = 5 - rating_int;
+    }
+    var html_open_div_rating = "<div class=\"recipe-rating\"> <div class=\"rating\">";
+    var html_span_n_ratings = "<span class=\"rating-number\" id=\"rating-number\"> (" + reverseString(n_ratings.toString()) + ") </span>";
+    var html_fullstars = "";
+    for(var i=0; i<rating_int; i++){
+        html_fullstars += generate_html_fullstar();
+    }
+    var html_emptystars = "";
+    for(var i=0; i<n_emptystars; i++){
+        html_emptystars += generate_html_emptystar();
+    }
+    if (halfstar_bool) var html_halfstar = generate_html_halfstar();
+    else var html_halfstar = "";
+    var html_stars = html_emptystars + html_halfstar + html_fullstars;
+    var html_close_div_rating = "</div></div>";
+    var html = html_open_div_rating + html_span_n_ratings + "<span>" + html_stars + "</span>" + html_close_div_rating;
+    console.log(html);
+    return html;
+
+    // <div class="recipe-rating">
+    //     <div class="rating"><span class="rating-number"
+    //             id="rating-number">(56)</span>
+    //         <span id="r1_stars"><i class="fa fa-star-half-full"
+    //                 style="font-size:17px;color:#F9C811"></i><span
+    //                 class="fullstar">☆</span><span class="fullstar">☆</span><span
+    //                 class="fullstar">☆</span><span class="fullstar">☆</span></span>
+    //     </div>
+    // </div>
+}
+
 function display_single_recipe_in_grid(rdata, n){
     var rid = rdata['id'];
     var html_open_div_recipe = "<div class=\"inner-grid-container igc-border\" id=\""+rid+"\" onclick=\"selectRecipe('rid', '"+rid+"');\">";
@@ -1097,15 +1154,17 @@ function display_single_recipe_in_grid(rdata, n){
     var html_img = "<img src=\""+rdata['image_url']+"\" id=\"recipe_img\" height=\"200px\">";
     var html_close_div_img = "</div>";
     var html_div_title = "<div class=\"recipe-title\">"+rdata['title']+"</div>";
-    var html_div_rating = "<div class=\"rating\"></div>";
+    var html_open_div_rating = "<div class=\"rating\">";
+    var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
+    var html_close_div_rating = "</div>";
     var html_div_description = "<div class=\"recipe-description\"> Description here.</div>";
     var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
     var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
     var html_div_total = "<div class=\"recipe-total\">Total: "+rdata['time_total']+"</div>";
     var html_close_div_recipe = "</div>";
-    var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_div_rating + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
+    var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_open_div_rating + html_rating + html_close_div_rating + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
     var outter_grid = document.getElementById("outter-grid-container");
-    console.log(html);
+    // console.log(html);
     outter_grid.innerHTML += html;
 
 //     <div class="inner-grid-container igc-border" id="recipe1"

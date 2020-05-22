@@ -732,7 +732,7 @@ form .buttons {
   direction: rtl;
 }
 .fullstar {
-  font-size: 17px; 
+  font-size: 15px; 
   color: #F9C811;
 }
 .fullstar:before{
@@ -741,7 +741,7 @@ form .buttons {
 }
 
 .halfstar {
-  font-size: 17px; 
+  font-size: 15px; 
   color: #F9C811;
 }
 .halfstar:before{
@@ -751,8 +751,12 @@ form .buttons {
 }
 
 .emptystar {
-  font-size: 17px; 
+  font-size: 15px; 
   color: #F9C811;
+}
+.fullstar:before{
+  /* content: "\2605"; */
+  position: absolute;
 }
 
 /* .rating > span:hover:before,
