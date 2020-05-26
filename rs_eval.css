@@ -90,3 +90,9 @@
     /* font-size: 15px; */
   }
 
+  .center-cropped {
+    object-fit: cover ; 
+    object-position: center; 
+    /* height: 00px; */
+    width: 200px;
+  }

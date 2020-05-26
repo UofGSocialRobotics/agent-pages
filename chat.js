@@ -1151,9 +1151,13 @@ function display_single_recipe_in_grid(rdata, n){
     var rid = rdata['id'];
     var html_open_div_recipe = "<div class=\"inner-grid-container igc-border\" id=\""+rid+"\" onclick=\"selectRecipe('rid', '"+rid+"');\">";
     var html_open_div_img = "<div class=\"recipe-image\">";
-    var html_img = "<img src=\""+rdata['image_url']+"\" id=\"recipe_img\" height=\"200px\">";
+    var html_img = "<img class=\"center-cropped\" src=\""+rdata['image_url']+"\" id=\"recipe_img\" height=\"200px\">";
     var html_close_div_img = "</div>";
-    var html_div_title = "<div class=\"recipe-title\">"+rdata['title']+"</div>";
+    var title = rdata['title'];
+    if (title.length > 40) {
+        title = title.slice(0, 37) + "...";
+    }
+    var html_div_title = "<div class=\"recipe-title\">"+title+"</div>";
     var html_open_div_rating = "<div class=\"rating\">";
     var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
     var html_close_div_rating = "</div>";
