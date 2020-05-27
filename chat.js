@@ -95,7 +95,8 @@ var app_global = {
     answers_demographics : {},
     answers_nochat : {},
     answer_demographics_weight_kg : undefined,
-    answer_demographics_height_cm : undefined
+    answer_demographics_height_cm : undefined,
+    rs_user_pref: [],
 };
 
 var PAGES = {
@@ -233,7 +234,8 @@ FIREBASE_KEYS = {
     FOODDIAGNOSISANSWERS : "food_diagnosis_answers",
     DEMOGRPAHICS : "demographics",
     FREECOMMENTS : "free_comments",
-    NOCHAT : "no_chat"
+    NOCHAT : "no_chat",
+    LIKED_RECIPES: "liked_recipes"
 };
 
 FIREBASE_VALUES = {
@@ -327,8 +329,14 @@ function on_load(){
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
     }
     else if (page == PAGES.RS_EVAL_RECIPES) {
-        console.log("asking to start_rs_eval -- sending dialog");
-        send_dialog("start_rs_eval");
+        var step = get_value_from_url_var("step");
+        if (step == "learn_pref"){
+            console.log("asking to learning pref -- sending dialog");
+            send_dialog("start_pref_gathering");
+        } else if (step == "reco"){
+            console.log("asking to start_rs_eval -- sending dialog");
+            send_dialog("start_rs_eval");
+        }
     }
 	window.speechSynthesis.onvoiceschanged = function() {
         app_global.voices=window.speechSynthesis.getVoices();
@@ -624,7 +632,12 @@ function send_dialog_callback(){
     else {
         var data = add_datetime_and_client_id(dictionary=false);
         data[FIREBASE_KEYS.SOURCE] = FIREBASE_VALUES.CLIENT;
-        data[FIREBASE_KEYS.TEXT] = text;
+        if (get_page() == PAGES.RS_EVAL_RECIPES){
+            data[FIREBASE_KEYS.LIKED_RECIPES] = text;
+        }
+        else {
+            data[FIREBASE_KEYS.TEXT] = text;
+        }
         console.log(data);
         console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path)
         FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
@@ -654,13 +667,7 @@ function send_dialog_callback(){
 function send_dialog(text){
     console.log("in send_dialog");
     app_global.data_to_send.text = text;
-    // if (app_global.data_to_send.dialog_stated){
     send_dialog_callback();
-    // }
-    // else {
-    //     app_global.data_to_send.dialog_stated = true;
-    //     check_ack(send_dialog_callback);
-    // }
 }
 
 function send_amtid(){
@@ -690,32 +697,15 @@ function get_page_name(){
 }
 
 function url_vars_to_string(){
-    return "?clientid="+app_global.clientID+"?tts_asr="+config.tts_activated.toString();
+    var url_vars = "?clientid="+app_global.clientID+"?tts_asr="+config.tts_activated.toString();
+    if (get_page() == PAGES.RS_INSTRUCTIONS){
+        url_vars += "?step=learn_pref";
+    } else if (get_page() == PAGES.RS_EVAL_INTRO){
+        url_vars += "?step=reco";
+    }
+    return url_vars;
 }
-// function go_to_amtid(){
-//     location.replace(PAGES.AMTID+url_vars_to_string());
-// }
-// function go_to_intro(){
-//     location.replace(PAGES.INTRO+url_vars_to_string());
-// }
-// function go_to_instructions(){
-//     location.replace(PAGES.INSTRUCTIONS+url_vars_to_string());
-// }
-// function go_to_demographics(){
-//     location.replace(PAGES.DEMOGRPAHICS+url_vars_to_string());
-// }
-// function go_to_food_diagnosis(){
-//     location.replace(PAGES.FOOD_DIAGNOSIS+url_vars_to_string());
-// }
-// function go_to_pre_study_questionnaire(){
-//     location.replace(PAGES.PRE_STUDY_QUESTIONNAIRE+url_vars_to_string());
-// }
-// function go_to_chat_setup(){
-//     location.replace(PAGES.CHAT_SETUP+url_vars_to_string());
-// }
-// function go_to_chat(){
-//     location.replace(PAGES.CHAT+url_vars_to_string());
-// }
+
 function go_to_questionnaire(x){
     location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x);
 }
@@ -725,21 +715,11 @@ function go_to_page_after_questionnaire(){
     else if (app_global.q_id == "q2") go_to_next_page_general_case();
     else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
 }
-// function go_to_thanks(){
-//     location.replace(PAGES.THANKS+"?clientid="+app_global.clientID);
-// }
+
 function go_to_prolific_validation_page(){
     location.replace("https://app.prolific.co/submissions/complete?cc=49D46426");
 }
-// function go_to_information_form(){
-//     location.replace(PAGES.INFORMATION_FORM+url_vars_to_string());
-// }
-// function go_to_consent_form(){
-//     location.replace(PAGES.CONSENT_FORM+url_vars_to_string());
-// }
-// function go_to_check_microphone(){
-//     location.replace(PAGES.CHECK_MICROPHONE+url_vars_to_string());
-// }
+
 function go_to_next_page(param){
     setTimeout(function(){ go_to_next_page_after_timeout(param); }, 500);
 }
@@ -747,6 +727,7 @@ function go_to_next_page(param){
 function go_to_next_page_after_timeout(param){
     var current_page = get_page();
     if (current_page == PAGES.QUESTIONNAIRE) go_to_page_after_questionnaire();
+    else if (current_page == PAGES.RS_EVAL_RECIPES) go_to_page_after_eval_recipes();
     else go_to_next_page_general_case();
 }
 
@@ -762,6 +743,17 @@ function go_to_next_page_general_case(){
     else{
         console.log("Can't find current page, can't move to next one!!");
     }
+}
+
+function go_to_page_after_eval_recipes(){
+    var step = get_value_from_url_var("step");
+    if (step == "learn_pref"){
+        go_to_next_page_general_case();
+    } else if (step == "reco"){
+        var next_page = PAGES.RS_QUESTIONNAIRE;
+        location.replace(next_page+url_vars_to_string());
+    }
+
 }
 
 function rs_go_to_post_study(){
@@ -824,7 +816,7 @@ function get_free_text_feedback(){
 
 // called when a message arrives
 function handle_server_message(message) {
-    // console.log("handle_server_message:"+message);
+    console.log("handle_server_message:");
     app_global.disconnection_timer.stop();
 
     if (app_global.error == false){
@@ -989,7 +981,7 @@ function handle_rs_eval_message(message){
     else if (message["intent"] == "go_to_post_study"){
         rs_go_to_post_study();
     }
-    else if (message['intent'] == "learn_pref"){
+    else if (message['intent'] == "learn_pref" || message['intent'] == "eval_reco"){
         rs_diplay_multiple_recipes(message['recipes']);
     }
     // else{
@@ -1133,18 +1125,9 @@ function generate_html_rating(rating, n_ratings){
     var html_stars = html_emptystars + html_halfstar + html_fullstars;
     var html_close_div_rating = "</div></div>";
     var html = html_open_div_rating + html_span_n_ratings + "<span>" + html_stars + "</span>" + html_close_div_rating;
-    console.log(html);
+    // console.log(html);
     return html;
 
-    // <div class="recipe-rating">
-    //     <div class="rating"><span class="rating-number"
-    //             id="rating-number">(56)</span>
-    //         <span id="r1_stars"><i class="fa fa-star-half-full"
-    //                 style="font-size:17px;color:#F9C811"></i><span
-    //                 class="fullstar">☆</span><span class="fullstar">☆</span><span
-    //                 class="fullstar">☆</span><span class="fullstar">☆</span></span>
-    //     </div>
-    // </div>
 }
 
 function display_single_recipe_in_grid(rdata, n){
@@ -1170,28 +1153,6 @@ function display_single_recipe_in_grid(rdata, n){
     var outter_grid = document.getElementById("outter-grid-container");
     // console.log(html);
     outter_grid.innerHTML += html;
-
-//     <div class="inner-grid-container igc-border" id="recipe1"
-//     onclick="selectRecipe('rid', 'recipe1');">
-//     <div class="recipe-image"><img
-//             src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fimages.media-allrecipes.com%2Fuserphotos%2F931987.jpg"
-//             id="recipe_img" height="200px"></div>
-//     <div class="recipe-title">Bacon Dijon Egg Salad Sandwich</div>
-//     <div class="recipe-rating">
-//         <div class="rating"><span class="rating-number"
-//                 id="rating-number">(56)</span>
-//             <span id="r1_stars"><i class="fa fa-star-half-full"
-//                     style="font-size:17px;color:#F9C811"></i><span
-//                     class="fullstar">☆</span><span class="fullstar">☆</span><span
-//                     class="fullstar">☆</span><span class="fullstar">☆</span></span>
-//         </div>
-//     </div>
-//     <div class="recipe-description"> This recipe has been in our family for over 100
-//         years.</div>
-//     <div class="recipe-prep">Prep: 10min</div>
-//     <div class="recipe-cook">Cook: 10min</div>
-//     <div class="recipe-total">Total: 20min</div>
-// </div>
 }
 
 
@@ -2337,12 +2298,25 @@ function rating_fct(rid, rating){
 
 function selectRecipe(rid, domID){
     var grid_cell = document.getElementById(domID);
+    // select
     if (grid_cell.classList.contains('igc-border')) {
         grid_cell.classList.remove('igc-border');
         grid_cell.classList.add('igc-clicked-border');
+        app_global.rs_user_pref.push(domID);
     }
+    // deselect
     else if (grid_cell.classList.contains('igc-clicked-border')) {
         grid_cell.classList.remove('igc-clicked-border');
         grid_cell.classList.add('igc-border');
+        const index = app_global.rs_user_pref.indexOf(domID);
+        if (index > -1) {
+            app_global.rs_user_pref.splice(index, 1);
+        }
     }
+}
+
+function save_user_pref(callback){
+    console.log(app_global.rs_user_pref);
+    send_dialog(app_global.rs_user_pref);
+    callback();
 }
