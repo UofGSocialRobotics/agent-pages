@@ -4,7 +4,15 @@ include helper.pug
 +page("Evaluate recipes", true)
     link(href="rs_eval.css", rel="stylesheet", id="rs-css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
-    div(id="questionnaire_wrap")
+    div(class="do_not_refresh", id="do_not_refresh", style="display:block;")
+        | Wait for recipes to load, do not refresh...
+        br
+        br
+        br
+        br
+        br
+        br
+    div(id="questionnaire_wrap", style="display:none;")
         div(class="wrap")
             div(id="rs_eval_div", style="display:block;")
                 center

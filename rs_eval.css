@@ -96,3 +96,9 @@
     /* height: 00px; */
     width: 200px;
   }
+
+  .do_not_refresh{
+    font-size: 40px;
+    color: red;
+    font-weight: bold;
+  }

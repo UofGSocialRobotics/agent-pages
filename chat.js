@@ -1080,6 +1080,10 @@ function display_new_recipe(message){
 
 function rs_diplay_multiple_recipes(recipes_list){
     recipes_list.forEach(display_single_recipe_in_grid);
+    var to_hide = document.getElementById("do_not_refresh");
+    var to_display = document.getElementById("questionnaire_wrap");
+    to_display.style = "display:block;";
+    to_hide.style = "display:none;";
 }
 
 function generate_html_emptystar(){
