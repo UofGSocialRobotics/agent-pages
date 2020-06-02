@@ -97,6 +97,10 @@ var app_global = {
     answer_demographics_weight_kg : undefined,
     answer_demographics_height_cm : undefined,
     rs_user_pref: [],
+    answer_rs_post_study : {
+        whats_important: [],
+        free_comment: false
+    }
 };
 
 var PAGES = {
@@ -235,7 +239,8 @@ FIREBASE_KEYS = {
     DEMOGRPAHICS : "demographics",
     FREECOMMENTS : "free_comments",
     NOCHAT : "no_chat",
-    LIKED_RECIPES: "liked_recipes"
+    LIKED_RECIPES: "liked_recipes",
+    RS_POSTSTUDYANSWERS: "rs_post_study_answers"
 };
 
 FIREBASE_VALUES = {
@@ -262,6 +267,7 @@ data_col[FIREBASE_KEYS.FOODDIAGNOSISANSWERS] = false;
 data_col[FIREBASE_KEYS.DEMOGRPAHICS] = false;
 data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
 data_col[FIREBASE_KEYS.NOCHAT] = false;
+data_col[FIREBASE_KEYS.RS_POSTSTUDYANSWERS] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -2323,4 +2329,30 @@ function save_user_pref(callback){
     console.log(app_global.rs_user_pref);
     send_dialog(app_global.rs_user_pref);
     callback();
+}
+
+function get_rs_food_questionnaire_answers(){
+    var inputs = document.getElementsByName("whats_important");
+    for (var i=0; i < inputs.length; i++){
+        var input = inputs[i];
+        if (input.checked){
+            console.log(input.value + " is checked!");
+            app_global.answer_rs_post_study.whats_important.push(input.value);
+        }
+    }
+    var free_comment_input = document.getElementById("free_text_whats_important");
+    app_global.answer_rs_post_study.free_comment = free_comment_input.value;
+    check_answers_rs_food_questionnaire();
+}
+
+function check_answers_rs_food_questionnaire(){
+    if (app_global.answer_rs_post_study.whats_important.length == 0){
+        console.log("alert");
+        window.scrollTo(0,0);
+        alert("Please select at least one answer");
+    }
+    else {
+        // console.log(app_global.answer_rs_post_study.whats_important);
+        send_data_collection(app_global.answer_rs_post_study, FIREBASE_KEYS.RS_POSTSTUDYANSWERS);
+    }
 }
