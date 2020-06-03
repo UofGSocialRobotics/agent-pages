@@ -1033,8 +1033,6 @@ function display_new_recipe(message){
     elt_html.innerHTML = "--";
     var elt_html = document.getElementById("recipe_description");
     elt_html.innerHTML = "--";
-    var elt_html = document.getElementById("recipe_description");
-    elt_html.innerHTML = "--";
 
     var ingredients_col1 = recipe_data["ingredients"]["col1"];
     var ingredients_col2 = recipe_data["ingredients"]["col2"];
@@ -1154,7 +1152,17 @@ function display_single_recipe_in_grid(rdata, n){
     var html_open_div_rating = "<div class=\"rating\">";
     var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
     var html_close_div_rating = "</div>";
-    var html_div_description = "<div class=\"recipe-description\"> Description here.</div>";
+    var description = rdata['description'];
+    // if (description.length > 139) {
+    //     var c = description[137];
+    //     console.log(c);
+    //     description = description.slice(0, 137);
+    //     if (c!=" "){
+
+    //     }
+    //     //  + "...";
+    // }
+    var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
     var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
     var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
     var html_div_total = "<div class=\"recipe-total\">Total: "+rdata['time_total']+"</div>";
