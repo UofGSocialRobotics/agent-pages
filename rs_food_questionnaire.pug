@@ -1,16 +1,22 @@
 include page.pug
 include helper.pug
 
-+page("Demographics questionnaire", true)
++page("What do youy look for when searching for a recipe?", true)
     link(href="demographics.css", rel="stylesheet", id="demographics-css")
     link(href="rs_food_questionnaire.css", rel="stylesheet", id="rs-food-questionnaire-css")
+    | Thank you for your answers.
+    br
+    br
+    | Now please tell us what you're looking for when searching for a recipe on the web by answering this short questionnaire.
+    br
+    br
     div(id="questionnaire_wrap")
         div(class="wrap")
             form(id="questionnaire")
 
                 -var question = "When I look for a recipe on the web, I would prefer..."
                 -var resp_options = { "something_new": "something new",  "detailed_instructions": "a recipe with detailed instructions",  "picture": "a recipe with a beautiful picture of the dish",  "video": "a recipe that has a tutorial video attached", "input_recipes": "to provide the system with a few recipes I like so that it finds something similar", "input_ingredients": "to provide the system with ingredients I want to cook", "input_dishname": "to provide the system with the name of the dish I want to cook (for example lasagna)", "input_time": "to provide the system with how much time I have", "input_cuisine": "to provide the system with a type of cuisine (for example Italian)", "input_n_servings": "to provide the system with the number of servings so that quantities of ingredients are automatically calculated", "input_NO_ingredients": "to provide the system with ingredients I don't have or don't want in the recipe", "input_diet": "to provide the system with a specific diet (for example vegan)", "input_calories_nutriments": "to provide the system with a minimum or maximum number for calories or nutrients (for example salt) in the dish", "input_healthy": "to specify how healthy I want to meal to be (for example not at all, slightly, very)", "input_price": "to provide the system with a maximum price for all the ingredients", "input_chef": "to specify the name of a chef whose recipes I would prefer"}
-                +classic_checkbox(question, "whats_important", resp_options, true)
+                +classic_checkbox(question, "whats_important", resp_options, true, true)
 
             
                 br

@@ -2335,8 +2335,15 @@ function selectRecipe(rid, domID){
 
 function save_user_pref(callback){
     console.log(app_global.rs_user_pref);
-    send_dialog(app_global.rs_user_pref);
-    callback();
+    if (app_global.rs_user_pref.length >= 3){
+        send_dialog(app_global.rs_user_pref);
+        callback();
+    }
+    else {
+        console.log("alert");
+        window.scrollTo(0,0);
+        alert("Please select at least 3 recipes");
+    }
 }
 
 function get_rs_food_questionnaire_answers(){
