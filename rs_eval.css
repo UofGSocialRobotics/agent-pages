@@ -85,7 +85,7 @@
   .igc-clicked-border:hover{
     border: 10px solid #28B463;
     cursor: pointer;
-    background-color: #ffffff;
+    background-color: rgb(142, 243, 186)
   }
   
   .inner-grid-container > div {

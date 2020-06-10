@@ -1153,15 +1153,6 @@ function display_single_recipe_in_grid(rdata, n){
     var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
     var html_close_div_rating = "</div>";
     var description = rdata['description'];
-    // if (description.length > 139) {
-    //     var c = description[137];
-    //     console.log(c);
-    //     description = description.slice(0, 137);
-    //     if (c!=" "){
-
-    //     }
-    //     //  + "...";
-    // }
     var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
     var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
     var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
@@ -1171,6 +1162,10 @@ function display_single_recipe_in_grid(rdata, n){
     var outter_grid = document.getElementById("outter-grid-container");
     // console.log(html);
     outter_grid.innerHTML += html;
+
+    setTimeout(function(){
+        right_click_open_recipe_in_new_tab(rid);
+    }, 1000);
 }
 
 
@@ -2370,4 +2365,51 @@ function check_answers_rs_food_questionnaire(){
         // console.log(app_global.answer_rs_post_study.whats_important);
         send_data_collection(app_global.answer_rs_post_study, FIREBASE_KEYS.RS_POSTSTUDYANSWERS);
     }
+}
+
+function openInNewTab(url) {
+    // var win = window.open(url, '_blank');
+    // preventDefault();
+    // win.focus();
+    right_click_open_recipe_in_new_tab("recipe1");
+  }
+
+
+var recipe1_div = document.getElementById("recipe1");
+if (recipe1_div.addEventListener) {
+    console.log("if");
+    console.log(recipe1_div);
+    recipe1_div.addEventListener('contextmenu', function(e) {
+        console.log("if2");
+        alert("You've tried to open context menu"); //here you draw your own menu
+        e.preventDefault();
+    }, false);
+} else {
+    console.log("else");
+    recipe1_div.attachEvent('oncontextmenu', function() {
+        console.log("else2");
+        alert("You've tried to open context menu");
+        window.event.returnValue = false;
+    });
+}
+
+function right_click_open_recipe_in_new_tab(rid){
+    var recipe1_div = document.getElementById(rid);
+    if (recipe1_div.addEventListener) {
+        console.log(recipe1_div);
+        recipe1_div.addEventListener('contextmenu', function(e) {
+            console.log("open link in new window");
+            // alert("You've tried to open context menu"); //here you draw your own menu
+            var url = "https://www.allrecipes.com/recipe/" + rid;
+            window.open(url, '_blank');
+            e.preventDefault();
+        }, false);
+    } else {
+        console.log("else");
+        recipe1_div.attachEvent('oncontextmenu', function() {
+            alert("You've tried to open context menu");
+            window.event.returnValue = false;
+        });
+    }
+    // }, 500);
 }
