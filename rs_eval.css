@@ -108,3 +108,9 @@
     color: red;
     font-weight: bold;
   }
+
+  .obvious-on-page{
+    font-weight: bold;
+    font-style: italic;
+    color: red;
+  }
