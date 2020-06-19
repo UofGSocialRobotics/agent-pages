@@ -9,9 +9,12 @@ include helper.pug
     div(id="questionnaire_wrap")
         div(class="wrap")
             form(id="questionnaire")
-                -var q_age = "From the range below, please select your age."
-                -var q_age_dict = {"18-29": "18-29", "30-49": "30-49", "50-69": "50-69", ">70": "70 and above"}
-                +classic_radio(q_age,"age",q_age_dict)
+                //- -var q_age = "From the range below, please select your age."
+                //- -var q_age_dict = {"18-29": "18-29", "30-49": "30-49", "50-69": "50-69", ">70": "70 and above"}
+                //- +classic_radio(q_age,"age",q_age_dict)
+                label(class="statement-demographics", id="label_age")
+                    | How old are you? Please type below.
+                input(type="text", name="age", class="input-demographics")
 
                 -var q_employment = "What best describes your employment status? (multiple answers allowed)"
                 -var q_employment_dict = {"full-time": "Employed full-time", "part-time": "Employed, part-time", "student": "Student", "unemployed": "Umemployed"}
@@ -25,12 +28,16 @@ include helper.pug
                 -var q_gender_dict = {"male": "Male", "female": "Female", "other": "Non-Binary"}
                 +classic_radio(q_gender, "gender", q_gender_dict)
 
-                - var q_living_in_UK_dict = {"born_here": "I was born here","more_10y": "More than 10 years","5_to_10y": "Between 5 and 10 years","less_5y": "Less than 5 years","1st_y": "This is my first year in the UK","not_in_UK": "I don't currently live in the UK"}
-                +classic_radio("How long have you been living in the UK?", "living_in_UK", q_living_in_UK_dict)
+                //- - var q_living_in_UK_dict = {"born_here": "I was born here","more_10y": "More than 10 years","5_to_10y": "Between 5 and 10 years","less_5y": "Less than 5 years","1st_y": "This is my first year in the UK","not_in_UK": "I don't currently live in the UK"}
+                //- +classic_radio("How long have you been living in the UK?", "living_in_UK", q_living_in_UK_dict)
 
                 //- -var q_living_situation_dict = {"home": "I live at home with my parents", "by_myself": "I live by myself (e.g., in a shared flat, in a studio flat, in student accommodations, etc.)"}
                 //- -var q_living_situation = "Do you live at home (with parents) or alone (including flat sharing, student accommodations, etc.)?"
                 //- +classic_radio(q_living_situation, "living_situation", q_living_situation_dict)
+
+                label(class="statement-demographics", id="label_where")
+                    | What country do you currently live in? Please type below.
+                input(type="text", name="where", class="input-demographics")
 
                 label(class="statement-demographics", id="label_from")
                     | Where are you from originally? Please type below.
@@ -40,74 +47,74 @@ include helper.pug
                 -var q_education_dict = {"no_education": "No formal education", "secondary": "Secondary school / GCSE", "college": "College / A levels", "udergrad": "Undergraduate degree (BA/BSc/other)", "graduate": "Graduate degree (MA/MSc/MPhil/other)", "PhD": "Doctorate degree (PhD/MD/other)"}
                 +classic_radio(q_education, "education", q_education_dict)
 
-                -var q_height_unit = "To indicate your height, which of the following units would you like to use?"
-                -var q_height_unit_dict = {"cm": "cm", "feet_in": "Feet and inches"}
-                +classic_radio(q_height_unit, "height_unit", q_height_unit_dict)
+                //- -var q_height_unit = "To indicate your height, which of the following units would you like to use?"
+                //- -var q_height_unit_dict = {"cm": "cm", "feet_in": "Feet and inches"}
+                //- +classic_radio(q_height_unit, "height_unit", q_height_unit_dict)
 
-                div(id="div_heignt_cm" style="display:none;")
-                    label(class="statement-demographics", id="label_height_unit_cm")
-                        | Please indicate your height as accurately as you can. Verify that the slider is at the correct possition by moving it until the correct number for your height appears above the scale.
-                    center
-                        br
-                        div(id="height_cm_output" style="font-size:18px;font-weight:bold")
-                        br
-                        -var ticks=[100,110,120,130,140,150,160,170,180,190,200,210,220]
-                        +scale_table(ticks)
-                        input(type="range" min=100, max=220, value=100, step=1, class="slider" id="height_cm_input" name="height_unit_cm")
+                //- div(id="div_heignt_cm" style="display:none;")
+                //-     label(class="statement-demographics", id="label_height_unit_cm")
+                //-         | Please indicate your height as accurately as you can. Verify that the slider is at the correct possition by moving it until the correct number for your height appears above the scale.
+                //-     center
+                //-         br
+                //-         div(id="height_cm_output" style="font-size:18px;font-weight:bold")
+                //-         br
+                //-         -var ticks=[100,110,120,130,140,150,160,170,180,190,200,210,220]
+                //-         +scale_table(ticks)
+                //-         input(type="range" min=100, max=220, value=100, step=1, class="slider" id="height_cm_input" name="height_unit_cm")
 
-                div(id="div_height_feet_in" style="display:none;")
-                    label(class="statement-demographics", id="label_height_unit_feet_in")
-                        | Please indicate your height in feet and inches.
-                    center
-                        -var feet_options = [3,4,5,6,7]
-                        +dropdown_list("height_unit_feet", feet_options)
-                        | &nbsp  
-                        span(style="font-size:18px;font-weight:bold")="feet"
-                        | &nbsp   &nbsp
-                        -var in_options = [0,1,2,3,4,5,6,7,8,9,10,10]
-                        +dropdown_list("height_unit_in", in_options)
-                        | &nbsp  
-                        span(style="font-size:18px;font-weight:bold")="inches"
+                //- div(id="div_height_feet_in" style="display:none;")
+                //-     label(class="statement-demographics", id="label_height_unit_feet_in")
+                //-         | Please indicate your height in feet and inches.
+                //-     center
+                //-         -var feet_options = [3,4,5,6,7]
+                //-         +dropdown_list("height_unit_feet", feet_options)
+                //-         | &nbsp  
+                //-         span(style="font-size:18px;font-weight:bold")="feet"
+                //-         | &nbsp   &nbsp
+                //-         -var in_options = [0,1,2,3,4,5,6,7,8,9,10,10]
+                //-         +dropdown_list("height_unit_in", in_options)
+                //-         | &nbsp  
+                //-         span(style="font-size:18px;font-weight:bold")="inches"
 
-                -var q_weight_unit = "To indicate your weight, which of the following units would you like to use?"
-                -var q_weight_unit_dict = {"kg": "kg", "pounds": "pounds", "stones": "stones and pounds"}
-                +classic_radio(q_weight_unit, "weight_unit", q_weight_unit_dict)
+                //- -var q_weight_unit = "To indicate your weight, which of the following units would you like to use?"
+                //- -var q_weight_unit_dict = {"kg": "kg", "pounds": "pounds", "stones": "stones and pounds"}
+                //- +classic_radio(q_weight_unit, "weight_unit", q_weight_unit_dict)
 
-                div(id="div_weight_kg" style="display:none;")
-                    label(class="statement-demographics", id="label_weight_unit_kg")
-                        | Please indicate your weight as accurately as you can. 
-                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
-                    center
-                        br
-                        div(id="weight_kg_output" style="font-size:18px;font-weight:bold")
-                        br
-                        -var ticks=["40","60","80",100,120,140,160,180,200,220]
-                        +scale_table(ticks)
-                        input(type="range" min=40, max=220, value=40, step=1, class="slider", name="weight_unit_kg", id="weight_kg_input")
+                //- div(id="div_weight_kg" style="display:none;")
+                //-     label(class="statement-demographics", id="label_weight_unit_kg")
+                //-         | Please indicate your weight as accurately as you can. 
+                //-         | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                //-     center
+                //-         br
+                //-         div(id="weight_kg_output" style="font-size:18px;font-weight:bold")
+                //-         br
+                //-         -var ticks=["40","60","80",100,120,140,160,180,200,220]
+                //-         +scale_table(ticks)
+                //-         input(type="range" min=40, max=220, value=40, step=1, class="slider", name="weight_unit_kg", id="weight_kg_input")
 
-                div(id="div_weight_pounds" style="display:none;")
-                    label(class="statement-demographics", id="label_weight_unit_pounds")
-                        | Please indicate your weight as accurately as you can. 
-                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
-                    center
-                        br
-                        div(id="weight_pounds_output" style="font-size:18px;font-weight:bold")
-                        br
-                        -var ticks=[100,150,200,250,300,350,400,450,500]
-                        +scale_table(ticks)
-                        input(type="range" min=100, max=500, value=100, step=1, class="slider", name="weight_unit_pounds", id="weight_pounds_input")
+                //- div(id="div_weight_pounds" style="display:none;")
+                //-     label(class="statement-demographics", id="label_weight_unit_pounds")
+                //-         | Please indicate your weight as accurately as you can. 
+                //-         | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                //-     center
+                //-         br
+                //-         div(id="weight_pounds_output" style="font-size:18px;font-weight:bold")
+                //-         br
+                //-         -var ticks=[100,150,200,250,300,350,400,450,500]
+                //-         +scale_table(ticks)
+                //-         input(type="range" min=100, max=500, value=100, step=1, class="slider", name="weight_unit_pounds", id="weight_pounds_input")
 
-                div(id="div_weight_stones" style="display:none;")
-                    label(class="statement-demographics", id="label_weight_unit_stones")
-                        | Please indicate your weight as accurately as you can. 
-                        | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
-                    center
-                        br
-                        div(id="weight_stones_output" style="font-size:18px;font-weight:bold")
-                        br
-                        -var ticks=[6,9,12,15,18,21,24,27,30,33,36]
-                        +scale_table(ticks)
-                        input(type="range" min=6, max=36, value=6, step=0.1, class="slider", name="weight_unit_stones", id="weight_stones_input")
+                //- div(id="div_weight_stones" style="display:none;")
+                //-     label(class="statement-demographics", id="label_weight_unit_stones")
+                //-         | Please indicate your weight as accurately as you can. 
+                //-         | Verify that the slider is at the correct possition by moving it until the correct number for your weight appears above the scale.
+                //-     center
+                //-         br
+                //-         div(id="weight_stones_output" style="font-size:18px;font-weight:bold")
+                //-         br
+                //-         -var ticks=[6,9,12,15,18,21,24,27,30,33,36]
+                //-         +scale_table(ticks)
+                //-         input(type="range" min=6, max=36, value=6, step=0.1, class="slider", name="weight_unit_stones", id="weight_stones_input")
 
                 //- - var q_main_cook_dict = {'yes': "I am mainly responsible for the household cooking", "shared": "I share this responsibility with another person (partner/roommate/other)", "no": "I am not responsible for my household cooking, somebody else is cooking for me / for my family"}
                 //- - var q_main_cook = "Are you responsible for your household cooking?"
