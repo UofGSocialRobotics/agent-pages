@@ -87,7 +87,31 @@
     cursor: pointer;
     background-color: rgb(142, 243, 186)
   }
+
+  .inner-grid-container-unclickable{
+    display: grid;
+    grid-template-areas:
+      'image title'
+      'image rating'
+      'image prep'
+      'image cook'
+      'image total'
+      'description description';
+    /* grid-gap: 5px; */
+    /* padding: 10px; */
+    grid-template-columns: 200px 1fr;
+    grid-template-rows:  1fr 40px 20px 20px 30px 20px;
+    /* border: 10px solid #A0A0A0;
+    border-radius: 10px; */
+  }
   
+  
+  .igc-border-unclickable{
+    border: 10px solid #A0A0A0;
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+
   .inner-grid-container > div {
     background-color: rgba(255, 255, 255, 0.8);
     text-align: left;

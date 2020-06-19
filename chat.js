@@ -100,6 +100,12 @@ var app_global = {
     answer_rs_post_study : {
         whats_important: [],
         free_comment: false
+    },
+    answer_rs_satisfaction : {
+        satisfaction: false,
+        easiness: false,
+        influence: false,
+        comments: false
     }
 };
 
@@ -240,7 +246,8 @@ FIREBASE_KEYS = {
     FREECOMMENTS : "free_comments",
     NOCHAT : "no_chat",
     LIKED_RECIPES: "liked_recipes",
-    RS_POSTSTUDYANSWERS: "rs_post_study_answers"
+    RS_POSTSTUDYANSWERS: "rs_post_study_answers",
+    RS_SATISFACTION: "rs_satisfaction"
 };
 
 FIREBASE_VALUES = {
@@ -268,6 +275,7 @@ data_col[FIREBASE_KEYS.DEMOGRPAHICS] = false;
 data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
 data_col[FIREBASE_KEYS.NOCHAT] = false;
 data_col[FIREBASE_KEYS.RS_POSTSTUDYANSWERS] = false;
+data_col[FIREBASE_KEYS.RS_SATISFACTION] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -1511,7 +1519,7 @@ function create_likert_scale(q_id, q_text, label_begin="totally disagree", label
     console.log("in create_likert_scale");
     console.log(table_freq_legend);
     questionnaire = document.getElementById("questionnaire");
-    html = "\n<label class=\"statement-demographics\">"+replace_agent_name(q_text)+"</label>";
+    html = "\n<label class=\"statement-demographics\" id=\"label_"+q_id+"\">"+replace_agent_name(q_text)+"</label>";
     if (center_likert) html += "<center>";
     // if (table_freq_legend){
     //     html += "\n<table class=\"likert-freq-scale-table\" cellspacing=\"0\" cellpadding=\"0\"><tr><th class=\"tg-xwyw\">Never</th><th class=\"tg-wp8o\">A few<br>times a<br>year</th><th class=\"tg-wp8o\">About<br>once a<br>month</th><th class=\"tg-wp8o\">A few<br>times a<br>month</th><th class=\"tg-wp8o\">About<br>once a<br>week</th><th class=\"tg-wp8o\">A few<br>times a<br>week</th><th class=\"tg-xwyw\">Typically<br>daily</th></tr></table>";
@@ -1589,7 +1597,7 @@ function create_likert_scale(q_id, q_text, label_begin="totally disagree", label
         var td_close = "</td>";
 
         if (i == n_points-1) {
-            html += div_open + table_open + tr_legend + tr_open + td_label_begin + td_open + label_open + input_var + div_control_indicator + label_close + td_close + td_label_end + tr_close + table_close + div_close;
+            html += div_open + table_open + tr_legend + tr_open + td_label_begin + td_open + label_open + input_var + div_control_indicator + label_close + td_close + td_label_end + tr_close + table_close + div_close + "<br><br>";
             questionnaire.innerHTML += html;
             console.log(html);
             return html;
@@ -1852,7 +1860,7 @@ function check_answers_demographics(){
             label.style = "color:red;font-weight:bold;"
         }
         else {
-            if (label == null) console.log("Cannot cahge style of "+ j+" as it does not exist!");
+            if (label == null) console.log("Cannot change style of "+ j+" as it does not exist!");
             else label.style = "";
         }
         if (j == "weight_unit" || j == "height_unit"){
@@ -2330,16 +2338,93 @@ function selectRecipe(rid, domID){
 
 function save_user_pref(callback){
     console.log(app_global.rs_user_pref);
-    if (app_global.rs_user_pref.length >= 3){
+    if (app_global.rs_user_pref.length >= 5){
         send_dialog(app_global.rs_user_pref);
         callback();
     }
     else {
         console.log("alert");
         window.scrollTo(0,0);
-        alert("Please select at least 3 recipes");
+        alert("Please select at least 5 recipes");
     }
 }
+
+function display_satisfaction_questionnaire(){
+    
+    app_global.rs_user_pref.forEach(function(val, index){
+        var div_to_show = document.getElementById("satisfaction_questionnaire");
+        var div_to_hide = document.getElementById("questionnaire_wrap");
+        var div_to_append_html = document.getElementById("outter-grid-container-chosen");
+        var id = val;
+        var div_code = document.getElementById(id);
+        console.log(div_code);
+        var html_open_div_recipe = "<div class=\"inner-grid-container-unclickable igc-border-unclickable\" id=\""+id+"_chosen\">";
+        var html = html_open_div_recipe + div_code.innerHTML + "</div";
+        div_to_append_html.innerHTML += html;
+
+        if (index == 0){
+            var qtext1 = "How satisfied are your with your choice?"
+            var qtext2 = "How easy was it for you to make this choice?"
+            create_likert_scale("satisfaction", qtext1, label_begin="Totally dissatisfied", label_end="Totally satisfied", n_points=7, table_freq_legend=false, center_likert=true);
+            create_likert_scale("easiness", qtext2, label_begin="Extremely difficult", label_end="Extremely easy", n_points=7, table_freq_legend=false, center_likert=true);
+
+        }
+
+        if (index == 4){
+            window.scrollTo(0,0);
+            div_to_hide.style = "display:none;";
+            div_to_show.style = "display:block";
+            // go_to_next_page();
+        }
+    });
+}
+
+function get_value_radio(radio_id){
+    var radios = document.getElementsByName(radio_id);
+    for (var i = 0, length = radios.length; i < length; i++){
+        if (radios[i].checked){
+            var splited_text = radios[i].value.split("_")
+            var a = splited_text[splited_text.length-1]
+            // answers[key] = a;
+            console.log(a);
+            return a;
+        }
+    }
+}
+
+function check_val(v, label_id){
+    if (v == undefined || v == ""){
+        alert_bool = true;
+        var label = document.getElementById(label_id);
+        label.style = "color:red;font-weight:bold;";
+        return false;
+    } else {
+        app_global.answer_rs_satisfaction.satisfaction = v;
+        return true;
+    }
+}
+
+function get_answers_satisfaction_questionnaire(callback){
+    var alert_bool = false;
+    var v = get_value_radio('likert_satisfaction');
+    var v2 = get_value_radio('likert_easiness');
+    var v3 = document.getElementById("free_text_choice_influence").value;
+    if (check_val(v, "label_satisfaction") && check_val(v2, "label_easiness") && check_val(v3, "label_influence")){
+        send_data_collection(app_global.answer_rs_satisfaction, FIREBASE_KEYS.RS_SATISFACTION);
+    }
+    else {
+        alert("Please answer all questions");
+    }
+}
+
+// function check_answers_satisfaction_questionnaire(){
+//     var alert_bool = false;
+//     if (app_global.answer_rs_satisfaction.satisfaction == undefined || app_global.answer_rs_satisfaction.satisfaction==""){
+//         alert_bool = true;
+//         var label = document.getElementById("label_satisfaction");
+//         label.style = "color:red;font-weight:bold;";
+//     }    
+// }
 
 function get_rs_food_questionnaire_answers(){
     var inputs = document.getElementsByName("whats_important");

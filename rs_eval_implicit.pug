@@ -3,6 +3,7 @@ include helper.pug
 
 +page("Evaluate recipes", true)
     link(href="rs_eval.css", rel="stylesheet", id="rs-css")
+    link(href="demographics.css", rel="stylesheet", id="demographics-css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
     div(class="do_not_refresh", id="do_not_refresh", style="display:block;")
         | Wait for recipes to load, do not refresh...
@@ -86,4 +87,41 @@ include helper.pug
             center
                 br
                 br
-                +navigation_button("Next","save_user_pref(go_to_next_page);")
+                +navigation_button("Next","save_user_pref(display_satisfaction_questionnaire);")
+
+
+    div(id="satisfaction_questionnaire", style="display:none;")
+        br
+        br
+        | Here are the recipes you have chosen.
+        br
+        br
+        div(class="wrap")
+            div(id="rs_eval_div", style="display:block;")
+                center
+                    div(class="outter-grid-container" id="outter-grid-container-chosen")
+        br
+        br
+        | Tell us a bit about your choice.
+        br
+        br
+        div(id="questionnaire")
+        div(id="questionnaire_free_text")
+            span(id="label_influence")
+                | What influenced your choice the most? 
+            br
+            br
+            textarea(cols="100", rows="5", id="free_text_choice_influence", placeholder="I was most influenced by...")
+            br
+            br
+            br
+            | Anything you would like to tell us about this part of the study? 
+            br
+            br
+            textarea(cols="100", rows="5", id="free_text_study", placeholder="Give us your feedback!")
+            br
+            br
+            center
+                br
+                br
+                +navigation_button("Next","get_answers_satisfaction_questionnaire();")
