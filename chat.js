@@ -767,7 +767,15 @@ function go_to_page_after_eval_recipes(){
         var next_page = PAGES.RS_QUESTIONNAIRE;
         location.replace(next_page+url_vars_to_string());
     }
+}
 
+function move_to_next_step(){
+    var step = get_value_from_url_var("step");
+    if (step == "learn_pref"){
+        save_user_pref(go_to_next_page_general_case);
+    } else if (step == "reco"){
+        save_user_pref(display_satisfaction_questionnaire);
+    }
 }
 
 function rs_go_to_post_study(){
