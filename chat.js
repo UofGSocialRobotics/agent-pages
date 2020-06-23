@@ -97,6 +97,7 @@ var app_global = {
     answer_demographics_weight_kg : undefined,
     answer_demographics_height_cm : undefined,
     rs_user_pref: [],
+    rs_right_clicks: [],
     answer_rs_post_study : {
         whats_important: [],
         free_comment: false
@@ -246,6 +247,7 @@ FIREBASE_KEYS = {
     FREECOMMENTS : "free_comments",
     NOCHAT : "no_chat",
     LIKED_RECIPES: "liked_recipes",
+    RIGHT_CLICKED_RECIPES: "right_clicked_recipes",
     RS_POSTSTUDYANSWERS: "rs_post_study_answers",
     RS_SATISFACTION: "rs_satisfaction"
 };
@@ -647,6 +649,7 @@ function send_dialog_callback(){
         var data = add_datetime_and_client_id(dictionary=false);
         data[FIREBASE_KEYS.SOURCE] = FIREBASE_VALUES.CLIENT;
         if (get_page() == PAGES.RS_EVAL_RECIPES){
+            data[FIREBASE_KEYS.RIGHT_CLICKED_RECIPES] = app_global.rs_right_clicks;
             data[FIREBASE_KEYS.LIKED_RECIPES] = text;
         }
         else {
@@ -2348,6 +2351,7 @@ function save_user_pref(callback){
     console.log(app_global.rs_user_pref);
     var n_selected = app_global.rs_user_pref.length;
     if (n_selected == 5){
+        // send_dialog(app_global.rs_right_clicks);
         send_dialog(app_global.rs_user_pref);
         callback();
     }
@@ -2409,11 +2413,11 @@ function get_value_radio(radio_id){
 function check_val(v, label_id){
     if (v == undefined || v == ""){
         alert_bool = true;
-        var label = document.getElementById(label_id);
+        var label = document.getElementById("label_"+label_id);
         label.style = "color:red;font-weight:bold;";
         return false;
     } else {
-        app_global.answer_rs_satisfaction.satisfaction = v;
+        app_global.answer_rs_satisfaction[label_id] = v;
         return true;
     }
 }
@@ -2423,7 +2427,7 @@ function get_answers_satisfaction_questionnaire(callback){
     var v = get_value_radio('likert_satisfaction');
     var v2 = get_value_radio('likert_easiness');
     var v3 = document.getElementById("free_text_choice_influence").value;
-    if (check_val(v, "label_satisfaction") && check_val(v2, "label_easiness") && check_val(v3, "label_influence")){
+    if (check_val(v, "satisfaction") && check_val(v2, "easiness") && check_val(v3, "influence")){
         send_data_collection(app_global.answer_rs_satisfaction, FIREBASE_KEYS.RS_SATISFACTION);
     }
     else {
@@ -2500,6 +2504,7 @@ function right_click_open_recipe_in_new_tab(rid){
             console.log("open link in new window");
             // alert("You've tried to open context menu"); //here you draw your own menu
             var url = "https://www.allrecipes.com/recipe/" + rid;
+            app_global.rs_right_clicks.push(rid);
             window.open(url, '_blank');
             e.preventDefault();
         }, false);
