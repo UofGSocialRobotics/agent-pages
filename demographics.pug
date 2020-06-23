@@ -124,6 +124,10 @@ include helper.pug
                 - var q_freq_cook = "How frequently do you cook at home?"
                 +classic_radio(q_freq_cook, "freq_cook", q_freq_cook_dict)
 
+                - var q_healthy_food_dict = {"no": "No", "occasionnaly": "Only occasionnaly", "most_times": "Yes, most of the time", "always": "Yes, definitely"}
+                - var q_healthy_food = "Do you usually eat healthy food?"
+                +classic_radio(q_healthy_food, "healthy_food", q_healthy_food_dict)
+
                 //- - var q_CA_faliliarity_dict = {"very_familiar": "Very familiar (I use conversational systems everyday)",  "somewhat_familiar": "Somewhat familiar (I use conversational systems once in a while)", "not_familiar": "Not familiar (I never or almost never use conversational systems)"}
                 //- - var q_CA_faliliarity = "How familiar are your with conversational systems (e.g. Siri, Alexa, Google Home, Cortana)?"
                 //- +classic_radio(q_CA_faliliarity, "CA_familiarity", q_CA_faliliarity_dict)
