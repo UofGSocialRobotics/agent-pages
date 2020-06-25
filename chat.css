@@ -384,7 +384,8 @@ body {
 
 .wrap {
   font:12px "Calibri", "Roboto", sans-serif;
-  width:80vw;
+  /* width:80vw; */
+  width: 1084px;;
 }
 h1.likert-header {
   padding-left:4.25%;

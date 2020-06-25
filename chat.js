@@ -1165,20 +1165,21 @@ function display_single_recipe_in_grid(rdata, n){
     var html_img = "<img class=\"center-cropped\" src=\""+rdata['image_url']+"\" id=\"recipe_img\" height=\"200px\">";
     var html_close_div_img = "</div>";
     var title = rdata['title'];
-    if (title.length > 40) {
-        title = title.slice(0, 37) + "...";
+    if (title.length > 30) {
+        title = title.slice(0, 27) + "...";
     }
     var html_div_title = "<div class=\"recipe-title\">"+title+"</div>";
     var html_open_div_rating = "<div class=\"rating\">";
     var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
     var html_close_div_rating = "</div>";
+    var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
     var description = rdata['description'];
     var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
     var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
     var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
     var html_div_total = "<div class=\"recipe-total\">Total: "+rdata['time_total']+"</div>";
     var html_close_div_recipe = "</div>";
-    var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_open_div_rating + html_rating + html_close_div_rating + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
+    var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_open_div_rating + html_rating + html_close_div_rating + html_div_healthy + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
     var outter_grid = document.getElementById("outter-grid-container");
     // console.log(html);
     outter_grid.innerHTML += html;
@@ -2502,7 +2503,7 @@ function right_click_open_recipe_in_new_tab(rid){
     if (recipe1_div.addEventListener) {
         console.log(recipe1_div);
         recipe1_div.addEventListener('contextmenu', function(e) {
-            console.log("open link in new window");
+            // console.log("open link in new window");
             // alert("You've tried to open context menu"); //here you draw your own menu
             var url = "https://www.allrecipes.com/recipe/" + rid;
             app_global.rs_right_clicks.push(rid);
