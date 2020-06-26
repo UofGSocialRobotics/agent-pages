@@ -1159,6 +1159,7 @@ function generate_html_rating(rating, n_ratings){
 }
 
 function display_single_recipe_in_grid(rdata, n){
+
     var rid = rdata['id'];
     var html_open_div_recipe = "<div class=\"inner-grid-container igc-border\" id=\""+rid+"\" onclick=\"selectRecipe('rid', '"+rid+"');\">";
     var html_open_div_img = "<div class=\"recipe-image\">";
@@ -1172,13 +1173,21 @@ function display_single_recipe_in_grid(rdata, n){
     var html_open_div_rating = "<div class=\"rating\">";
     var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
     var html_close_div_rating = "</div>";
-    var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
+
+    var step = get_value_from_url_var("step");
+    if (step == "learn_pref"){
+        var html_div_healthy = "<div class=\"recipe-healthy\"></div>";
+    } else if (step == "reco"){
+        var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
+    }
+    
     var description = rdata['description'];
     var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
     var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
     var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
     var html_div_total = "<div class=\"recipe-total\">Total: "+rdata['time_total']+"</div>";
     var html_close_div_recipe = "</div>";
+
     var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_open_div_rating + html_rating + html_close_div_rating + html_div_healthy + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
     var outter_grid = document.getElementById("outter-grid-container");
     // console.log(html);
