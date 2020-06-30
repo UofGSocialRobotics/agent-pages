@@ -336,7 +336,7 @@ function on_load(){
     // else if (page == PAGES.THANKS) amt_validation_code();
     else if (page == PAGES.PRE_STUDY_QUESTIONNAIRE) create_pre_study_questionnaire();   
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
-    else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
+    // else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
     else if (page == PAGES.CHAT_GUIDED) {
         console.log("Chat guided page!");
         chat_guided_setup_onclick_event();
@@ -1847,6 +1847,7 @@ function get_demographics_answers(){
     var inputs = document.getElementsByTagName("input");
     console.log(app_global);
     app_global.answers_demographics["employment"] = [];
+    app_global.answers_demographics["diets"] = [];
     for (var i=0; i < inputs.length; i++){
         var input = inputs[i];
         var key = input.name;
@@ -2489,23 +2490,23 @@ function openInNewTab(url) {
   }
 
 
-var recipe1_div = document.getElementById("recipe1");
-if (recipe1_div.addEventListener) {
-    console.log("if");
-    console.log(recipe1_div);
-    recipe1_div.addEventListener('contextmenu', function(e) {
-        console.log("if2");
-        alert("You've tried to open context menu"); //here you draw your own menu
-        e.preventDefault();
-    }, false);
-} else {
-    console.log("else");
-    recipe1_div.attachEvent('oncontextmenu', function() {
-        console.log("else2");
-        alert("You've tried to open context menu");
-        window.event.returnValue = false;
-    });
-}
+// var recipe1_div = document.getElementById("recipe1");
+// if (recipe1_div.addEventListener) {
+//     console.log("if");
+//     console.log(recipe1_div);
+//     recipe1_div.addEventListener('contextmenu', function(e) {
+//         console.log("if2");
+//         alert("You've tried to open context menu"); //here you draw your own menu
+//         e.preventDefault();
+//     }, false);
+// } else {
+//     console.log("else");
+//     recipe1_div.attachEvent('oncontextmenu', function() {
+//         console.log("else2");
+//         alert("You've tried to open context menu");
+//         window.event.returnValue = false;
+//     });
+// }
 
 function right_click_open_recipe_in_new_tab(rid){
     var recipe1_div = document.getElementById(rid);
