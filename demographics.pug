@@ -120,6 +120,39 @@ include helper.pug
                 //- - var q_main_cook = "Are you responsible for your household cooking?"
                 //- +classic_radio(q_main_cook, "main_cook", q_main_cook_dict)
 
+                label(class="statement-demographics", id="label_like_cooking")
+                    | How much do you enjoy coocking? Please repport on the scale below.
+                div(class="control-group")
+                    table(with="750px")
+                        tr
+                            td(style="font-size:14px")
+                                br
+                                | Coocking is torture
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio", name="like_cooking", value="1")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="like_cooking" value="2")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="like_cooking" value="3")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="like_cooking" value="4")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="like_cooking" value="5")
+                                    div(class="control_indicator")
+                            td(style="font-size:14px")
+                                br
+                                | I love cooking
+
+
                 - var q_freq_cook_dict = {"once_day": "At least once a day", "several_t_w": "Several times a week", "once_w": "At least once a week", "occasionnaly": "Less than once a week", "never": "Never"}
                 - var q_freq_cook = "How frequently do you cook at home?"
                 +classic_radio(q_freq_cook, "freq_cook", q_freq_cook_dict)
@@ -127,6 +160,14 @@ include helper.pug
                 - var q_healthy_food_dict = {"no": "No", "occasionnaly": "Only occasionnaly", "most_times": "Yes, most of the time", "always": "Yes, definitely"}
                 - var q_healthy_food = "Do you usually eat healthy food?"
                 +classic_radio(q_healthy_food, "healthy_food", q_healthy_food_dict)
+
+                - var q_online_recipeDB_dict = {"never": "Never", "occasionnaly": "Only occasionnaly", "few_times_week": "A few times a week", "every_day": "Every day"}
+                - var q_online_recipeDB = "How frequently do you look for a recipe online?"
+                +classic_radio(q_online_recipeDB, "freq_online_recipe_DB", q_online_recipeDB_dict)
+
+                - var q_diets_dict = {"vegan": "Vegan", "vegetarian": "Vegetarian", "pescetatian": "Pescetarian", "gluten_free": "Gluten intolerance", "lactose_free": "Lactose intolerance", "eggs_free": "Egg intolerance", "keto_diet": "Keto diet"}
+                - var q_diets = "Do you have a specific diet or any intolerance?"
+                +classic_radio(q_diets, "diets", q_diets_dict)
 
                 //- - var q_CA_faliliarity_dict = {"very_familiar": "Very familiar (I use conversational systems everyday)",  "somewhat_familiar": "Somewhat familiar (I use conversational systems once in a while)", "not_familiar": "Not familiar (I never or almost never use conversational systems)"}
                 //- - var q_CA_faliliarity = "How familiar are your with conversational systems (e.g. Siri, Alexa, Google Home, Cortana)?"
