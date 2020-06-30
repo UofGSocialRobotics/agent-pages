@@ -165,9 +165,9 @@ include helper.pug
                 - var q_online_recipeDB = "How frequently do you look for a recipe online?"
                 +classic_radio(q_online_recipeDB, "freq_online_recipe_DB", q_online_recipeDB_dict)
 
-                - var q_diets_dict = {"vegan": "Vegan", "vegetarian": "Vegetarian", "pescetatian": "Pescetarian", "gluten_free": "Gluten intolerance", "lactose_free": "Lactose intolerance", "eggs_free": "Egg intolerance", "keto_diet": "Keto diet"}
+                - var q_diets_dict = {"vegan": "Vegan", "vegetarian": "Vegetarian", "pescetatian": "Pescetarian", "gluten_free": "Gluten intolerance", "lactose_free": "Lactose intolerance", "eggs_free": "Egg intolerance", "keto_diet": "Keto diet", "none": "No specific diet or intolerance"}
                 - var q_diets = "Do you have a specific diet or any intolerance?"
-                +classic_radio(q_diets, "diets", q_diets_dict)
+                +classic_checkbox(q_diets, "diets", q_diets_dict)
 
                 //- - var q_CA_faliliarity_dict = {"very_familiar": "Very familiar (I use conversational systems everyday)",  "somewhat_familiar": "Somewhat familiar (I use conversational systems once in a while)", "not_familiar": "Not familiar (I never or almost never use conversational systems)"}
                 //- - var q_CA_faliliarity = "How familiar are your with conversational systems (e.g. Siri, Alexa, Google Home, Cortana)?"
