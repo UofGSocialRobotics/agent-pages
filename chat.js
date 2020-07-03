@@ -768,7 +768,8 @@ function go_to_page_after_eval_recipes(){
     if (step == "learn_pref"){
         go_to_next_page_general_case();
     } else if (step == "reco"){
-        var next_page = PAGES.RS_QUESTIONNAIRE;
+        // var next_page = PAGES.RS_QUESTIONNAIRE;
+        var next_page = PAGES.THANKS;
         location.replace(next_page+url_vars_to_string());
     }
 }
@@ -1175,11 +1176,11 @@ function display_single_recipe_in_grid(rdata, n){
     var html_close_div_rating = "</div>";
 
     var step = get_value_from_url_var("step");
-    if (step == "learn_pref"){
-        var html_div_healthy = "<div class=\"recipe-healthy\"></div>";
-    } else if (step == "reco"){
-        var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
-    }
+    // if (step == "learn_pref"){
+    var html_div_healthy = "<div class=\"recipe-healthy\"></div>";
+    // } else if (step == "reco"){
+    //     var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
+    // }
     
     var description = rdata['description'];
     var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
