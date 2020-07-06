@@ -768,8 +768,8 @@ function go_to_page_after_eval_recipes(){
     if (step == "learn_pref"){
         go_to_next_page_general_case();
     } else if (step == "reco"){
-        // var next_page = PAGES.RS_QUESTIONNAIRE;
-        var next_page = PAGES.THANKS;
+        var next_page = PAGES.RS_QUESTIONNAIRE;
+        // var next_page = PAGES.THANKS;
         location.replace(next_page+url_vars_to_string());
     }
 }
