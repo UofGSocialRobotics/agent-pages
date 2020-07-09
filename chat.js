@@ -107,7 +107,9 @@ var app_global = {
         easiness: false,
         influence: false,
         comments: false
-    }
+    },
+    recipes_to_rate: false,
+    recipes_rate: false
 };
 
 var PAGES = {
@@ -131,13 +133,14 @@ var PAGES = {
     TUTO : "tuto.html",
     NOCHAT: "no_chat.html",
     RS_EVAL_RECIPES: "rs_eval_implicit.html",
+    RS_EVAL_SINGLE_RECIPE: "rs_eval.html",
     RS_EVAL_INTRO: "rs_eval_intro.html",
     RS_INSTRUCTIONS: "rs_instructions.html",
     RS_QUESTIONNAIRE: "rs_food_questionnaire.html"
 }
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
-    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_SINGLE_RECIPE, PAGES.RS_QUESTIONNAIRE,
     PAGES.FOOD_DIAGNOSIS, 
     PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
@@ -351,6 +354,13 @@ function on_load(){
             console.log("asking to learning pref -- sending dialog");
             send_dialog("start_pref_gathering");
         } else if (step == "reco"){
+            console.log("asking to start_rs_eval -- sending dialog");
+            send_dialog("start_rs_eval");
+        }
+    }
+    else if (page == PAGES.RS_EVAL_SINGLE_RECIPE) {
+        var step = get_value_from_url_var("step");
+        if (step == "reco"){
             console.log("asking to start_rs_eval -- sending dialog");
             send_dialog("start_rs_eval");
         }
@@ -876,7 +886,7 @@ function handle_server_message(message) {
                 console.log(error);
             }
         }
-        else if (get_page() == PAGES.RS_EVAL_RECIPES){
+        else if (get_page() == PAGES.RS_EVAL_RECIPES || get_page() == PAGES.RS_EVAL_SINGLE_RECIPE){
             try{
                 handle_rs_eval_message(message);
             }
@@ -1008,98 +1018,131 @@ function handle_rs_eval_message(message){
     else if (message["intent"] == "go_to_post_study"){
         rs_go_to_post_study();
     }
-    else if (message['intent'] == "learn_pref" || message['intent'] == "eval_reco"){
+    else if (message['intent'] == "learn_pref"){
         rs_diplay_multiple_recipes(message['recipes']);
+    }
+    else if (message['intent'] == "eval_reco"){
+        app_global.recipes_to_rate = message['recipes'];
+        console.log(app_global.recipes_to_rate);
+        setTimeout(display_new_recipe, 200);
+
     }
     // else{
     //     display_new_recipe(message);
     // }
 }
 
-function display_new_recipe(message){  
+function get_next_recipe_to_rate(){
+    for(var i =0; i<app_global.recipes_to_rate.length; i++){
+        var recipe = app_global.recipes_to_rate[i];
+        console.log(recipe);
+        var rid = recipe['id'];
+        if (app_global.recipes_rate){
+            if (!(rid in app_global.recipes_rate)){
+                return recipe;
+            }
+        }
+        else {
+            return recipe;
+        }
+    } 
+    return false;
+}
+
+function display_new_recipe(){  
+
+    console.log("in display_new_recipe");
     
     var display_div = document.getElementById("rs_eval_div");
     display_div.style = "display:block;"
     
 
-    var recipe_data = message["recipe"];
+    var recipe_data = get_next_recipe_to_rate();
 
-    function set_onclick_fct_with_recipe_id(item){
-        var i = parseInt(item.getAttribute('name'));
-        item.onclick = function(){
-            rating_fct(recipe_data['id'],i);
-            // console.log(item);
+    console.log(recipe_data);
+
+    if (recipe_data){
+
+        function set_onclick_fct_with_recipe_id(item){
+            var i = parseInt(item.getAttribute('name'));
+            item.onclick = function(){
+                rating_fct(recipe_data['id'],i);
+                // console.log(item);
+            }
+            // item.onclick = rating_fct(recipe_data['id'],5,send_data_collection_callback);
         }
-        // item.onclick = rating_fct(recipe_data['id'],5,send_data_collection_callback);
-    }
 
-    var rating_stars = document.getElementsByClassName("start_rating");
-    // console.log(rating_stars);
-    for (const star_btn of rating_stars) {
-        set_onclick_fct_with_recipe_id(star_btn);
-    }
-
-    // console.log("recipe page");
-    var recipe_img_html = document.getElementById("recipe_img");
-    recipe_img_html.src = recipe_data['image_link'];
-    var recipe_title_html = document.getElementById("recipe_title");
-    recipe_title_html.innerHTML = recipe_data["title"];
-    var recipe_prep_time_html = document.getElementById("prep_time");
-    recipe_prep_time_html.innerHTML = "--";
-    var recipe_cook_time_html = document.getElementById("cook_time");
-    recipe_cook_time_html.innerHTML = "--";
-    var recipe_total_time_html = document.getElementById("total_time");
-    recipe_total_time_html.innerHTML = recipe_data["total_time"];
-    var elt_html = document.getElementById("servings");
-    elt_html.innerHTML = "--";
-    var elt_html = document.getElementById("recipe_description");
-    elt_html.innerHTML = "--";
-
-    var ingredients_col1 = recipe_data["ingredients"]["col1"];
-    var ingredients_col2 = recipe_data["ingredients"]["col2"];
-    var ingredients_col3 = recipe_data["ingredients"]["col3"];
-
-    // console.log(ingredients_col1);
-
-    ingredients_col1.forEach(create_ingredients_column1);
-    ingredients_col2.forEach(create_ingredients_column2);
-    ingredients_col3.forEach(create_ingredients_column3);
-
-    var instructions_list = recipe_data["instructions"];
-    instructions_list.forEach(create_instructions);
-
-    function create_ingredients_column1(item, index){
-        var col1_html = document.getElementById("ingredients_col1");
-        if (index == 0){
-            col1_html.innerHTML = "<br><br><span>"+item+"</span>";
+        var rating_stars = document.getElementsByClassName("start_rating");
+        // console.log(rating_stars);
+        for (const star_btn of rating_stars) {
+            set_onclick_fct_with_recipe_id(star_btn);
         }
-        else col1_html.innerHTML += "<br><br><span>"+item+"</span>";
-    }
-    
-    function create_ingredients_column2(item, index){
-        var col2_html = document.getElementById("ingredients_col2");
-        if (index == 0){
-            col2_html.innerHTML = "<br><br><span>"+item+"</span>";
+
+        // console.log("recipe page");
+        var recipe_img_html = document.getElementById("recipe_img");
+        recipe_img_html.src = recipe_data['image_url'];
+        var recipe_title_html = document.getElementById("recipe_title");
+        recipe_title_html.innerHTML = recipe_data["title"];
+        var recipe_prep_time_html = document.getElementById("prep_time");
+        recipe_prep_time_html.innerHTML = recipe_data["time_prep"];
+        var recipe_cook_time_html = document.getElementById("cook_time");
+        recipe_cook_time_html.innerHTML = recipe_data["time_cook"];
+        var recipe_total_time_html = document.getElementById("total_time");
+        recipe_total_time_html.innerHTML = recipe_data["time_total"];
+        var elt_html = document.getElementById("servings");
+        elt_html.innerHTML = recipe_data['servings'];
+        var elt_html = document.getElementById("recipe_description");
+        elt_html.innerHTML = recipe_data['description'];
+
+        var ingredients_col1 = recipe_data["ingredients"]["col1"];
+        var ingredients_col2 = recipe_data["ingredients"]["col2"];
+        var ingredients_col3 = recipe_data["ingredients"]["col3"];
+
+        // console.log(ingredients_col1);
+
+        ingredients_col1.forEach(create_ingredients_column1);
+        ingredients_col2.forEach(create_ingredients_column2);
+        ingredients_col3.forEach(create_ingredients_column3);
+
+        var instructions_list = recipe_data["instructions"];
+        instructions_list.forEach(create_instructions);
+
+        function create_ingredients_column1(item, index){
+            var col1_html = document.getElementById("ingredients_col1");
+            if (index == 0){
+                col1_html.innerHTML = "<br><br><span>"+item+"</span>";
+            }
+            else col1_html.innerHTML += "<br><br><span>"+item+"</span>";
         }
-        else col2_html.innerHTML += "<br><br><span>"+item+"</span>";
-    }
-    
-    function create_ingredients_column3(item, index){
-        var col3_html = document.getElementById("ingredients_col3");
-        if (index == 0){
-            col3_html.innerHTML = "<br><br><span>"+item+"</span>";
+        
+        function create_ingredients_column2(item, index){
+            var col2_html = document.getElementById("ingredients_col2");
+            if (index == 0){
+                col2_html.innerHTML = "<br><br><span>"+item+"</span>";
+            }
+            else col2_html.innerHTML += "<br><br><span>"+item+"</span>";
         }
-        else col3_html.innerHTML += "<br><br><span>"+item+"</span>";
-    }
-    
-    function create_instructions(item, index){
-        var instructions_html = document.getElementById("instructions_list");
-        if (index == 0){
-            instructions_html.innerHTML = "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
+        
+        function create_ingredients_column3(item, index){
+            var col3_html = document.getElementById("ingredients_col3");
+            if (index == 0){
+                col3_html.innerHTML = "<br><br><span>"+item+"</span>";
+            }
+            else col3_html.innerHTML += "<br><br><span>"+item+"</span>";
         }
-        else instructions_html.innerHTML += "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
+        
+        function create_instructions(item, index){
+            var instructions_html = document.getElementById("instructions_list");
+            if (index == 0){
+                instructions_html.innerHTML = "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
+            }
+            else instructions_html.innerHTML += "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
+        }
+        window.scrollTo(0,0);
     }
-    window.scrollTo(0,0);
+    else{
+        send_dialog(app_global.recipes_rate);
+    }
 }
 
 
@@ -2335,10 +2378,16 @@ function onclick_disliked_ingredient(b_elt){
 
 
 function rating_fct(rid, rating){
-    var text = "rating(" + rid + ") = " + rating;
-    send_dialog(text);
+    // var text = "rating(" + rid + ") = " + rating;
+    // send_dialog(text);
+    if (!app_global.recipes_rate){
+        app_global.recipes_rate = {rid: rating};
+    }
+    else{
+        app_global.recipes_rate[rid] = rating
+    }
     // console.log(app_global.data_to_send.text);
-    // setTimeout(function(){ callback(); }, 500); ;
+    setTimeout(function(){ display_new_recipe()}, 500); ;
 }
 
 function selectRecipe(rid, domID){
