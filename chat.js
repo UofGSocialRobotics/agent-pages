@@ -1035,7 +1035,7 @@ function handle_rs_eval_message(message){
 function get_next_recipe_to_rate(){
     for(var i =0; i<app_global.recipes_to_rate.length; i++){
         var recipe = app_global.recipes_to_rate[i];
-        console.log(recipe);
+        // console.log(recipe);
         var rid = recipe['id'];
         if (app_global.recipes_rate){
             if (!(rid in app_global.recipes_rate)){
@@ -1051,7 +1051,7 @@ function get_next_recipe_to_rate(){
 
 function display_new_recipe(){  
 
-    console.log("in display_new_recipe");
+    // console.log("in display_new_recipe");
     
     var display_div = document.getElementById("rs_eval_div");
     display_div.style = "display:block;"
