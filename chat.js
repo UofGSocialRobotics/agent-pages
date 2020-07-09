@@ -2394,13 +2394,14 @@ function rating_fct(rid, rating){
     // var text = "rating(" + rid + ") = " + rating;
     // send_dialog(text);
     if (!app_global.recipes_rate){
-        app_global.recipes_rate = {rid: rating};
+        app_global.recipes_rate = {};
+        app_global.recipes_rate[rid] = rating;
     }
     else{
         app_global.recipes_rate[rid] = rating
     }
-    // console.log(app_global.data_to_send.text);
-    setTimeout(function(){ display_new_recipe()}, 500); ;
+    console.log(app_global.recipes_rate);
+    setTimeout(display_new_recipe, 500); ;
 }
 
 function selectRecipe(rid, domID){
