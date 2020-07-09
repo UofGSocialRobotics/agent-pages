@@ -253,7 +253,8 @@ FIREBASE_KEYS = {
     LIKED_RECIPES: "liked_recipes",
     RIGHT_CLICKED_RECIPES: "right_clicked_recipes",
     RS_POSTSTUDYANSWERS: "rs_post_study_answers",
-    RS_SATISFACTION: "rs_satisfaction"
+    RS_SATISFACTION: "rs_satisfaction",
+    RECIPE_RATINGS: "recipe_ratings"
 };
 
 FIREBASE_VALUES = {
@@ -282,6 +283,7 @@ data_col[FIREBASE_KEYS.FREECOMMENTS] = false;
 data_col[FIREBASE_KEYS.NOCHAT] = false;
 data_col[FIREBASE_KEYS.RS_POSTSTUDYANSWERS] = false;
 data_col[FIREBASE_KEYS.RS_SATISFACTION] = false;
+data_col[FIREBASE_KEYS.RECIPE_RATINGS] = false;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DATACOLLECTION] = data_col;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
@@ -667,7 +669,7 @@ function send_dialog_callback(){
             data[FIREBASE_KEYS.TEXT] = text;
         }
         console.log(data);
-        console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path)
+        console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path);
         FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
             console.log("Save in Firebase: " + text);
         });
@@ -1141,10 +1143,21 @@ function display_new_recipe(){
         window.scrollTo(0,0);
     }
     else{
-        send_dialog(app_global.recipes_rate);
+        var tmp = dict_to_list(app_global.recipes_rate);
+        // send_dialog(tmp);
+        send_data_collection(tmp, FIREBASE_KEYS.RECIPE_RATINGS);
     }
 }
 
+function dict_to_list(dict){
+    var arr = [];
+    for (var key in dict) {
+        if (dict.hasOwnProperty(key)) {
+            arr.push( [ key, dict[key] ] );
+        }
+    }
+    return arr;
+}
 
 function rs_diplay_multiple_recipes(recipes_list){
     recipes_list.forEach(display_single_recipe_in_grid);
