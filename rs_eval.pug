@@ -3,6 +3,7 @@ include helper.pug
 
 +page("Evaluate recipes", true)
     link(href="rs_eval.css", rel="stylesheet", id="rs-css")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css")
     div(id="questionnaire_wrap")
         div(class="wrap")
             div(id="rs_eval_div", style="display:none;")
@@ -15,7 +16,18 @@ include helper.pug
                                 span(id="recipe_title")="Slow Cooker Chicken Taco Soup"
                                 br
                                 br
-                        div(class="recipe_rating")
+                        div(class="recipe_rating" id="recipe_rating_id")
+                            div(class="rating")
+                                |
+                                span(id="rating-number" class="rating-number") (56)
+                                |
+                                |
+                                span(id="r1_stars")
+                                    span(class="emptystar") ☆
+                                    span(class="halfstar") ☆
+                                    span(class="fullstar") ☆
+                                    span(class="fullstar") ☆
+                                    span(class="fullstar") ☆
                         div(class="recipe_time")
                             b Prep: 15 mins
                             |

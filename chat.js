@@ -1059,7 +1059,7 @@ function display_new_recipe(){
 
     var recipe_data = get_next_recipe_to_rate();
 
-    console.log(recipe_data);
+    // console.log(recipe_data);
 
     if (recipe_data){
 
@@ -1083,6 +1083,14 @@ function display_new_recipe(){
         recipe_img_html.src = recipe_data['image_url'];
         var recipe_title_html = document.getElementById("recipe_title");
         recipe_title_html.innerHTML = recipe_data["title"];
+        
+        var html_open_div_rating = "<div class=\"rating\">";
+        var html_rating_inner = generate_html_rating(recipe_data['rating'], recipe_data['n_ratings']);
+        var html_close_div_rating = "</div>";
+        var html_rating = html_open_div_rating + html_rating_inner + html_close_div_rating;
+        var recipe_rating_html = document.getElementById("recipe_rating_id");
+        recipe_rating_html.innerHTML = html_rating;
+
         var recipe_prep_time_html = document.getElementById("prep_time");
         recipe_prep_time_html.innerHTML = recipe_data["time_prep"];
         var recipe_cook_time_html = document.getElementById("cook_time");
@@ -1101,8 +1109,8 @@ function display_new_recipe(){
         // console.log(ingredients_col1);
 
         ingredients_col1.forEach(create_ingredients_column1);
-        ingredients_col2.forEach(create_ingredients_column2);
-        ingredients_col3.forEach(create_ingredients_column3);
+        if (ingredients_col2 != undefined) ingredients_col2.forEach(create_ingredients_column2);
+        if (ingredients_col3 != undefined) ingredients_col3.forEach(create_ingredients_column3);
 
         var instructions_list = recipe_data["instructions"];
         instructions_list.forEach(create_instructions);
@@ -2405,7 +2413,7 @@ function rating_fct(rid, rating){
     else{
         app_global.recipes_rate[rid] = rating
     }
-    console.log(app_global.recipes_rate);
+    // console.log(app_global.recipes_rate);
     setTimeout(display_new_recipe, 1000); 
 }
 
