@@ -656,6 +656,7 @@ form .buttons {
     'ga_recipe_instructions ga_recipe_instructions ga_recipe_instructions';
   grid-gap: 10px;
   padding: 10px;
+  grid-template-columns: 300px 1fr 1fr;
   background-color: #F9F9F9;
 }
 
@@ -665,7 +666,7 @@ form .buttons {
 
 .recipe_img{
   grid-area: ga_recipe_img;
-  width: 140px;
+  /* width: 140px; */
 }
 
 .recipe_title{

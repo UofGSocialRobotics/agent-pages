@@ -135,6 +135,13 @@
     width: 200px;
   }
 
+  .center-cropped-large {
+    object-fit: cover ; 
+    object-position: center; 
+    /* height: 00px; */
+    width: 280px;
+  }
+
   .do_not_refresh{
     font-size: 40px;
     color: red;

@@ -1055,8 +1055,6 @@ function display_new_recipe(){
 
     // console.log("in display_new_recipe");
     
-    var display_div = document.getElementById("rs_eval_div");
-    display_div.style = "display:block;"
     
 
     var recipe_data = get_next_recipe_to_rate();
@@ -1141,12 +1139,18 @@ function display_new_recipe(){
             else instructions_html.innerHTML += "<br><br><span>"+(index+1).toString()+". "+item+"</span>";
         }
         window.scrollTo(0,0);
+        display_recipe_to_rate();
     }
     else{
         var tmp = dict_to_list(app_global.recipes_rate);
         // send_dialog(tmp);
         send_data_collection(tmp, FIREBASE_KEYS.RECIPE_RATINGS);
     }
+}
+
+function display_recipe_to_rate(){
+    var display_div = document.getElementById("rs_eval_div");
+    display_div.style = "display:block;"
 }
 
 function dict_to_list(dict){
@@ -2391,8 +2395,9 @@ function onclick_disliked_ingredient(b_elt){
 
 
 function rating_fct(rid, rating){
-    // var text = "rating(" + rid + ") = " + rating;
-    // send_dialog(text);
+    var div_to_hide = document.getElementById("rs_eval_div");
+    div_to_hide.style = "display:none";
+
     if (!app_global.recipes_rate){
         app_global.recipes_rate = {};
         app_global.recipes_rate[rid] = rating;
@@ -2401,7 +2406,7 @@ function rating_fct(rid, rating){
         app_global.recipes_rate[rid] = rating
     }
     console.log(app_global.recipes_rate);
-    setTimeout(display_new_recipe, 500); ;
+    setTimeout(display_new_recipe, 1000); 
 }
 
 function selectRecipe(rid, domID){

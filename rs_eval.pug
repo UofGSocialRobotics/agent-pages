@@ -2,43 +2,44 @@ include page.pug
 include helper.pug
 
 +page("Evaluate recipes", true)
+    link(href="rs_eval.css", rel="stylesheet", id="rs-css")
     div(id="questionnaire_wrap")
         div(class="wrap")
             div(id="rs_eval_div", style="display:none;")
                 center
                     div(class="recipe_grid")
                         div(class="recipe_img")
-                            img(src="NA", id="recipe_img", height="250")
+                            img(class="center-cropped-large", src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fimages.media-allrecipes.com%2Fuserphotos%2F272744.jpg", id="recipe_img", height="250px")
                         div(class="recipe_title") 
                             center
-                                span(id="recipe_title") 
+                                span(id="recipe_title")="Slow Cooker Chicken Taco Soup"
                                 br
                                 br
                         div(class="recipe_rating")
                         div(class="recipe_time")
-                            b Prep:
+                            b Prep: 15 mins
                             |
                             |
                             span(id="prep_time") 
                             br
                             br
-                            b Cook:
+                            b Cook: 7hrs
                             |
                             |
                             span(id="cook_time") 
                             br
                             br
-                            b Total:
+                            b Total: 7 hrs 15 mins
                             |
                             |
                             span(id="total_time") 
                         div(class="recipe_servings")
-                            b Servings: 
+                            b Servings: 8
                             |
                             |
                             span(id="servings") 
                         div(class="recipe_description", id="recipe_description")
-                            //- | This delicious soup will be appreciated as much by children as by adults thanks to its crispy bacon bits!
+                            | You can call this soup or chili, but either way it is wonderful! This recipe is also very adaptable to your personal taste. I recommend using Bill Echols' Taco Seasoning from this website. Serve topped with shredded Cheddar cheese, a dollop of sour cream, and crushed tortilla chips, if you like. I hope you enjoy!
 
                         div(class="recipe_ingredients")
 
