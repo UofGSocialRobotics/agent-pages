@@ -2439,21 +2439,21 @@ function selectRecipe(rid, domID){
 function save_user_pref(callback){
     console.log(app_global.rs_user_pref);
     var n_selected = app_global.rs_user_pref.length;
-    if (n_selected == 5){
+    if (n_selected >= 5){
         // send_dialog(app_global.rs_right_clicks);
         send_dialog(app_global.rs_user_pref);
         callback();
     }
-    else if (n_selected < 5){
+    else {//if (n_selected < 5){
         console.log("alert");
         window.scrollTo(0,0);
         alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
     }
-    else {
-        console.log("alert");
-        window.scrollTo(0,0);
-        alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
-    }
+    // else {
+    //     console.log("alert");
+    //     window.scrollTo(0,0);
+    //     alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
+    // }
 }
 
 function display_satisfaction_questionnaire(){

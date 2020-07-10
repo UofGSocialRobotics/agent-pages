@@ -14,7 +14,7 @@ var options_list = [
     ["input_NO_ingredients", "to provide the system with ingredients I don't have or don't want in the recipe"], 
     ["input_diet", "to provide the system with a specific diet (for example vegan)"], 
     ["input_calories_nutriments", "to provide the system with a minimum or maximum number for calories or nutrients (for example salt) in the dish"], 
-    ["input_healthy", "to specify how healthy I want to meal to be (for example not at all, slightly, very)"], 
+    ["input_healthy", "to specify how healthy I want my to meal to be (for example not at all, slightly, very)"], 
     ["input_price", "to provide the system with a maximum price for all the ingredients"], 
     ["input_chef", "to specify the name of a chef whose recipes I would prefer"],
     ["ratings", "to have some control over the recipes' ratings, for example by ordering recipes by their ratings"],
@@ -44,7 +44,7 @@ shuffle(options_list);
 
 
 var div_form = document.getElementById("questionnaire");
-var innerHTML = "<label class=\"statement-demographics\" id=\"label_whats_important\"><i><b>When I look for a recipe on the web], I would prefer...</b></i></label><br><br>";
+var innerHTML = "<label class=\"statement-demographics\" id=\"label_whats_important\"><i><b>When I look for a recipe on the web, I would prefer...</b></i></label><br><br>";
 
 for (var i = 0; i < options_list.length; i++){
     var v = options_list[i][0];
