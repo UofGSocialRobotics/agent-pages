@@ -1088,6 +1088,8 @@ function display_new_recipe(){
         var html_rating_inner = generate_html_rating(recipe_data['rating'], recipe_data['n_ratings']);
         var html_close_div_rating = "</div>";
         var html_rating = html_open_div_rating + html_rating_inner + html_close_div_rating;
+        var html_div_health_tag = document.getElementById("health_tag_img");
+        html_div_health_tag.src = "img/healthiness_"+recipe_data['FSAcolour']+".png";
         var recipe_rating_html = document.getElementById("recipe_rating_id");
         recipe_rating_html.innerHTML = html_rating;
 

@@ -15,12 +15,31 @@ include helper.pug
     //- b
     //-     | choose again 5 recipes 
     //- | that you like and could cook tonight.
-    //- br
-    //- br
-    //- | A 
-    //- b
-    //-     | "healthiness" tag 
-    //- | will now be displayed on every recipe card.
+    br
+    br
+    br
+    | A 
+    b
+        | "healthiness" tag 
+    | will be displayed on every recipe card:
+    br
+    br
+    table
+        tr
+            td
+                img(src="img/healthiness_green.png", width="150px")
+            td
+                | &rarr; healthy
+        tr
+            td
+                img(src="img/healthiness_orange.png", width="150px")
+            td
+                | &rarr; moderately healthy
+        tr
+            td
+                img(src="img/healthiness_red.png", width="150px")
+            td
+                | &rarr; unhealthy
     br
     br
     br

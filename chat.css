@@ -650,6 +650,7 @@ form .buttons {
     'ga_recipe_title ga_recipe_title ga_recipe_title'
     /* 'ga_recipe_img ga_recipe_img ga_recipe_title ga_recipe_title' */
     'ga_recipe_img ga_recipe_rating ga_recipe_rating'
+    'ga_recipe_img ga_recipe_tag ga_recipe_tag'
     'ga_recipe_img ga_recipe_time ga_recipe_servings'
     'ga_recipe_img ga_recipe_description ga_recipe_description'
     'ga_recipe_ingredients ga_recipe_ingredients ga_recipe_ingredients'
@@ -678,6 +679,10 @@ form .buttons {
 
 .recipe_rating{
   grid-area: ga_recipe_rating;
+}
+
+.recipe_tag{
+  grid-area: ga_recipe_tag;
 }
 
 .recipe_time{
