@@ -140,7 +140,7 @@ var PAGES = {
 }
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
-    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_SINGLE_RECIPE, PAGES.RS_QUESTIONNAIRE,
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
     PAGES.FOOD_DIAGNOSIS, 
     PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
@@ -971,7 +971,9 @@ function handle_chat_message(message){
             if (json_message.recipe_card){
                 console.log(json_message.recipe_card);
 				console.log(json_message.food_recipe);
-                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
+                // var img_src = json_message.recipe_card;
+                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media";
+                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
             }
 			if (json_message.movie_poster){
                 console.log(json_message.movie_poster);
@@ -1026,7 +1028,8 @@ function handle_rs_eval_message(message){
     else if (message['intent'] == "eval_reco"){
         app_global.recipes_to_rate = message['recipes'];
         console.log(app_global.recipes_to_rate);
-        setTimeout(display_new_recipe, 200);
+        // setTimeout(display_new_recipe, 200);
+        rs_diplay_multiple_recipes(message['recipes']);
 
     }
     // else{
@@ -1288,7 +1291,9 @@ function handle_nochat_message(message){
         if (json_message.recipe_card){
             console.log(json_message.recipe_card);
             console.log(json_message.food_recipe);
-            var recipe_car_html = "<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+json_message.recipe_card+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>";      
+            // var img_src = json_message.recipe_card;
+            var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media&token=f9c05fc6-1c97-4981-8238-96281e9dc0e4";
+            var recipe_car_html = "<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>";      
             div_reco.innerHTML += recipe_car_html + "<br><br>";
         }
         div_reco.innerHTML +=  "What do you think about " + json_message.recipe_title + "?<br><br>";
