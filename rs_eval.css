@@ -89,7 +89,7 @@
       'description description';
       /* grid-gap: 5px; */
       /* padding: 10px; */
-      grid-template-columns: 450px 1fr;
+      grid-template-columns: 450px auto;
       /* grid-template-rows:  1fr 40px 20px 20px 30px 20px; */
       grid-template-rows:  1fr 60px 60px 40px 40px 60px auto;
       /* border: 10px solid #A0A0A0;

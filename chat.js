@@ -950,6 +950,8 @@ function handle_chat_message(message){
         disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
     }
     else {
+        console.log("checking");
+        console.log(config.confirmed_connection_message, message[FIREBASE_KEYS.DATETIME]);
         if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
             console.log("We're here");
             // var json_message = JSON.parse(message); 
@@ -970,9 +972,10 @@ function handle_chat_message(message){
             }
             if (json_message.recipe_card){
                 console.log(json_message.recipe_card);
-				console.log(json_message.food_recipe);
-                // var img_src = json_message.recipe_card;
-                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media";
+                var rid_with_path_splitted = json_message.recipe_card.split('/');
+                var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+                console.log(rid_with_path_splitted, img_name);
+                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
                 printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
             }
 			if (json_message.movie_poster){
@@ -1292,7 +1295,15 @@ function handle_nochat_message(message){
             console.log(json_message.recipe_card);
             console.log(json_message.food_recipe);
             // var img_src = json_message.recipe_card;
-            var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media&token=f9c05fc6-1c97-4981-8238-96281e9dc0e4";
+            // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media";
+            // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced8701chickenbreastswithbalsamicvinegarandgarlichtml.png?alt=media";
+            var rid_with_path = json_message.food_recipe.recipe_card;
+            var rid_with_path_splitted = rid_with_path.split('/');
+            var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+            console.log(rid_with_path, rid_with_path_splitted, img_name);
+            // var img_src = json_message.recipe_card;
+            // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Fexample.jpg?alt=media";
+            var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
             var recipe_car_html = "<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>";      
             div_reco.innerHTML += recipe_car_html + "<br><br>";
         }
