@@ -972,15 +972,19 @@ function handle_chat_message(message){
             u.rate = 1;
             window.speechSynthesis.speak(u);
         }
-        if (json_message.recipe_card){
-            console.log(json_message.recipe_card);
-            var rid_with_path_splitted = json_message.recipe_card.split('/');
-            var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
-            console.log(rid_with_path_splitted, img_name);
-            var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
-            console.log(json_message);
-            var link_allrecipe = "https://www.allrecipes.com/recipe/" + json_message.rid;
-            printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"50%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+link_allrecipe+"\"> See full recipe here </a></td>",'left'+"");      
+        if (json_message.recipe_cards){
+            console.log(json_message.recipe_cards);
+            if (json_message.recipe_cards.length == 1){
+                var recipe_card = json_message.recipe_cards[0];
+                var rid_with_path_splitted = recipe_card.split('/');
+                var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
+                var link_allrecipe = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
+                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"50%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+link_allrecipe+"\"> See full recipe here </a></td>",'left'+"");      
+            }
+            else {
+                console.log("Several recipes!");
+            }
         }
         if (json_message.movie_poster){
             console.log(json_message.movie_poster);
