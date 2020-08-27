@@ -652,9 +652,9 @@ function send_data_collection(piece_of_data, datacol_key){
 }
 
 function send_dialog_callback(){
-    console.log("in send_dialog_callback");
+    // console.log("in send_dialog_callback");
     var text = app_global.data_to_send.text;
-    console.log(app_global.data_to_send.text);
+    // console.log(app_global.data_to_send.text);
     if (text == false){
         console.log("ERROR: text not set!!!");
     }
@@ -668,25 +668,25 @@ function send_dialog_callback(){
         else {
             data[FIREBASE_KEYS.TEXT] = text;
         }
-        console.log(data);
-        console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path);
+        // console.log(data);
+        // console.log(FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).path);
         FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG).push(data).then(function(snapshot){
             console.log("Save in Firebase: " + text);
         });
 
-        console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
+        // console.log(FIREBASE_REFS.CURRENT_SESSION+'/'+FIREBASE_KEYS.DIALOG);
         var dialog_ref = FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.DIALOG);
-        console.log(dialog_ref.path);
+        // console.log(dialog_ref.path);
 
         dialog_ref.limitToLast(2).on('child_added', function(snapshot) {
             // all records after the last continue to invoke this function
             var key = snapshot.key;
-            console.log("Debug: change in firebase/dialog.");
+            // console.log("Debug: change in firebase/dialog.");
             if (key != FIREBASE_KEYS.CLIENTID){
                 var dialog = snapshot.val();
                 if (dialog[FIREBASE_KEYS.SOURCE] == FIREBASE_VALUES.AGENT) {
-                    console.log("Received dialog:")
-                    console.log(dialog);
+                    // console.log("Received dialog:")
+                    // console.log(dialog);
                     handle_server_message(dialog);
                 }
             }
@@ -695,7 +695,7 @@ function send_dialog_callback(){
 }
 
 function send_dialog(text){
-    console.log("in send_dialog");
+    // console.log("in send_dialog");
     app_global.data_to_send.text = text;
     send_dialog_callback();
 }
@@ -855,54 +855,59 @@ function get_free_text_feedback(){
 
 // called when a message arrives
 function handle_server_message(message) {
-    console.log("handle_server_message:");
-    app_global.disconnection_timer.stop();
+    // console.log("handle_server_message:");
 
-    if (app_global.error == false){
-        // app_global.server_disconnected = false;
+    if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
+        console.log(message);
+        app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
         app_global.disconnection_timer.stop();
-        if (is_chat()) {
-            try{
-                handle_chat_message(message);
+
+        if (app_global.error == false){
+            // app_global.server_disconnected = false;
+            app_global.disconnection_timer.stop();
+            if (is_chat()) {
+                try{
+                    handle_chat_message(message);
+                }
+                catch(error) {
+                    console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_chat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                    console.log(error);
+                }
             }
-            catch(error) {
-                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_chat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
-                console.log(error);
+            else if (get_page() == PAGES.CHAT_GUIDED) {
+                try{
+                    handle_guided_chat_message(message);
+                }
+                catch(error) {
+                    console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_guided_hat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                    console.log(error);
+                }
             }
+            else if (get_page() == PAGES.NOCHAT) {
+                try{
+                    handle_nochat_message(message);
+                }
+                catch(error) {
+                    console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_NOchat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                    console.log(error);
+                }
+            }
+            else if (get_page() == PAGES.RS_EVAL_RECIPES || get_page() == PAGES.RS_EVAL_SINGLE_RECIPE){
+                try{
+                    handle_rs_eval_message(message);
+                }
+                catch(error) {
+                    console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_rs_eval_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
+                    console.log(error);
+                }
+            }
+            if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
         }
-        else if (get_page() == PAGES.CHAT_GUIDED) {
-            try{
-                handle_guided_chat_message(message);
-            }
-            catch(error) {
-                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_guided_hat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
-                console.log(error);
-            }
+        else {
+            console.log("Error, will not print new message.")
         }
-        else if (get_page() == PAGES.NOCHAT) {
-            try{
-                handle_nochat_message(message);
-            }
-            catch(error) {
-                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_NOchat_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
-                console.log(error);
-            }
-        }
-        else if (get_page() == PAGES.RS_EVAL_RECIPES || get_page() == PAGES.RS_EVAL_SINGLE_RECIPE){
-            try{
-                handle_rs_eval_message(message);
-            }
-            catch(error) {
-                console.log("/!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ ERROR in handle_rs_eval_message /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\ /!\\");
-                console.log(error);
-            }
-        }
-        if (get_page() == PAGES.AMTID && config.amtinfo_ack == message) go_to_intro();
     }
-    else {
-        console.log("Error, will not print new message.")
-    }
-    
+    else console.log("WARNING: already received this message.")
 }
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                           CHAT METHODS                                       --------//
@@ -944,54 +949,53 @@ function send_chat(msg) {
 
 
 function handle_chat_message(message){
-    console.log("handle_chat_message");
+    // console.log("handle_chat_message");
     if (message == config.disconnection_message){
         app_global.css_elm.setAttribute("href",app_global.css_val.error);
         disable_user_input(app_global.user_input_placeholder_val.client_disconnected);
     }
     else {
-        console.log("checking");
-        console.log(config.confirmed_connection_message, message[FIREBASE_KEYS.DATETIME]);
-        if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
-            console.log("We're here");
-            // var json_message = JSON.parse(message); 
-            app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
-            json_message = message;
-            if (config.tts_activated) {
-                var u = new SpeechSynthesisUtterance(json_message.sentence);
-                // var u = new SpeechSynthesisUtterance("Hi, this is a test to check you can hear me.");
-                u.onend = function (event) {
-                    change_microphone_image("wait");
-                };
-                // u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
-                var voices = window.speechSynthesis.getVoices();
-                u.voice = voices[49]; // Good voices: 48 - 49 - 10 - 17 - 28 - 32 - 36
-                // console.log(voies.length);
-                u.rate = 1;
-		        window.speechSynthesis.speak(u);
-            }
-            if (json_message.recipe_card){
-                console.log(json_message.recipe_card);
-                var rid_with_path_splitted = json_message.recipe_card.split('/');
-                var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
-                console.log(rid_with_path_splitted, img_name);
-                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
-                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"90%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+json_message.food_recipe+"\"> See recipe here </a></td>",'left'+"");      
-            }
-			if (json_message.movie_poster){
-                console.log(json_message.movie_poster);
-                printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
-            }
-            printMessage(json_message.sentence,'left');  
-			
-            if (agent_says_bye(json_message)){
-                terminate_conversation();
-            }
-            else if (config.turn_by_turn && config.asr_activated == false && is_chat() && json_message.wait_for_more == false){
-                activate_user_input();
-                setFocusToTextBox();
-            }           
+        // console.log(config.confirmed_connection_message, message[FIREBASE_KEYS.DATETIME]);
+        // if (message != config.confirmed_connection_message && app_global.last_dialog_at != message[FIREBASE_KEYS.DATETIME]){
+        //     app_global.last_dialog_at = message[FIREBASE_KEYS.DATETIME];
+        json_message = message;
+        if (config.tts_activated) {
+            var u = new SpeechSynthesisUtterance(json_message.sentence);
+            // var u = new SpeechSynthesisUtterance("Hi, this is a test to check you can hear me.");
+            u.onend = function (event) {
+                change_microphone_image("wait");
+            };
+            // u.voice = app_global.voices.filter(function(voice) { return voice.name == 'Microsoft Zira Desktop - English (United States)'; })[0];
+            var voices = window.speechSynthesis.getVoices();
+            u.voice = voices[49]; // Good voices: 48 - 49 - 10 - 17 - 28 - 32 - 36
+            // console.log(voies.length);
+            u.rate = 1;
+            window.speechSynthesis.speak(u);
         }
+        if (json_message.recipe_card){
+            console.log(json_message.recipe_card);
+            var rid_with_path_splitted = json_message.recipe_card.split('/');
+            var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+            console.log(rid_with_path_splitted, img_name);
+            var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
+            console.log(json_message);
+            var link_allrecipe = "https://www.allrecipes.com/recipe/" + json_message.rid;
+            printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"50%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+link_allrecipe+"\"> See full recipe here </a></td>",'left'+"");      
+        }
+        if (json_message.movie_poster){
+            console.log(json_message.movie_poster);
+            printMessage("<p style=\"text-align:center;\"><img src=\""+json_message.movie_poster+"\" width=\"50%\" /></p>",'left'+"");      
+        }
+        printMessage(json_message.sentence,'left');  
+        
+        if (agent_says_bye(json_message)){
+            terminate_conversation();
+        }
+        else if (config.turn_by_turn && config.asr_activated == false && is_chat() && json_message.wait_for_more == false){
+            activate_user_input();
+            setFocusToTextBox();
+        }           
+        // }
     }
 }
 
@@ -1010,7 +1014,7 @@ function handle_guided_chat_message(message){
         else if (intent == "request(food)") chat_guided_hide_and_show_divs("wait_answer", "ingredients_options");
         else if (intent == "inform(food)") {
             console.log(message['ingredients']);
-            set_up_ingredients_list(message['ingredients'], set_up_onclick_ingredients_list);
+            // set_up_ingredients_list(message['ingredients'], set_up_onclick_ingredients_list);
             chat_guided_hide_and_show_divs("wait_answer", "r_feedback");
         }
         else if (intent == "request(another)") chat_guided_hide_and_show_divs("wait_answer", "request_more");
@@ -1589,8 +1593,8 @@ function terminate_conversation(){
     questionnaire_button.style.display = "block";
     var message_speech = document.getElementById("message_speech"); 
     var message_text = document.getElementById("message_text");
-    message_speech.style.display = "none";
-    message_text.style.display = "none";
+    if (message_speech != null) message_speech.style.display = "none";
+    if (message_text != null) message_text.style.display = "none";
 }
 
 //--------                                       Questionnaire pages                                    --------//
@@ -2145,17 +2149,17 @@ function set_text_in_paragraph(val, p, text_before_val, text_after_val = ""){
     var inner_text = (p.innerText || p.textContent);
     console.log(inner_text);
     if (p.innerHTML == ""){
-        p.innerHTML = text_before_val + val + text_after_val;
+        p.innerHTML = text_before_val + val.toLowerCase() + text_after_val;
     }
     else {
         var inner_text_trimed = inner_text.trim();
         if (text_after_val != ""){
             var inner_text_removed_end = inner_text_trimed.replace(text_after_val, "");
-            p.innerHTML = inner_text_removed_end + ", " + val + text_after_val;
+            p.innerHTML = inner_text_removed_end + ", " + val.toLowerCase() + text_after_val;
         }
-        else p.innerHTML = inner_text_trimed + ", " + val;
+        else p.innerHTML = inner_text_trimed + ", " + val.toLowerCase();
     }
-    console.log(val);
+    console.log(val.toLowerCase());
 }
 
 function set_up_usual_dinner_selection(){
@@ -2248,7 +2252,7 @@ function set_up_ingredients_selection(){
             if (b_elt.id.includes(elt)){
                 b_elt.addEventListener("click", function(){
                     // console.log(b_elt);
-                    var val = b_elt.innerHTML;
+                    var val = b_elt.innerHTML.toLowerCase();
                     var ingredients_text_div = document.getElementById("selected_ingredients_text");
                     var inner_text = (ingredients_text_div.innerText || ingredients_text_div.textContent);
                     console.log(inner_text);
@@ -2280,7 +2284,7 @@ function set_up_why_usual_dinner(){
             if (b_elt.id.includes(elt)){
                 b_elt.addEventListener("click", function(){
                     // console.log(b_elt);
-                    var val = b_elt.innerHTML;
+                    var val = b_elt.innerHTML.toLowerCase();
                     var why_usual_dinner_text_div = document.getElementById("why_usual_dinner_text");
                     var inner_text = (why_usual_dinner_text_div.innerText || why_usual_dinner_text_div.textContent);
                     console.log(inner_text);
@@ -2338,23 +2342,23 @@ function set_up_diet_intolerances_selection(){
 
 function onclick_diet(b_elt){
     b_elt.addEventListener("click", function(){
-        var val = b_elt.innerHTML;
+        var val = b_elt.innerHTML.toLowerCase();
         var diet_text_div = document.getElementById("diet_text");
         var br_div = document.getElementById("br_div");
         var inner_text = (diet_text_div.innerText || diet_text_div.textContent);
-        console.log(inner_text);
+        // console.log(inner_text);
         if (diet_text_div.innerHTML != ""){
             alert("You can only have one specific diet.")
         }
         diet_text_div.innerHTML = "I have a " + val + " diet";
         br_div.innerHTML = "<br><br>";
-        console.log(val);
+        // console.log(val);
     });
 }
 
 function onclick_intolerance(b_elt){
     b_elt.addEventListener("click", function(){
-        var val = b_elt.innerHTML;
+        var val = b_elt.innerHTML.toLowerCase();
         var intolerance_text_div = document.getElementById("intolerances_text");
         var br_div = document.getElementById("br_div");
         var inner_text = (intolerance_text_div.innerText || intolerance_text_div.textContent);

@@ -66,8 +66,10 @@ include helper.pug
                 div(id="intolerances_text")
                 div(id="br_div")
 
-                -var intolerances = ["Dairy", "Egg", "Gluten", "Grain", "Peanut", "Seafood", "Sesame", "Shellfish", "Soy", "Sulfite", "Wheat"]
-                -var diets = ["Gluten Free", "Ketonic", "Vegetarian", "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan", "Pescetarian", "Paleo", "Primal", "Whole30"]
+                //- -var intolerances = ["Dairy", "Egg", "Gluten", "Grain", "Peanut", "Seafood", "Sesame", "Shellfish", "Soy", "Sulfite", "Wheat"]
+                -var intolerances = ["Dairy", "Gluten"]
+                -var diets = ["Gluten Free", "Low carbs", "Ketonic", "Vegetarian", "Vegan", "Pescetarian"]
+                //- -var diets = ["Gluten Free", "Ketonic", "Vegetarian", "Lacto-Vegetarian", "Ovo-Vegetarian", "Vegan", "Pescetarian", "Paleo", "Primal", "Whole30"]
                 -var diets_dict = {'diet': diets}
                 -var intolerance_dict = {'intolerance': intolerances}
                 -var diets_intolerances_dict = {"I have a specific diet...": diets_dict, "I am intolerant to...": intolerance_dict}
@@ -76,7 +78,8 @@ include helper.pug
             -var time_options = {"10min": ["10 min"], "20 min": ["20 min"], "30min": ["30 min"], "40min": ["40 min"], "50min": ["50 min"], "1h": ["1 h"], "1h30": ["1 h 30"], "2 h": ["2 h"], "no_pref": ["Unlimited"]}
             +likert_chat_guided("time", time_options, "display:none;", "narrow")
 
-            -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"], "no_ingredient": ["No, I don't like one", "of the ingredients"], "no_other": ["No,", "other reason"]}
+            -var recipe_feedback_options = {"yes": ["Yes,", "I like it!"], "no_recipe": ["No, I don't like the recipe"]}
+            //- , "no_ingredient": ["No, I don't like one", "of the ingredients"], "no_other": ["No,", "other reason"]}
             +likert_chat_guided("r_feedback", recipe_feedback_options, "display:none;", "wide")
 
             -var request_more = {"yes": ["Yes please"], "no": ["No thanks"]}
@@ -85,11 +88,16 @@ include helper.pug
             div(id="ingredients_options", style="display:none")
                 div(id="selected_ingredients_text")
 
-                -var meats = ["Beef", "Chicken", "Duck", "Eggs", "Lamb", "Pork", "Turkey", "Veal"]
-                -var fish = ["Alaska pollock", "Clams", "Cod", "Crab", "Haddock", "Halibut", "Prawns", "Salmon", "Seabass", "Shrimp", "Tilapia", "Tuna"]
-                -var veggies = ["Aspargus", "Avocado", "Beetroots", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Cucumbers", "Eggplant", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Red cabbage", "Spinach", "Spring onions", "Sweetcorn", "Sweet potato", "Tomatoes", "Turnips", "Zucchini"]
-                -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
-                -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
+                //- -var meats = ["Beef", "Chicken", "Duck", "Eggs", "Lamb", "Pork", "Turkey", "Veal"]
+                -var meats = ["Beef", "Chicken", "Eggs", "Pork", "Turkey", "Veal"]
+                //- -var fish = ["Alaska pollock", "Clams", "Cod", "Crab", "Haddock", "Halibut", "Prawns", "Salmon", "Seabass", "Shrimp", "Tilapia", "Tuna"]
+                -var fish = ["Clams", "Shrimp", "Tilapia"]
+                //- -var veggies = ["Aspargus", "Avocado", "Beetroots", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Cucumbers", "Eggplant", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Red cabbage", "Spinach", "Spring onions", "Sweetcorn", "Sweet potato", "Tomatoes", "Turnips", "Zucchini"]
+                -var veggies = ["Avocado", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Spinach", "Sweet potato", "Tomatoes", "Zucchini"]
+                //- -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
+                -var fruits = ["Apples", "Bananas", "Blueberries", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries"]
+                //- -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
+                -var others = ["Brown rice", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Rice", "Tofu"]
                 -var ingredient_categories = {"Meat / Eggs": meats, "Fish / Seafood": fish, "Veggies": veggies, "Others": others}
                 +food_dropup_menu("ingredients_options", ingredient_categories, "display:block;")
 
