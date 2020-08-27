@@ -946,7 +946,21 @@ function send_chat(msg) {
     // }
 };
 
+function get_recipe_img_src(recipe_card){
+    var recipe_card = recipe_card;
+    var rid_with_path_splitted = recipe_card.split('/');
+    var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+    var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";             
+    return img_src;
+}
 
+function get_html_recipe_card(div_type, recipe_card, width_pct){
+    return "<" + div_type + " id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+get_recipe_img_src(recipe_card)+"\" width=\"" + width_pct.toString() + "%\" /></"+div_type+">";
+}
+
+function get_html_recipe_link(div_type, link_allrecipe){
+    return "<"+div_type+" style=\"font-size:10px;\" align=\"right\" style=\"text-align:right;\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+link_allrecipe+"\"> See full recipe here </a></"+div_type+">";
+}
 
 function handle_chat_message(message){
     // console.log("handle_chat_message");
@@ -975,15 +989,18 @@ function handle_chat_message(message){
         if (json_message.recipe_cards){
             console.log(json_message.recipe_cards);
             if (json_message.recipe_cards.length == 1){
-                var recipe_card = json_message.recipe_cards[0];
-                var rid_with_path_splitted = recipe_card.split('/');
-                var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
-                var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";
                 var link_allrecipe = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
-                printMessage("<p id=\"recipe_card\" style=\"text-align:center;\"><img src=\""+img_src+"\" width=\"50%\" /></p>   <p style=\"font-size:10px;\" align=\"right\"><a target=\"_blank\" rel=\"noopener noreferrer\" href=\""+link_allrecipe+"\"> See full recipe here </a></td>",'left'+"");      
+                printMessage(get_html_recipe_card("p", json_message.recipe_cards[0], 50) + get_html_recipe_link("p", link_allrecipe),'left'+"");      
+            }
+            else if (json_message.recipe_cards.length == 2){
+                var link_allrecipe1 = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
+                var link_allrecipe2 = "https://www.allrecipes.com/recipe/" + json_message.rids[1];
+                var html = "<table> <tr> <td> " + get_html_recipe_card("span", json_message.recipe_cards[0], 90) + " </td> <td> " + get_html_recipe_card("span", json_message.recipe_cards[1], 90) + "</td></tr>";
+                html += "<tr><td>" + get_html_recipe_link("span", link_allrecipe1) + "</td><td>" + get_html_recipe_link("span", link_allrecipe2) + " </td> </tr> </table>";
+                printMessage(html,'left'+"");      
             }
             else {
-                console.log("Several recipes!");
+                console.log("More than 2 recipes!");
             }
         }
         if (json_message.movie_poster){
