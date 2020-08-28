@@ -145,6 +145,11 @@ mixin likert_chat_guided(div_id, options_dict, style_display, button_width="defa
                         for elt in val
                             span=elt
                             br
+                else if button_width == "very_wide" 
+                    button(class="likert_button", id=div_id+"_"+index, style="width:220px;")
+                        for elt in val
+                            span=elt
+                            br
                 else
                     button(class="likert_button", id=div_id+"_"+index)
                         for elt in val
