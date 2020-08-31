@@ -140,7 +140,8 @@ var PAGES = {
 }
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
-    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
+    // PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.CHAT_GUIDED,
     PAGES.FOOD_DIAGNOSIS, 
     PAGES.DEMOGRPAHICS, PAGES.THANKS];
 
@@ -252,6 +253,7 @@ FIREBASE_KEYS = {
     NOCHAT : "no_chat",
     LIKED_RECIPES: "liked_recipes",
     RIGHT_CLICKED_RECIPES: "right_clicked_recipes",
+    RS_DATA: "rs_data",
     RS_POSTSTUDYANSWERS: "rs_post_study_answers",
     RS_SATISFACTION: "rs_satisfaction",
     RECIPE_RATINGS: "recipe_ratings"
@@ -289,6 +291,42 @@ FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG] = {};
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.DIALOG][FIREBASE_KEYS.CLIENTID] = app_global.clientID;
 FIREBASE_SESSION_STRUCTURE[FIREBASE_KEYS.ACK] = false;
 // }
+
+RIDS_CFRS_USER_PROFILE = [
+    "47931/baked-beans-texas-ranger/", //gluten free
+    "34159/spicy-oven-fried-chicken/", //keto
+    "11800/fettuccini-with-mushroom-ham-and-rose-sauce/", // vege, gluten free
+    "8533/quick-chicken-divan/", //gluten free, keto, fast?
+    "21430/tangy-grilled-pork-tenderloin/", //pork
+    "7307/mini-cheesecakes-i/", //dessert cheese cake
+    "15475/stephens-chocolate-chip-cookies/", //chocolate chips cookies
+    '34911/fried-rice-with-cilantro/', //chicken
+    '44742/marinated-baked-pork-chops/', //pork
+    '24527/sunshine-toast/', //keto, egg
+    //10
+    "20593/broccoli-beef-i/", //beef
+    "17981/one-bowl-chocolate-cake-iii/", //chocolate
+    "12906/chicken-and-corn-chili/", //healthy green
+    "9615/healthy-banana-cookies/", //healthy, dessert, banana
+    "11032/oatmeal-craisin-cookies/", //dessert
+    '211165/pumpkin-brownies/', //dessert
+    '26460/quick-and-easy-chicken-noodle-soup/',
+    '14146/blt-salad/', //salad
+    '15836/strawberry-pie-ii/', //dessert
+    '8584/holiday-chicken-salad/', //salad
+    // 20
+    '18275/cowboy-mashed-potatoes/',
+    "11314/delicious-raspberry-oatmeal-cookie-bars/", //dessert
+    "25787/coconut-macaroons-iii/",
+    "8665/braised-balsamic-chicken/",
+    "74949/grilled-roasted-red-pepper-and-ham-sandwich/",
+    "201313/mini-meatball-subs/",
+    "23685/fried-cabbage-ii/",
+    "88108/amazing-italian-lemon-butter-chicken/",
+    "8372/black-magic-cake/",
+    "159374/byrdhouse-blistered-cherry-tomatoes/"
+]
+
 
 //--------------------------------------------------------------------------------------------------------------//
 //--------                                         ACCESS CHAT WINDOW                                   --------//
@@ -351,14 +389,16 @@ function on_load(){
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
     }
     else if (page == PAGES.RS_EVAL_RECIPES) {
-        var step = get_value_from_url_var("step");
-        if (step == "learn_pref"){
-            console.log("asking to learning pref -- sending dialog");
-            send_dialog("start_pref_gathering");
-        } else if (step == "reco"){
-            console.log("asking to start_rs_eval -- sending dialog");
-            send_dialog("start_rs_eval");
-        }
+        // var step = get_value_from_url_var("step");
+        // if (step == "learn_pref"){
+        //     console.log("asking to learning pref -- sending dialog");
+        //     send_dialog("start_pref_gathering");
+        // } else if (step == "reco"){
+        //     console.log("asking to start_rs_eval -- sending dialog");
+        //     send_dialog("start_rs_eval");
+        // }
+        display_recipes(shuffle(RIDS_CFRS_USER_PROFILE));
+        // rs_diplay_multiple_recipes(RDATAS_CFRS_USER_PROFILE);
     }
     else if (page == PAGES.RS_EVAL_SINGLE_RECIPE) {
         var step = get_value_from_url_var("step");
@@ -436,10 +476,12 @@ function replace_agent_name(text){
 //--------------------------------------------------------------------------------------------------------------//
 
 function remove_other_var(s){
-    if (s.includes("?")){
-        var s_splited = s.split("?");
-        return s_splited[0];
-    } else return s;
+    if (s != undefined){
+        if (s.includes("?")){
+            var s_splited = s.split("?");
+            return s_splited[0];
+        } else return s;
+    }
 }
 
 function get_client_id_from_url(splited_url, callback){
@@ -604,6 +646,18 @@ function add_datetime_and_client_id(dictionary){
     updated_dict[FIREBASE_KEYS.DATETIME] =  new Date().toLocaleString();
     updated_dict[FIREBASE_KEYS.CLIENTID] =  app_global.clientID;
     return updated_dict;
+}
+
+function send_rs_message(piece_of_data){
+    console.log("in send_rs_message");
+    var data = {};
+    // piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
+    data["liked_recipes"] = add_datetime_and_client_id(piece_of_data);
+    console.log("witting data in firebase");
+    console.log(FIREBASE_REFS.CURRENT_SESSION.path);
+    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.RS_DATA).update(data).then(function(snapshot){
+        go_to_next_page();
+    });
 }
 
 function send_data_collection_callback(){
@@ -946,11 +1000,14 @@ function send_chat(msg) {
     // }
 };
 
-function get_recipe_img_src(recipe_card){
-    var recipe_card = recipe_card;
-    var rid_with_path_splitted = recipe_card.split('/');
-    var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
-    var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2F" +  img_name+ "?alt=media";             
+function get_recipe_img_src(rid){
+    // var rid_with_path_splitted = recipe_card.split('/');
+    // var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
+    var rid_no_slash = rid.replace(/\//gi, "");
+    var rid_no_dash = rid_no_slash.replace(/-/gi, "");
+    // console.log(rid_no_dash);
+    // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" +  rid_no_dash + ".png?alt=media";             
+    var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" + rid_no_dash + "html.png?alt=media";
     return img_src;
 }
 
@@ -1274,21 +1331,25 @@ function display_single_recipe_in_grid(rdata, n){
     }
     var html_div_title = "<div class=\"recipe-title\">"+title+"</div>";
     var html_open_div_rating = "<div class=\"rating\">";
-    var html_rating = generate_html_rating(rdata['rating'], rdata['n_ratings']);
+    var html_rating = generate_html_rating(rdata['rating'], rdata['n_reviews_collected']);
     var html_close_div_rating = "</div>";
 
     var step = get_value_from_url_var("step");
-    if (step == "learn_pref"){
-        var html_div_healthy = "<div class=\"recipe-healthy\"></div>";
-    } else if (step == "reco"){
-        var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+rdata["FSAcolour"]+".png\" height=\"26px\"></div>";
-    }
+    // if (step == "learn_pref"){
+    //     var html_div_healthy = "<div class=\"recipe-healthy\"></div>";
+    // } else if (step == "reco"){
+    if (rdata['FSAscore'] < 7) var fsa_color = "green";
+    else if (rdata['FSAscore'] > 9) var fsa_color = "red";
+    else var fsa_color = "orange";
+    var html_div_healthy = "<div class=\"recipe-healthy\"><img src=\"img/healthiness_"+fsa_color+".png\" height=\"26px\"></div>";
+    console.log(html_div_healthy);
+    // }
     
     var description = rdata['description'];
     var html_div_description = "<div class=\"recipe-description overflow\"> " + description + "</div>";
-    var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata['time_prep']+"</div>";
-    var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata['time_cook']+"</div>";
-    var html_div_total = "<div class=\"recipe-total\">Total: "+rdata['time_total']+"</div>";
+    var html_div_prep = "<div class=\"recipe-prep\">Prep: "+rdata["time_info"]['Prep']+"</div>";
+    var html_div_cook = "<div class=\"recipe-cook\">Cook: "+rdata["time_info"]['Cook']+"</div>";
+    var html_div_total = "<div class=\"recipe-total\">Total: "+rdata["time_info"]['Total']+"</div>";
     var html_close_div_recipe = "</div>";
 
     var html = html_open_div_recipe + html_open_div_img + html_img + html_close_div_img + html_div_title + html_open_div_rating + html_rating + html_close_div_rating + html_div_healthy + html_div_description + html_div_prep + html_div_cook + html_div_total + html_close_div_recipe;
@@ -2370,10 +2431,15 @@ function onclick_diet(b_elt){
         var inner_text = (diet_text_div.innerText || diet_text_div.textContent);
         // console.log(inner_text);
         if (diet_text_div.innerHTML != ""){
-            alert("You can only have one specific diet.")
+            // alert("You can only have one specific diet.")
+            var lastIndex = diet_text_div.innerHTML.length - 5;
+            console.log(lastIndex);
+            diet_text_div.innerHTML = diet_text_div.innerHTML.substring(0, lastIndex) + ", " + val + " diet.";
         }
-        diet_text_div.innerHTML = "I have a " + val + " diet";
-        br_div.innerHTML = "<br><br>";
+        else {
+            diet_text_div.innerHTML = "I have a " + val + " diet";
+            br_div.innerHTML = "<br><br>";
+        }
         // console.log(val);
     });
 }
@@ -2480,6 +2546,7 @@ function rating_fct(rid, rating){
 }
 
 function selectRecipe(rid, domID){
+    console.log("here");
     var grid_cell = document.getElementById(domID);
     // select
     if (grid_cell.classList.contains('igc-border')) {
@@ -2503,7 +2570,9 @@ function save_user_pref(callback){
     var n_selected = app_global.rs_user_pref.length;
     if (n_selected >= 5){
         // send_dialog(app_global.rs_right_clicks);
-        send_dialog(app_global.rs_user_pref);
+        console.log("saving user pref");
+        // send_dialog(app_global.rs_user_pref);
+        send_rs_message(app_global.rs_user_pref);
         callback();
     }
     else {//if (n_selected < 5){
@@ -2511,11 +2580,6 @@ function save_user_pref(callback){
         window.scrollTo(0,0);
         alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
     }
-    // else {
-    //     console.log("alert");
-    //     window.scrollTo(0,0);
-    //     alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
-    // }
 }
 
 function display_satisfaction_questionnaire(){
@@ -2586,14 +2650,6 @@ function get_answers_satisfaction_questionnaire(callback){
     }
 }
 
-// function check_answers_satisfaction_questionnaire(){
-//     var alert_bool = false;
-//     if (app_global.answer_rs_satisfaction.satisfaction == undefined || app_global.answer_rs_satisfaction.satisfaction==""){
-//         alert_bool = true;
-//         var label = document.getElementById("label_satisfaction");
-//         label.style = "color:red;font-weight:bold;";
-//     }    
-// }
 
 function get_rs_food_questionnaire_answers(){
     var inputs = document.getElementsByName("whats_important");
@@ -2622,37 +2678,15 @@ function check_answers_rs_food_questionnaire(){
 }
 
 function openInNewTab(url) {
-    // var win = window.open(url, '_blank');
-    // preventDefault();
-    // win.focus();
     right_click_open_recipe_in_new_tab("recipe1");
   }
 
 
-// var recipe1_div = document.getElementById("recipe1");
-// if (recipe1_div.addEventListener) {
-//     console.log("if");
-//     console.log(recipe1_div);
-//     recipe1_div.addEventListener('contextmenu', function(e) {
-//         console.log("if2");
-//         alert("You've tried to open context menu"); //here you draw your own menu
-//         e.preventDefault();
-//     }, false);
-// } else {
-//     console.log("else");
-//     recipe1_div.attachEvent('oncontextmenu', function() {
-//         console.log("else2");
-//         alert("You've tried to open context menu");
-//         window.event.returnValue = false;
-//     });
-// }
-
 function right_click_open_recipe_in_new_tab(rid){
     var recipe1_div = document.getElementById(rid);
     if (recipe1_div.addEventListener) {
-        console.log(recipe1_div);
         recipe1_div.addEventListener('contextmenu', function(e) {
-            // console.log("open link in new window");
+            console.log("open link in new window");
             // alert("You've tried to open context menu"); //here you draw your own menu
             var url = "https://www.allrecipes.com/recipe/" + rid;
             app_global.rs_right_clicks.push(rid);
@@ -2668,3 +2702,43 @@ function right_click_open_recipe_in_new_tab(rid){
     }
     // }, 500);
 }
+
+function display_recipes(rids){
+    var outter_grid = document.getElementById("outter-grid-container");
+    console.log(outter_grid);
+    outter_grid.innerHTML = "";
+    // var html = "";
+    rids.forEach(display_recipe_card_jpg);
+    // outter_grid.style = "display:block;";
+    var do_not_refresh = document.getElementById("do_not_refresh");
+    do_not_refresh.style = "display:none;";
+    var questionnaire_wrap = document.getElementById("questionnaire_wrap");
+    questionnaire_wrap.style = "display:block;";
+}
+
+function display_recipe_card_jpg(rid){
+    var outter_grid = document.getElementById("outter-grid-container");
+    var link = get_recipe_img_src(rid);
+    // console.log(link);
+    outter_grid.innerHTML += "<div class=\"igc-border\" id=\""+rid+"\" onclick=\"selectRecipe('rid', '"+rid+"');\"> <img src=\"" + link + "\" width=\"95%\"></div>";
+    setTimeout(function() {
+        right_click_open_recipe_in_new_tab(rid);
+    }, 1000)
+}
+
+
+
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  }
