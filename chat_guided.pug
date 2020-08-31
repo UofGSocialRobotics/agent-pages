@@ -92,16 +92,16 @@ include helper.pug
                 div(id="selected_ingredients_text")
 
                 //- -var meats = ["Beef", "Chicken", "Duck", "Eggs", "Lamb", "Pork", "Turkey", "Veal"]
-                -var meats = ["Beef", "Chicken", "Eggs", "Pork", "Turkey", "Veal", "Fish"]
+                -var meats = ["Beef", "Chicken", "Clams", "Eggs", "Fish", "Pork", "Shrimp", "Turkey", "Veal", "Fish"]
                 //- -var fish = ["Alaska pollock", "Clams", "Cod", "Crab", "Haddock", "Halibut", "Prawns", "Salmon", "Seabass", "Shrimp", "Tilapia", "Tuna"]
-                -var fish = ["Clams", "Shrimp", "Tilapia"]
+                //- -var fish = ["Clams", "Shrimp", "Tilapia"]
                 //- -var veggies = ["Aspargus", "Avocado", "Beetroots", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Cucumbers", "Eggplant", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Red cabbage", "Spinach", "Spring onions", "Sweetcorn", "Sweet potato", "Tomatoes", "Turnips", "Zucchini"]
                 -var veggies = ["Avocado", "Broccoli", "Brussels sprouts", "Cabbage", "Carrots", "Cauliflower", "Celery", "Chilies", "Corn", "Garlic", "Green beans", "Kale", "Kidney beans", "Lettuce", "Mushrooms", "Onions", "Peas", "Peppers", "Potato", "Spinach", "Sweet potato", "Tomatoes", "Zucchini"]
                 //- -var fruits = ["Apples", "Bananas", "Blueberries", "Cantaloupe", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries", "Watermelon"]
                 -var fruits = ["Apples", "Bananas", "Blueberries", "Cherries", "Grapes", "Lemons", "Limes", "Oranges", "Peaches", "Pineapple", "Strawberries"]
                 //- -var others = ["Brown rice", "Chickpeas", "Couscous", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Quinoa", "Rice", "Tofu"]
-                -var others = ["Brown rice", "Cheese", "Chocolate", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Rice", "Tofu"]
-                -var ingredient_categories = {"Meat / Eggs": meats, "Fish / Seafood": fish, "Veggies": veggies, "Others": others}
+                -var others = ["Brown rice", "Cheese", "Chocolate", "Eggs", "Kidney beans", "Lentils", "Pasta", "Potatoes", "Rice", "Tofu"]
+                -var ingredient_categories = {"Meat / Fish": meats, "Veggies": veggies, "Fruits": fruits, "Others": others}
                 +food_dropup_menu("ingredients_options", ingredient_categories, "display:block;")
 
     div(class="message_template")

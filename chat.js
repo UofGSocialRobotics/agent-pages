@@ -649,13 +649,14 @@ function add_datetime_and_client_id(dictionary){
 }
 
 function send_rs_message(piece_of_data){
-    console.log("in send_rs_message");
-    var data = {};
+    // console.log("in send_rs_message");
+    var data = {"liked_recipes": piece_of_data};
     // piece_of_data[FIREBASE_KEYS.DATETIME] = new Date().toLocaleString();
-    data["liked_recipes"] = add_datetime_and_client_id(piece_of_data);
+    var new_dict = add_datetime_and_client_id(data);
+    // console.log(new_dict);
     console.log("witting data in firebase");
     console.log(FIREBASE_REFS.CURRENT_SESSION.path);
-    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.RS_DATA).update(data).then(function(snapshot){
+    FIREBASE_REFS.CURRENT_SESSION.child(FIREBASE_KEYS.RS_DATA).update(new_dict).then(function(snapshot){
         go_to_next_page();
     });
 }
@@ -1008,6 +1009,7 @@ function get_recipe_img_src(rid){
     // console.log(rid_no_dash);
     // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" +  rid_no_dash + ".png?alt=media";             
     var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" + rid_no_dash + "html.png?alt=media";
+    console.log(img_src);
     return img_src;
 }
 
@@ -1047,12 +1049,12 @@ function handle_chat_message(message){
             console.log(json_message.recipe_cards);
             if (json_message.recipe_cards.length == 1){
                 var link_allrecipe = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
-                printMessage(get_html_recipe_card("p", json_message.recipe_cards[0], 50) + get_html_recipe_link("p", link_allrecipe),'left'+"");      
+                printMessage(get_html_recipe_card("p", json_message.rids[0], 50) + get_html_recipe_link("p", link_allrecipe),'left'+"");      
             }
             else if (json_message.recipe_cards.length == 2){
                 var link_allrecipe1 = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
                 var link_allrecipe2 = "https://www.allrecipes.com/recipe/" + json_message.rids[1];
-                var html = "<table> <tr> <td> " + get_html_recipe_card("span", json_message.recipe_cards[0], 90) + " </td> <td> " + get_html_recipe_card("span", json_message.recipe_cards[1], 90) + "</td></tr>";
+                var html = "<table> <tr> <td> " + get_html_recipe_card("span", json_message.rids[0], 90) + " </td> <td> " + get_html_recipe_card("span", json_message.rids[1], 90) + "</td></tr>";
                 html += "<tr><td>" + get_html_recipe_link("span", link_allrecipe1) + "</td><td>" + get_html_recipe_link("span", link_allrecipe2) + " </td> </tr> </table>";
                 printMessage(html,'left'+"");      
             }
@@ -2566,19 +2568,13 @@ function selectRecipe(rid, domID){
 }
 
 function save_user_pref(callback){
-    console.log(app_global.rs_user_pref);
     var n_selected = app_global.rs_user_pref.length;
     if (n_selected >= 5){
-        // send_dialog(app_global.rs_right_clicks);
-        console.log("saving user pref");
-        // send_dialog(app_global.rs_user_pref);
         send_rs_message(app_global.rs_user_pref);
-        callback();
     }
     else {//if (n_selected < 5){
-        console.log("alert");
         window.scrollTo(0,0);
-        alert("Please select exactly 5 recipes (you selected "+ n_selected.toString()+ ").");
+        alert("Please select at least 5 recipes (you selected "+ n_selected.toString()+ ").");
     }
 }
 
