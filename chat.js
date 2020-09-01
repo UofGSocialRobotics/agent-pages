@@ -804,7 +804,7 @@ function go_to_page_after_questionnaire(){
 }
 
 function go_to_prolific_validation_page(){
-    location.replace("https://app.prolific.co/submissions/complete?cc=49D46426");
+    location.replace("https://app.prolific.co/submissions/complete?cc=353B55F9");
 }
 
 function go_to_next_page(param){
