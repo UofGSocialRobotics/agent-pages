@@ -136,14 +136,16 @@ var PAGES = {
     RS_EVAL_SINGLE_RECIPE: "rs_eval.html",
     RS_EVAL_INTRO: "rs_eval_intro.html",
     RS_INSTRUCTIONS: "rs_instructions.html",
-    RS_QUESTIONNAIRE: "rs_food_questionnaire.html"
+    RS_QUESTIONNAIRE: "rs_food_questionnaire.html",
+    CHAT_INSTRUCTIONS: "chat_instructions.html"
 }
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
     // PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
-    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.CHAT_GUIDED,
-    PAGES.FOOD_DIAGNOSIS, 
-    PAGES.DEMOGRPAHICS, PAGES.THANKS];
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.CHAT_INSTRUCTIONS, PAGES.CHAT_GUIDED,
+    // PAGES.FOOD_DIAGNOSIS, 
+    // PAGES.DEMOGRPAHICS, 
+    PAGES.THANKS];
 
 var MSG_TYPES = {
     INFO : 'info',
@@ -385,7 +387,7 @@ function on_load(){
         chat_guided_setup_onclick_event();
     }
     else if (page == PAGES.NOCHAT) init_nochat();
-    else if (page == PAGES.CHAT) {
+    else if (page == PAGES.CHAT || page == PAGES.CHAT_GUIDED) {
         alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
     }
     else if (page == PAGES.RS_EVAL_RECIPES) {
