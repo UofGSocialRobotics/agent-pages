@@ -84,6 +84,8 @@ include helper.pug
             +likert_chat_guided("r_feedback_1recipe", recipe_feedback_options_1_recipe, "display:none;", "wide")
             -var recipe_feedback_options_2_recipes = {"recipe1": ["I prefer recipe 1"], "recipe2": ["I prefer recipe 2"], "no": ["I don't like either of the recipes"]}
             +likert_chat_guided("r_feedback_2recipes", recipe_feedback_options_2_recipes, "display:none;", "very_wide")
+            -var recipe_feedback_options_3_recipes = {"recipe1": ["I prefer recipe 1"], "recipe2": ["I prefer recipe 2"],  "recipe3": ["I prefer recipe 3"], "no": ["I don't like any of the recipes"]}
+            +likert_chat_guided("r_feedback_3recipes", recipe_feedback_options_3_recipes, "display:none;", "wide")
 
             -var request_more = {"yes": ["Yes please"], "no": ["No thanks"]}
             +likert_chat_guided("request_more", request_more, "display:none;", "wide")

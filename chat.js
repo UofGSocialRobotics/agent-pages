@@ -985,31 +985,20 @@ function Message(arg) {
 };
 
 function send_chat(msg) {
-    // console.log("debug: in send chat");
     if (!msg) msg = getMessageText();
-    // console.log(app_global.user_wait,msg,app_global.error);
-    // if (app_global.user_wait == false && msg!="" && app_global.error == false){
     printMessage(msg,'right');
-    // res = send_message(JSON.stringify({'type': MSG_TYPES.DIALOG, 'content': msg}));
     send_dialog(msg);
-    // Disable user input
     if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false && is_chat()){
         disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
     }
     else if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == true){
         change_microphone_image("off");
     }
-        // return res;
-    // }
-};
+}
 
 function get_recipe_img_src(rid){
-    // var rid_with_path_splitted = recipe_card.split('/');
-    // var img_name = rid_with_path_splitted[rid_with_path_splitted.length -1];
     var rid_no_slash = rid.replace(/\//gi, "");
     var rid_no_dash = rid_no_slash.replace(/-/gi, "");
-    // console.log(rid_no_dash);
-    // var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" +  rid_no_dash + ".png?alt=media";             
     var img_src = "https://firebasestorage.googleapis.com/v0/b/coraapp-eba76.appspot.com/o/images%2Ffood%2Fresources%2Fimg%2Frecipe_card%2Fsmall%2FPNGs%2Freduced" + rid_no_dash + "html.png?alt=media";
     console.log(img_src);
     return img_src;
@@ -1060,8 +1049,16 @@ function handle_chat_message(message){
                 html += "<tr><td>" + get_html_recipe_link("span", link_allrecipe1) + "</td><td>" + get_html_recipe_link("span", link_allrecipe2) + " </td> </tr> </table>";
                 printMessage(html,'left'+"");      
             }
+            else if (json_message.recipe_cards.length == 3){
+                var link_allrecipe1 = "https://www.allrecipes.com/recipe/" + json_message.rids[0];
+                var link_allrecipe2 = "https://www.allrecipes.com/recipe/" + json_message.rids[1];
+                var link_allrecipe3 = "https://www.allrecipes.com/recipe/" + json_message.rids[2];
+                var html = "<table> <tr> <td> " + get_html_recipe_card("span", json_message.rids[0], 98) + " </td> <td> " + get_html_recipe_card("span", json_message.rids[1], 98) + " </td> <td> " + get_html_recipe_card("span", json_message.rids[2], 98) + "</td></tr>";
+                html += "<tr><td>" + get_html_recipe_link("span", link_allrecipe1) + "</td><td>" + get_html_recipe_link("span", link_allrecipe2) + "</td><td>" + get_html_recipe_link("span", link_allrecipe3) + " </td> </tr> </table>";
+                printMessage(html,'left'+"");      
+            }
             else {
-                console.log("More than 2 recipes!");
+                console.log("More than 3 recipes!");
             }
         }
         if (json_message.movie_poster){
@@ -2465,7 +2462,7 @@ function onclick_intolerance(b_elt){
 }
 
 function chat_guided_wait_for_coras_answer(){
-    var divs_to_hide_ids = ["user_name_div", "mood_div", "usual_dinner_div", "why_usual_dinner_div", "healthiness", "hungriness", "time", "r_feedback_1recipe", "r_feedback_2recipes", "request_more", "ingredients_options", "hello_cora_div", "diets_intolerances"];
+    var divs_to_hide_ids = ["user_name_div", "mood_div", "usual_dinner_div", "why_usual_dinner_div", "healthiness", "hungriness", "time", "r_feedback_1recipe", "r_feedback_2recipes", "r_feedback_3recipes", "request_more", "ingredients_options", "hello_cora_div", "diets_intolerances"];
         divs_to_hide_ids.forEach(function(div_elt_id){
             var div_elt = document.getElementById(div_elt_id);
             div_elt.style = "display:none";
@@ -2487,6 +2484,16 @@ function set_up_recipes_titles(titles_list){
             var btn = document.getElementById(btn_id);
             btn.innerHTML = "I prefer " + title;
             if (i + 1 == titles_list.length) chat_guided_hide_and_show_divs("wait_answer", "r_feedback_2recipes");
+        }
+    }
+    else if (titles_list.length == 3){
+        for (var i=0 ; i< titles_list.length; i++){
+            var title = titles_list[i];
+            var btn_id = "r_feedback_3recipes_recipe"+(i+1).toString();
+            console.log(btn_id);
+            var btn = document.getElementById(btn_id);
+            btn.innerHTML = "I prefer " + title;
+            if (i + 1 == titles_list.length) chat_guided_hide_and_show_divs("wait_answer", "r_feedback_3recipes");
         }
     }
 }
