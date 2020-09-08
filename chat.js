@@ -1689,7 +1689,7 @@ function terminate_conversation(){
 function create_questionnaire(){
     if (app_global.q_id in QUESTIONS){
         console.log(app_global.r_chosen);
-        if (app_global.r_chosen == "true") QUESTIONS[app_global.q_id]["question0"] = "I am happy with the recipe I chose.";
+        if (app_global.r_chosen == "true") QUESTIONS[app_global.q_id]["question0"] = "The recipe I chose is healthy.";
         var keys_array = Object.keys(QUESTIONS[app_global.q_id]);
         var keys_shuffled = shuffle(keys_array);
         console.log(keys_shuffled);
