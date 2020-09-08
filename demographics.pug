@@ -1,7 +1,7 @@
 include page.pug
 include helper.pug
 
-+page("Demographics questionnaire", true)
++page("About you", true)
     link(href="demographics.css", rel="stylesheet", id="demographics-css")
     | Last step: please tell us a little bit about yourself!
     br
@@ -10,29 +10,29 @@ include helper.pug
         div(class="wrap")
             form(id="questionnaire")
             
-                label(class="statement-demographics", id="label_age")
-                    | How old are you? Please type below.
-                input(type="text", name="age", class="input-demographics")
+                //- label(class="statement-demographics", id="label_age")
+                //-     | How old are you? Please type below.
+                //- input(type="text", name="age", class="input-demographics")
 
-                -var q_employment = "What best describes your employment status? (multiple answers allowed)"
-                -var q_employment_dict = {"full-time": "Employed full-time", "part-time": "Employed, part-time", "student": "Student", "unemployed": "Umemployed"}
-                +classic_checkbox(q_employment, "employment", q_employment_dict)
+                //- -var q_employment = "What best describes your employment status? (multiple answers allowed)"
+                //- -var q_employment_dict = {"full-time": "Employed full-time", "part-time": "Employed, part-time", "student": "Student", "unemployed": "Umemployed"}
+                //- +classic_checkbox(q_employment, "employment", q_employment_dict)
 
-                -var q_gender = "What best describes your gender identity?"
-                -var q_gender_dict = {"male": "Male", "female": "Female", "other": "Non-Binary"}
-                +classic_radio(q_gender, "gender", q_gender_dict)
+                //- -var q_gender = "What best describes your gender identity?"
+                //- -var q_gender_dict = {"male": "Male", "female": "Female", "other": "Non-Binary"}
+                //- +classic_radio(q_gender, "gender", q_gender_dict)
 
-                label(class="statement-demographics", id="label_where")
-                    | What country do you currently live in? Please type below.
-                input(type="text", name="where", class="input-demographics")
+                //- label(class="statement-demographics", id="label_where")
+                //-     | What country do you currently live in? Please type below.
+                //- input(type="text", name="where", class="input-demographics")
 
-                label(class="statement-demographics", id="label_from")
-                    | Where are you from originally? Please type below.
-                input(type="text", name="from", class="input-demographics")
+                //- label(class="statement-demographics", id="label_from")
+                //-     | Where are you from originally? Please type below.
+                //- input(type="text", name="from", class="input-demographics")
 
-                -var q_education = "What is your highest education level?"
-                -var q_education_dict = {"no_education": "No formal education", "secondary": "Secondary school / GCSE", "college": "College / A levels", "udergrad": "Undergraduate degree (BA/BSc/other)", "graduate": "Graduate degree (MA/MSc/MPhil/other)", "PhD": "Doctorate degree (PhD/MD/other)"}
-                +classic_radio(q_education, "education", q_education_dict)
+                //- -var q_education = "What is your highest education level?"
+                //- -var q_education_dict = {"no_education": "No formal education", "secondary": "Secondary school / GCSE", "college": "College / A levels", "udergrad": "Undergraduate degree (BA/BSc/other)", "graduate": "Graduate degree (MA/MSc/MPhil/other)", "PhD": "Doctorate degree (PhD/MD/other)"}
+                //- +classic_radio(q_education, "education", q_education_dict)
 
                 label(class="statement-demographics", id="label_like_cooking")
                     | How much do you enjoy coocking? Please repport on the scale below.

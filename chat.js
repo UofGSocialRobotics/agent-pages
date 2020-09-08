@@ -169,7 +169,7 @@ var QUESTIONS = {
         "question5" : "I understood why the recipes were recommended to me.", 
         "question6" : "I easily found the recipe I was looking for.", 
         "question7" : "Cora is knowledgeable about food.", 
-        "question8" : "Cora and I established rapport", 
+        "question8" : "Cora and I established rapport.", 
         "question9" : "I am convinced of the recipes recommended to me.",
         "question10" : "Overall, I am satisfied with the recommender.",
         "question11" : "I would cook the recipe recommended, given the opportunity.",
@@ -1676,12 +1676,20 @@ function terminate_conversation(){
 
 function create_questionnaire(){
     if (app_global.q_id in QUESTIONS){
-        for (var key in QUESTIONS[app_global.q_id]){
-            // console.log(key,QUESTIONS[key]);
-            create_likert_scale(key,QUESTIONS[app_global.q_id][key], label_begin="totally disagree", label_end="totally agree", n_points=7, table_freq_legend=false, center_likert=true);
-        }
+        var keys_array = Object.keys(QUESTIONS[app_global.q_id]);
+        var keys_shuffled = shuffle(keys_array);
+        console.log(keys_shuffled);
+        keys_shuffled.forEach(keys_shuffled_create_likert_scale);
+        // for (var key in keys_shuffled){
+        //     console.log(key,QUESTIONS[app_global.q_id][key]);
+        //     create_likert_scale(key,QUESTIONS[app_global.q_id][key], label_begin="totally disagree", label_end="totally agree", n_points=7, table_freq_legend=false, center_likert=true);
+        // }
     }
     else q_id_error();
+}
+
+function keys_shuffled_create_likert_scale(key){
+    create_likert_scale(key,QUESTIONS[app_global.q_id][key], label_begin="totally disagree", label_end="totally agree", n_points=7, table_freq_legend=false, center_likert=true);
 }
 
 function create_pre_study_questionnaire(){
@@ -1704,7 +1712,6 @@ function create_food_diagnosis_questionnaire(){
 
 function create_likert_scale(q_id, q_text, label_begin="totally disagree", label_end="totally agree", n_points=5, table_freq_legend=false, center_likert=false){
     console.log("in create_likert_scale");
-    console.log(table_freq_legend);
     questionnaire = document.getElementById("questionnaire");
     html = "\n<label class=\"statement-demographics\" id=\"label_"+q_id+"\">"+replace_agent_name(q_text)+"</label>";
     if (center_likert) html += "<center>";
@@ -1786,7 +1793,7 @@ function create_likert_scale(q_id, q_text, label_begin="totally disagree", label
         if (i == n_points-1) {
             html += div_open + table_open + tr_legend + tr_open + td_label_begin + td_open + label_open + input_var + div_control_indicator + label_close + td_close + td_label_end + tr_close + table_close + div_close + "<br><br>";
             questionnaire.innerHTML += html;
-            console.log(html);
+            // console.log(html);
             return html;
         }
         else {
@@ -2011,7 +2018,7 @@ function get_demographics_answers(){
     
     var inputs = document.getElementsByTagName("input");
     console.log(app_global);
-    app_global.answers_demographics["employment"] = [];
+    // app_global.answers_demographics["employment"] = [];
     // app_global.answers_demographics["diets"] = [];
     for (var i=0; i < inputs.length; i++){
         var input = inputs[i];
@@ -2024,7 +2031,6 @@ function get_demographics_answers(){
         }
         else if (input.type == "checkbox"){
             if (input.checked){
-                // console.log(input.value + " is checked!");
                 app_global.answers_demographics[key].push(input.value);
             }
         }
