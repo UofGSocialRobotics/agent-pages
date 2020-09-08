@@ -174,7 +174,8 @@ var QUESTIONS = {
         "question9" : "I am convinced of the recipes recommended to me.",
         "question10" : "Overall, I am satisfied with the recommender.",
         "question11" : "I would cook the recipe recommended, given the opportunity.",
-        "question12" : "I would use Cora to get recipe recommendations in the future."
+        "question12" : "I would use Cora to get recipe recommendations in the future.",
+        "question13" : "The recipe(s) recommended to me matched my interests."
         // "question23" : "AGENTNAME pretended to be a computer program." 
     },
     "q2" : {
