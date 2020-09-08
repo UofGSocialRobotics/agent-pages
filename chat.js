@@ -142,7 +142,7 @@ var PAGES = {
 // var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, PAGES.FOOD_DIAGNOSIS, PAGES.INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS, PAGES.THANKS];
 var PAGES_SEQUENCE = [PAGES.INFORMATION_FORM, PAGES.CONSENT_FORM, PAGES.AMTID, 
     // PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.RS_EVAL_INTRO, PAGES.RS_EVAL_RECIPES, PAGES.RS_QUESTIONNAIRE,
-    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.CHAT_INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.FREE_TEXT_FEEDBACK,
+    PAGES.RS_INSTRUCTIONS, PAGES.RS_EVAL_RECIPES, PAGES.CHAT_INSTRUCTIONS, PAGES.CHAT_GUIDED, PAGES.QUESTIONNAIRE, PAGES.FREE_TEXT_FEEDBACK, PAGES.DEMOGRPAHICS,
     // PAGES.FOOD_DIAGNOSIS, 
     // PAGES.DEMOGRPAHICS, 
     PAGES.THANKS];
@@ -162,31 +162,20 @@ app_global.current_url = window.location.href;
 
 var QUESTIONS = {
     "q1": {
-        "question1" : "I felt I was in sync with AGENTNAME.", 
-        // "question22" : "I felt like AGENTNAME was a human.", 
-        "question2" : "I was able to say everything I wanted to say during the interaction.", 
-        "question17" : "I intent to make the recipe recommended to me.", 
-        "question3" : "AGENTNAME was interested in what I was saying.", 
-        "question4" : "AGENTNAME was respectful to me and considered to my concerns.", 
-        "question18" : "I will try to make the recipe recommended to me.", 
-        "question5" : "AGENTNAME was warm and caring.", 
-        "question24" : "AGENTNAME disclosed information about herself.", 
-        "question6" : "AGENTNAME was friendly to me.", 
-        "question19" : "I want to make the recipe recommended to me.", 
-        "question7" : "AGENTNAME and I established rapport.", 
-        "question8" : "I felt I had <b>no</b> connection with AGENTNAME", 
+        "question1" : "Cora engaged me in small-talk.", 
+        "question2" : "Cora disclosed personal information to me.", 
+        "question3" : "Cora was interested in what I was saying and gave me feedback.", 
+        "question4" : "The recommender helped me find the ideal recipe.", 
+        "question5" : "I understood why the recipes were recommended to me.", 
+        "question6" : "I easily found the recipe I was looking for.", 
+        "question7" : "Cora is knowledgeable about food.", 
+        "question8" : "Cora and I established rapport", 
+        "question9" : "I am convinced of the recipes recommended to me.",
+        "question10" : "Overall, I am satisfied with the recommender.",
+        "question11" : "I would cook the recipe recommended, given the opportunity.",
+        "question12" : "I would use Cora to get recipe recommendations in the future."
         // "question23" : "AGENTNAME pretended to be a computer program." 
     },
-    // "q2" : {
-    //     "question9" : "9) The movies recommended to me during this interaction matched my interests.",
-    //     "question10" : "10) AGENTNAME allowed me to specify and change my preferences during the interaction",
-    //     "question11" : "11) I would use AGENTNAME to get movie recommendations in the future.",
-    //     "question12" : "12) I easily found the movies I was looking for.",
-    //     "question13" : "13) I would watch the movies recommended to me, given the opportunity.",
-    //     "question14" : "14) I was satisfied with the movies recommended to me.",
-    //     "question15" : "15) AGENTNAME provided sufficient details about the movies recommended.",
-    //     "question16" : "16) AGENTNAME explained her reasoning behind the recommendations.",
-    // }
     "q2" : {
         // "quetion9": "How likely is it that you will make this recipe?"
         "question9" : "The recipe recommended to me during this interaction matched my preferences.", 
@@ -797,10 +786,11 @@ function go_to_questionnaire(x){
     location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x);
 }
 function go_to_page_after_questionnaire(){
-    if (get_page() == PAGES.PRE_STUDY_QUESTIONNAIRE) go_to_chat_setup();
-    else if (app_global.q_id == "q1") go_to_questionnaire("q2");
-    else if (app_global.q_id == "q2") go_to_next_page_general_case();
-    else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
+    // if (get_page() == PAGES.PRE_STUDY_QUESTIONNAIRE) go_to_chat_setup();
+    // else if (app_global.q_id == "q1") go_to_questionnaire("q2");
+    // else if (app_global.q_id == "q2") go_to_next_page_general_case();
+    go_to_next_page_general_case();
+    // else console.log("In go_to_page_after_questionnaire, questionnaire id is "+app_global.q_id.toString()+" - don't know what to do!");
 }
 
 function go_to_prolific_validation_page(){
@@ -2022,7 +2012,7 @@ function get_demographics_answers(){
     var inputs = document.getElementsByTagName("input");
     console.log(app_global);
     app_global.answers_demographics["employment"] = [];
-    app_global.answers_demographics["diets"] = [];
+    // app_global.answers_demographics["diets"] = [];
     for (var i=0; i < inputs.length; i++){
         var input = inputs[i];
         var key = input.name;
@@ -2053,6 +2043,7 @@ function check_answers_demographics(){
     var alert_bool = false;
     for (var j in app_global.answers_demographics){
         var label = document.getElementById("label_"+j);
+        console.log(j);
         if (app_global.answers_demographics[j] == undefined || app_global.answers_demographics[j]=="") {
             alert_bool = true;
             label.style = "color:red;font-weight:bold;"
