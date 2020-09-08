@@ -33,6 +33,37 @@ include helper.pug
                 //- -var q_education = "What is your highest education level?"
                 //- -var q_education_dict = {"no_education": "No formal education", "secondary": "Secondary school / GCSE", "college": "College / A levels", "udergrad": "Undergraduate degree (BA/BSc/other)", "graduate": "Graduate degree (MA/MSc/MPhil/other)", "PhD": "Doctorate degree (PhD/MD/other)"}
                 //- +classic_radio(q_education, "education", q_education_dict)
+                label(class="statement-demographics", id="label_want_to_eat_healthy")
+                    | "I want to eat healthy." Please repport on the scale below how much you agree with that statement.
+                div(class="control-group")
+                    table(with="750px")
+                        tr
+                            td(style="font-size:14px")
+                                br
+                                | Totally disagree
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio", name="want_to_eat_healthy", value="1")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="want_to_eat_healthy" value="2")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="want_to_eat_healthy" value="3")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="want_to_eat_healthy" value="4")
+                                    div(class="control_indicator")
+                            td(width="150px", style="padding-left:40px")
+                                label(class="control control-radio")
+                                    input(type="radio" name="want_to_eat_healthy" value="5")
+                                    div(class="control_indicator")
+                            td(style="font-size:14px")
+                                br
+                                | Totally agree
 
                 label(class="statement-demographics", id="label_like_cooking")
                     | How much do you enjoy coocking? Please repport on the scale below.

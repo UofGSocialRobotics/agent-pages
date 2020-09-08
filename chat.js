@@ -85,6 +85,7 @@ var app_global = {
     amt_msg : "for_data_collection",
     points_likert_scale : 5,
     q_id : false,
+    r_chosen : true,
     last_dialog_at : false,
     data_to_send : {
         datacol_key: false,
@@ -524,12 +525,23 @@ function get_q_id(callback){
     console.log("in get_q_id");
     page = get_page();
     if (page==PAGES.QUESTIONNAIRE){
+        // read q_id
         var splited_url = app_global.current_url.split("q_id="); //window.location.href
         if (splited_url.length > 1) {
             var q_id = remove_other_var(splited_url[1]);
             if(q_id in QUESTIONS){
                 app_global.q_id = q_id;
                 console.log("Questionnaire id = "+app_global.q_id);
+
+                // read boolean recipe chosen
+                var splited_url2 = app_global.current_url.split("?r="); //window.location.href
+                if (splited_url2.length > 1) {
+                    var r_chosen = remove_other_var(splited_url2[1]);
+                    console.log(r_chosen);
+                    app_global.r_chosen = r_chosen;
+                }
+                else q_id_error("No r found.");
+
                 callback();
             }
             else q_id_error("q_id "+q_id+" does not exists.");
@@ -783,7 +795,7 @@ function url_vars_to_string(){
 }
 
 function go_to_questionnaire(x){
-    location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x);
+    location.replace(PAGES.QUESTIONNAIRE+url_vars_to_string()+"?q_id="+x+"?r="+app_global.r_chosen);
 }
 function go_to_page_after_questionnaire(){
     // if (get_page() == PAGES.PRE_STUDY_QUESTIONNAIRE) go_to_chat_setup();
@@ -1676,6 +1688,8 @@ function terminate_conversation(){
 
 function create_questionnaire(){
     if (app_global.q_id in QUESTIONS){
+        console.log(app_global.r_chosen);
+        if (app_global.r_chosen == "true") QUESTIONS[app_global.q_id]["question0"] = "I am happy with the recipe I chose.";
         var keys_array = Object.keys(QUESTIONS[app_global.q_id]);
         var keys_shuffled = shuffle(keys_array);
         console.log(keys_shuffled);
@@ -1686,6 +1700,10 @@ function create_questionnaire(){
         // }
     }
     else q_id_error();
+}
+
+function create_questionnaire_callback(){
+    
 }
 
 function keys_shuffled_create_likert_scale(key){
@@ -2204,6 +2222,14 @@ function click_button_event(){
 //--------                                          CHAT GUIDED                                         --------//
 //--------------------------------------------------------------------------------------------------------------//
 
+function check_selected_recipe(msg){
+    console.log("in check_selected_recipe");
+    if (msg.includes("No, I don't like the recipe") || msg.includes("I don't like either of the recipes") || msg.includes("I don't like any of the recipes")){
+        app_global.r_chosen = false;
+        console.log("user said recipe(s) sucks.")
+    }
+}
+
 function chat_guided_setup_onclick_event(){
     var buttons = document.getElementsByTagName('button');
     directly_send_message_buttons_types = ['mood', 'healthiness', 'hungriness', 'time', "hello", "none", "r_feedback", "request_more"];
@@ -2214,6 +2240,7 @@ function chat_guided_setup_onclick_event(){
                 b_elt.addEventListener("click", function(){
                     var chat_msg = b_elt.innerText || b_elt.textContent;
                     send_chat(chat_msg);
+                    check_selected_recipe(chat_msg);
                     chat_guided_wait_for_coras_answer();
                 });
             }
