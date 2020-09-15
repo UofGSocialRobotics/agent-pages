@@ -374,6 +374,7 @@ function on_load(){
     else if (page == PAGES.FOOD_DIAGNOSIS) create_food_diagnosis_questionnaire();
     // else if (page == PAGES.DEMOGRPAHICS) init_demogrpahics();
     else if (page == PAGES.CHAT_GUIDED) {
+        alert('Say \"Hello\" to Cora to start the interaction.\nBe aware that the system can be a little slow sometimes.');
         console.log("Chat guided page!");
         chat_guided_setup_onclick_event();
     }
@@ -990,7 +991,13 @@ function Message(arg) {
 function send_chat(msg) {
     if (!msg) msg = getMessageText();
     printMessage(msg,'right');
-    send_dialog(msg);
+    if (msg=="Hello Cora!"){
+        console.log("delay");
+        setTimeout(function() {
+            send_dialog(msg);
+        }, 1000);
+    }
+    else send_dialog(msg);
     if (msg != config.connection_message && config.turn_by_turn && config.asr_activated == false && is_chat()){
         disable_user_input(app_global.user_input_placeholder_val.wait_for_agent_answer);
     }
