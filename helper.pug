@@ -2,11 +2,13 @@ mixin section(title)
     br
     br
     br
+    br
     div(class="section")=title
     br 
     br   
 
 mixin subsection(title)
+    br
     br
     br
     div(class="subsection")=title
@@ -20,6 +22,13 @@ mixin emphasis(utterance, whitespace_after=true, whitespace_before=true)
         |
         |
 
+mixin math(utterance, subscript="i")
+    span(class="math")=utterance
+        <sub>
+            span(class="math")=subscript
+        </sub>
+        | 
+
 mixin consolas(utterance, whitespace_after=true, whitespace_before=true)
     if whitespace_before == true
         | 
@@ -27,7 +36,17 @@ mixin consolas(utterance, whitespace_after=true, whitespace_before=true)
     if whitespace_after == true
         | 
         |
-        
+
+
+mixin publication(authors, title, venue)
+    span(class="publication")
+        span=authors
+        | , 
+        i=title
+        | , 
+        span=venue      
+        br
+        br
 
 mixin navigation_button(text, onclick_function, style_display="display:block;", my_id="")    
     div(class="page_buttons", onclick=onclick_function, style=style_display, id=my_id)

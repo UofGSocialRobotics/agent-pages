@@ -1,0 +1,76 @@
+mixin page(page_title, connect=false, chat_window=false) 
+    doctype html
+    html
+        head
+            //- title(id="tab_title")
+            div(id="header")
+                img(src="img/cora_light_bg.png", height="300px", align="left", style="padding-left:50px;")
+                div(id="header_text")
+                    | CORA: the COnversational 
+                    br
+                    | Relational Agent
+            link(href="chat.css", rel="stylesheet", id="bootstrap-css")
+            link(href="avatar.css", rel="stylesheet", id="error_css")
+            link(href="cora_project.css", rel="stylesheet", id="cora_project_css")
+
+        body()
+            div(class="site-wrapper")
+                //- script
+                //-     | var b = !{JSON.stringify(title_bool)};
+                //-     | console.log("title_bool");
+                //-     | console.log(b);
+                if chat_window == false
+                    header
+                        div(id="page_title")=page_title
+                            br
+                            br
+                main
+                    div(id="server_error", style="display:none;")
+                        | It looks like our server is not connected.
+                        | We apologize for the inconvenience.
+                        br
+                        | Feel free to contact us at 
+                        a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com.
+                    if chat_window
+                        block
+                    else
+                        div(id="main_text", style="display:block;")
+                            block
+                footer
+                    table(style="width:100%;")
+                        colgroup
+                            col(style="width=50%")
+                            col(style="width=50%")
+                        tr
+                            th(style="text-align:left;vertical-align:bottom;")
+                                div(class="project-presentation")
+                                    br
+                                    br
+                                    | Conversational Agent developed by the 
+                                    a(href="http://social-lab.inp.gla.ac.uk/", title="SOCIAAL Group") SOCIAAL Group
+                                    | &nbsp at the &nbsp
+                                    a(href="https://www.gla.ac.uk/", title="University of Glasgow") University of Glasgow
+                                    br
+                                    | Contact us at 
+                                    a(href="mailto: uofg.virtualagents@gmail.com", title="uofg.virtualagents@gmail.com") uofg.virtualagents@gmail.com.
+                            th(style="text-align:right;vertical-align:bottom;")
+                                div(class="credits")
+                                    br
+                                    br
+                                    | Icons made by 
+                                    a(href="https://www.freepik.com/", title="Freepik") Freepik
+                                    | &nbsp from &nbsp
+                                    a(href="https://www.flaticon.com/", title="flaticon") www.flaticon.com
+                                    | &nbsp are licensed by &nbsp
+                                    a(href="http://creativecommons.org/licenses/by/3.0/", title="Creative Commons BY 3.0") CC 3.0 BY
+                                    br
+                                    | Chat design adapted from 
+                                    a(href="https://bootsnipp.com/snippets/ZlkBn", title="Bootsnipp") Chat by Pavel Komiagin
+                    
+
+            script(src="https://code.jquery.com/jquery-1.11.1.min.js")
+            script(src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.1/mqttws31.min.js")
+            script(src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js")
+            script(src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js")
+            //- script(src="chat.js" )
+            script(src="cora_project_script.js")

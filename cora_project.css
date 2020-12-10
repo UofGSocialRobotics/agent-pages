@@ -1,0 +1,51 @@
+#header {
+    background-color: #FDF6DA;
+    padding: 50px 10px;
+    color: #444444;
+    text-align: center;
+    font-size: 90px; 
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    transition: 0.2s;
+  }
+
+#header_text {
+    padding-top: 50px;
+}
+#header_text_small {
+    padding-top: 30px;
+    text-align: left;
+    padding-left: 30%;
+}
+
+  body{
+      padding-top: 350px;
+      background-color: #fff;
+      /* background-color: #FFFEFA; */
+  }
+
+
+.section {
+    font-size: 28px;
+    font-style: italic;
+  }
+
+  .subsection {
+    font-size: 20px;
+    font-style: italic;
+  }
+
+  .consolas{
+      font-family: monospace;
+  }
+
+  .math{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-style: italic;
+  }
+
+  .publication{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
